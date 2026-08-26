@@ -1,0 +1,23 @@
+{
+    "id": "cmqnn07ck000aui4w37p1hb4v",
+    "name": "Asha Menon",
+    "phone": "9000000001",
+    "email": "admin1@clubfitness.test",
+    "profileImageUrl": "null",
+    "role": "ADMIN",
+    "status": "ACTIVE",
+    "dateOfBirth": "null",
+    "emergencyContact": "null",
+    "medicalNotes": "null",
+    "membershipPlanId": "null",
+    "membershipStart": "null",
+    "membershipEnd": "null",
+    "contentAccessUntil": "null",
+    "assignedTrainerId": "null",
+    "staffTitle": "null",
+    "hireDate": "null",
+    "referralCode": "null",
+    "referredById": "null",
+    "createdAt": "2026-06-21T10:21:53.589Z",
+    "updatedAt": "2026-06-21T10:21:53.589Z"
+}

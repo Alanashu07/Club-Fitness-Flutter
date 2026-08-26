@@ -1,0 +1,123 @@
+{
+    "profile": {
+        "id": "mem_9f1a2b3c",
+        "name": "Rahul Menon",
+        "profileImageUrl": "https://cdn.gymapp.com/avatars/mem_9f1a2b3c.jpg"
+    },
+    "membership": {
+        "plan": {
+            "id": "plan_gold01",
+            "name": "Gold Monthly",
+            "durationDays": 30,
+            "price": 1999.0
+        },
+        "status": "ACTIVE",
+        "start": "2026-07-01T00:00:00.000Z",
+        "end": "2026-07-31T00:00:00.000Z",
+        "daysRemaining": 5,
+        "trainer": {
+            "id": "staff_7a2c",
+            "name": "Arjun Nair"
+        }
+    },
+    "todaysWorkout": {
+        "planName": "Push Pull Legs - Phase 2",
+        "exercises": [
+            {
+                "id": "wex_001",
+                "name": "Bench Press",
+                "sets": 4,
+                "reps": 10,
+                "restSeconds": 90,
+                "completed": true
+            },
+            {
+                "id": "wex_002",
+                "name": "Incline Dumbbell Press",
+                "sets": 3,
+                "reps": 12,
+                "restSeconds": 60,
+                "completed": false
+            },
+            {
+                "id": "wex_003",
+                "name": "Tricep Pushdown",
+                "sets": 3,
+                "reps": 15,
+                "restSeconds": 45,
+                "completed": false
+            }
+        ],
+        "doneCount": 1,
+        "totalCount": 3
+    },
+    "quickStats": {
+        "dayStreak": 4,
+        "workoutsCompleted": 27,
+        "activeOrders": 1
+    },
+    "announcements": [
+        {
+            "id": "ann_101",
+            "title": "Gym closed on Independence Day",
+            "body": "The gym will remain closed on Aug 15th for the holiday.",
+            "audienceType": "ALL",
+            "audienceUserIds": [""],
+            "isDraft": false,
+            "createdAt": "2026-07-20T09:15:00.000Z"
+        },
+        {
+            "id": "ann_102",
+            "title": "New protein shakes in stock",
+            "body": "Chocolate and vanilla flavors now available at the shop.",
+            "audienceType": "ALL",
+            "audienceUserIds": [],
+            "isDraft": false,
+            "createdAt": "2026-07-18T11:00:00.000Z"
+        }
+    ],
+    "shopPreview": [
+        {
+            "id": "prod_001",
+            "name": "Whey Protein 1kg",
+            "price": 2499.0,
+            "stockCount": 12,
+            "imageUrl": "https://cdn.gymapp.com/products/whey.jpg",
+            "isFeatured": true,
+            "isActive": true,
+            "createdAt": "2026-05-01T00:00:00.000Z"
+        },
+        {
+            "id": "prod_002",
+            "name": "Shaker Bottle",
+            "price": 399.0,
+            "stockCount": 40,
+            "imageUrl": "https://cdn.gymapp.com/products/shaker.jpg",
+            "isFeatured": false,
+            "isActive": true,
+            "createdAt": "2026-04-15T00:00:00.000Z"
+        }
+    ],
+    "upcomingClasses": [
+        {
+            "bookingId": "book_501",
+            "status": "CONFIRMED",
+            "gymClass": {
+                "id": "class_01",
+                "name": "Morning Yoga",
+                "dayOfWeek": "Mon",
+                "startTime": "07:00",
+                "room": "Studio A",
+                "capacity": 20,
+                "trainerName": "Arjun Nair"
+            }
+        }
+    ],
+    "feeStatus": {
+        "status": "PAID",
+        "amount": 1999.0,
+        "dueDate": "2026-07-05T00:00:00.000Z",
+        "paidDate": "2026-07-03T10:22:00.000Z",
+        "planName": "Gold Monthly"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "dayOfWeek": "Mon",
+    "isRestDay": false,
+    "exercises": [
+        {
+            "exerciseId": "ex_bench_press",
+            "sets": 4,
+            "reps": 10,
+            "restSeconds": 60,
+            "notes": "Focus on controlled negatives",
+            "orderIndex": 0
+        },
+        {
+            "exerciseId": "ex_incline_db_press",
+            "sets": 3,
+            "reps": 12,
+            "restSeconds": 45,
+            "orderIndex": 1
+        }
+    ]
+}

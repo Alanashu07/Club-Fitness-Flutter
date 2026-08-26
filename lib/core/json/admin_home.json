@@ -1,0 +1,117 @@
+{
+    "overview": {
+        "totalMembers": 342,
+        "newMembersThisMonth": 28,
+        "activeMembers": 301,
+        "todayCheckIns": 87,
+        "activeTodayPercent": 25.4,
+        "pendingFeesCount": 14,
+        "outstandingAmount": 27850.0,
+        "ordersToday": 9,
+        "ordersReadyToday": 3
+    },
+    "revenue": {
+        "thisMonth": 412500.0,
+        "thisMonthChangePct": 8.3,
+        "lastMonth": 380900.0,
+        "lastMonthChangePct": -2.1,
+        "overdueAmount": 6200.0,
+        "overdueMemberCount": 4,
+        "monthly": [
+            {
+                "label": "Feb",
+                "total": 355000.0
+            },
+            {
+                "label": "Mar",
+                "total": 361200.0
+            },
+            {
+                "label": "Apr",
+                "total": 372800.0
+            },
+            {
+                "label": "May",
+                "total": 389100.0
+            },
+            {
+                "label": "Jun",
+                "total": 380900.0
+            },
+            {
+                "label": "Jul",
+                "total": 412500.0
+            }
+        ],
+        "last7Days": [
+            12000.0,
+            15500.0,
+            9800.0,
+            21000.0,
+            17300.0,
+            8900.0,
+            13200.0
+        ],
+        "byPlan": [
+            {
+                "label": "Gold Monthly",
+                "amount": 210000.0,
+                "fraction": 0.5091
+            },
+            {
+                "label": "Silver Monthly",
+                "amount": 142500.0,
+                "fraction": 0.3455
+            },
+            {
+                "label": "Platinum Annual",
+                "amount": 60000.0,
+                "fraction": 0.1455
+            }
+        ]
+    },
+    "pendingPayments": [
+        {
+            "id": "fee_2201",
+            "memberId": "mem_b004",
+            "name": "Vishnu Kumar",
+            "amountDue": 1999.0,
+            "submittedAgo": "2 hours ago"
+        },
+        {
+            "id": "fee_2198",
+            "memberId": "mem_b011",
+            "name": "Anjali Suresh",
+            "amountDue": 999.0,
+            "submittedAgo": "1 day ago"
+        }
+    ],
+    "recentMembers": [
+        {
+            "id": "mem_c020",
+            "name": "Kiran Raj",
+            "plan": "Gold Monthly",
+            "joinedAgo": "3 hours ago"
+        },
+        {
+            "id": "mem_c019",
+            "name": "Meera Thomas",
+            "plan": "Silver Monthly",
+            "joinedAgo": "1 day ago"
+        }
+    ],
+    "lowStockProducts": [
+        {
+            "id": "prod_009",
+            "name": "Creatine Monohydrate 500g",
+            "stockCount": 3,
+            "imageUrl": "https://cdn.gymapp.com/products/creatine.jpg"
+        },
+        {
+            "id": "prod_014",
+            "name": "Resistance Band Set",
+            "stockCount": 5,
+            "imageUrl": "https://cdn.gymapp.com/products/bands.jpg"
+        }
+    ]
+}

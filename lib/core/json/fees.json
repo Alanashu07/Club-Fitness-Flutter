@@ -1,0 +1,20 @@
+{
+    "id": "cms1gkwqt000yuivk1abis5y4",
+    "memberId": "cms1gkwqi000kuivkjxeceyzu",
+    "memberName": "Divya Suresh",
+    "memberPhone": "9000000008",
+    "memberEmail": "member3@clubfitness.test",
+    "plan": "Monthly Basic",
+    "planId": "cms1gkwq20002uivk6nb8j0wi",
+    "amount": 1500,
+    "paidAmount": null,
+    "status": "overdue",
+    "dueDate": "2026-07-21T07:10:31.077Z",
+    "paidDate": "null",
+    "paymentMethod": "null",
+    "receiptUrl": "null",
+    "notes": "null",
+    "overdueDays": 26,
+    "createdAt": "2026-07-26T07:10:31.109Z",
+    "updatedAt": "2026-07-26T07:10:31.109Z"
+}

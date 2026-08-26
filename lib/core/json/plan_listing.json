@@ -1,0 +1,19 @@
+{
+    "id": "cms1gkwro0036uivknbzka5ac",
+    "name": "Cardio Plan 10",
+    "type": "DAILY",
+    "isTemplate": true,
+    "createdById": "cms1gkwqc000cuivkk64x3cxv",
+    "startDate": "2026-07-26T07:10:31.077Z",
+    "endDate": "2026-08-25T07:10:31.077Z",
+    "createdAt": "2026-07-26T07:10:31.141Z",
+    "updatedAt": "2026-07-26T07:10:31.141Z",
+    "createdBy": {
+        "id": "cms1gkwqc000cuivkk64x3cxv",
+        "name": "Vikram Nair"
+    },
+    "_count": {
+        "assignments": 1,
+        "days": 1
+    }
+}

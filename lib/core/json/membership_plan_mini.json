@@ -1,0 +1,13 @@
+{
+    "id": "cms1gkwpz0000uivkggngsgvj",
+    "name": "Daily Pass",
+    "durationDays": 1,
+    "price": 150,
+    "description": "Daily Pass membership",
+    "features": [
+        "Gym Floor",
+        "Locker",
+        "Group Classes"
+    ],
+    "isActive": true
+}

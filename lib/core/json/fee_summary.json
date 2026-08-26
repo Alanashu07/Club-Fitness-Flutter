@@ -1,0 +1,14 @@
+{
+    "totalCollected": 16600,
+    "totalOutstanding": 38000,
+    "totalPartialPaid": 2700,
+    "collectedProgress": 0.304,
+    "counts": {
+        "total": 16,
+        "pending": 5,
+        "overdue": 3,
+        "paid": 3,
+        "partial": 3,
+        "waived": 2
+    }
+}

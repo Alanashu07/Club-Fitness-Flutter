@@ -1,0 +1,91 @@
+{
+  "profile": {
+    "id": "staff_7a2c",
+    "name": "Arjun Nair",
+    "staffTitle": "Senior Trainer",
+    "profileImageUrl": "https://cdn.gymapp.com/avatars/staff_7a2c.jpg",
+    "role": "STAFF"
+  },
+  "summary": {
+    "myMembers": 18,
+    "checkedInToday": 7,
+    "classesToday": 2,
+    "pendingTasks": 5
+  },
+  "pendingTasks": [
+    {
+      "type": "WORKOUT",
+      "title": "Assign workout to Sneha Pillai",
+      "subtitle": "No plan for next week yet",
+      "refId": "mem_a001"
+    },
+    {
+      "type": "FEE",
+      "title": "Mark fee — Vishnu Kumar",
+      "subtitle": "Cash payment received at counter",
+      "refId": "fee_2201"
+    },
+    {
+      "type": "ORDER",
+      "title": "Process order #4F2A9B",
+      "subtitle": "Whey Protein 1kg — ready for pickup",
+      "refId": "order_998877"
+    }
+  ],
+  "todaysClasses": [
+    {
+      "id": "class_01",
+      "name": "Morning Yoga",
+      "time": "07:00",
+      "room": "Studio A",
+      "enrolled": 14,
+      "capacity": 20,
+      "upcoming": false
+    },
+    {
+      "id": "class_02",
+      "name": "Evening HIIT",
+      "time": "18:30",
+      "room": "Studio B",
+      "enrolled": 9,
+      "capacity": 15,
+      "upcoming": true
+    }
+  ],
+  "assignedMembers": [
+    {
+      "id": "mem_9f1a2b3c",
+      "name": "Rahul Menon",
+      "plan": "Gold Monthly",
+      "checkedInToday": true,
+      "workoutStreak": 4,
+      "nextSession": "Tomorrow"
+    },
+    {
+      "id": "mem_a001",
+      "name": "Sneha Pillai",
+      "plan": "Silver Monthly",
+      "checkedInToday": false,
+      "workoutStreak": 0,
+      "nextSession": "Not scheduled"
+    }
+  ],
+  "recentCheckIns": [
+    {
+      "memberId": "mem_9f1a2b3c",
+      "name": "Rahul Menon",
+      "time": "7:42 AM"
+    },
+    {
+      "memberId": "mem_a002",
+      "name": "Divya Krishnan",
+      "time": "6:58 AM"
+    }
+  ],
+  "weeklyAttendance": {
+    "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "counts": [40, 38, 45, 42, 50, 30, 0],
+    "todayIndex": 4,
+    "total": 245
+  }
+}

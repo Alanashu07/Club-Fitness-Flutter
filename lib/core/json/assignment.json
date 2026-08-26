@@ -1,0 +1,14 @@
+{
+    "id": "cms1gkwsa004yuivk8okwpsyf",
+    "planId": "cms1gkwro0036uivknbzka5ac",
+    "memberId": "cms1gkwqi000kuivkjxeceyzu",
+    "startDate": "2026-07-26T07:10:31.077Z",
+    "endDate": "2026-08-25T07:10:31.077Z",
+    "notifySent": false,
+    "completedExerciseIds": [],
+    "assignedAt": "2026-07-26T07:10:31.162Z",
+    "member": {
+        "id": "cms1gkwqi000kuivkjxeceyzu",
+        "name": "Divya Suresh"
+    }
+}

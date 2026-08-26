@@ -1,0 +1,22 @@
+{
+    "id": "cms1gkwro0036uivknbzka5ac",
+    "name": "Cardio Plan 10",
+    "type": "DAILY",
+    "createdBy": {
+        "id": "cms1gkwqc000cuivkk64x3cxv",
+        "name": "Vikram Nair",
+        "role": "STAFF"
+    },
+    "startDate": "2026-07-26T07:10:31.077Z",
+    "endDate": "2026-08-25T07:10:31.077Z",
+    "timesAssigned": 1,
+    "totalExercises": 1,
+    "dayBreakdown": [
+        {
+            "day": "Wed",
+            "isRestDay": false,
+            "exerciseCount": 1
+        }
+    ],
+    "createdAt": "2026-07-26T07:10:31.141Z"
+}

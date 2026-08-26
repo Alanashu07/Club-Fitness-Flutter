@@ -1,0 +1,47 @@
+{
+  "message": "Workout assigned to 2 member(s)",
+  "assigned": 2,
+  "skipped": 0,
+  "assignments": [
+    {
+      "id": "asg_9f3c1a",
+      "planId": "plan_7a21e0",
+      "memberId": "usr_1002",
+      "startDate": "2026-08-31T00:00:00.000Z",
+      "endDate": "2026-09-28T00:00:00.000Z",
+      "notifySent": true,
+      "completedExerciseIds": [],
+      "assignedAt": "2026-08-26T09:12:44.000Z",
+      "member": {
+        "id": "usr_1002",
+        "name": "Ravi Menon",
+        "phone": "+919876543210"
+      },
+      "plan": {
+        "id": "plan_7a21e0",
+        "name": "Fat Loss - Phase 1",
+        "type": "WEEKLY"
+      }
+    },
+    {
+      "id": "asg_9f3c1b",
+      "planId": "plan_7a21e0",
+      "memberId": "usr_1005",
+      "startDate": "2026-08-31T00:00:00.000Z",
+      "endDate": "2026-09-28T00:00:00.000Z",
+      "notifySent": true,
+      "completedExerciseIds": [],
+      "assignedAt": "2026-08-26T09:12:44.000Z",
+      "member": {
+        "id": "usr_1005",
+        "name": "Anjali Nair",
+        "phone": "+919876543211"
+      },
+      "plan": {
+        "id": "plan_7a21e0",
+        "name": "Fat Loss - Phase 1",
+        "type": "WEEKLY"
+      }
+    }
+  ]
+}

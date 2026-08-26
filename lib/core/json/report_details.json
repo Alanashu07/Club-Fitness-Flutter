@@ -1,0 +1,202 @@
+{
+    "range": "1Y",
+    "rangeLabel": "Last 12 months",
+    "window": {
+        "start": "2025-08-26T13:22:38.525Z",
+        "end": "2026-08-26T13:22:38.525Z"
+    },
+    "kpis": {
+        "totalRevenue": {
+            "value": 24350,
+            "changePercent": 100,
+            "positive": true
+        },
+        "membershipsSold": {
+            "value": 3,
+            "delta": 3,
+            "positive": true
+        },
+        "shopSales": {
+            "value": 7750,
+            "changePercent": 100,
+            "positive": true
+        },
+        "outstandingDues": {
+            "value": 38000,
+            "memberCount": 8,
+            "positive": false
+        }
+    },
+    "revenueTrend": {
+        "total": 24350,
+        "changePercent": -100,
+        "months": [
+            {
+                "label": "Mar",
+                "membership": 0,
+                "shop": 0,
+                "total": 0
+            },
+            {
+                "label": "Apr",
+                "membership": 0,
+                "shop": 0,
+                "total": 0
+            },
+            {
+                "label": "May",
+                "membership": 0,
+                "shop": 0,
+                "total": 0
+            },
+            {
+                "label": "Jun",
+                "membership": 0,
+                "shop": 0,
+                "total": 0
+            },
+            {
+                "label": "Jul",
+                "membership": 16600,
+                "shop": 7750,
+                "total": 24350
+            },
+            {
+                "label": "Aug",
+                "membership": 0,
+                "shop": 0,
+                "total": 0
+            }
+        ]
+    },
+    "planSplit": [
+        {
+            "plan": "Annual Plan",
+            "members": 1,
+            "revenue": 15000,
+            "share": 0.9036,
+            "color": "#7B1FA2"
+        },
+        {
+            "plan": "Weekly Plan",
+            "members": 2,
+            "revenue": 1600,
+            "share": 0.0964,
+            "color": "#C41E2D"
+        }
+    ],
+    "transactions": [
+        {
+            "date": "2026-08-09T11:51:12.866Z",
+            "member": "Anas 3",
+            "plan": "Student Plan",
+            "mode": "null",
+            "amount": 1000,
+            "status": "PENDING"
+        },
+        {
+            "date": "2026-08-08T14:51:12.209Z",
+            "member": "Anas 2",
+            "plan": "Monthly Basic",
+            "mode": null,
+            "amount": 1500,
+            "status": "PENDING"
+        },
+        {
+            "date": "2026-08-01T07:10:31.077Z",
+            "member": "Meera Iyer",
+            "plan": "Monthly Plus",
+            "mode": null,
+            "amount": 1100,
+            "status": "PARTIAL"
+        },
+        {
+            "date": "2026-07-31T07:10:31.077Z",
+            "member": "Arjun Das",
+            "plan": "Monthly Basic",
+            "mode": null,
+            "amount": 1500,
+            "status": "OVERDUE"
+        },
+        {
+            "date": "2026-07-29T07:10:31.077Z",
+            "member": "Manoj Pillai",
+            "plan": "Daily Pass",
+            "mode": null,
+            "amount": 150,
+            "status": "PENDING"
+        },
+        {
+            "date": "2026-07-27T07:10:31.077Z",
+            "member": "Karthik Raj",
+            "plan": "Student Plan",
+            "mode": null,
+            "amount": 500,
+            "status": "PARTIAL"
+        },
+        {
+            "date": "2026-07-26T07:10:31.077Z",
+            "member": "Sneha Thomas",
+            "plan": "Weekly Plan",
+            "mode": "UPI",
+            "amount": 800,
+            "status": "PAID"
+        },
+        {
+            "date": "2026-07-26T07:10:31.077Z",
+            "member": "Anjali Krishnan",
+            "plan": "Annual Premium",
+            "mode": null,
+            "amount": 22000,
+            "status": "OVERDUE"
+        },
+        {
+            "date": "2026-07-26T07:10:31.077Z",
+            "member": "Meera Iyer",
+            "plan": "Annual Plan",
+            "mode": "UPI",
+            "amount": 15000,
+            "status": "PAID"
+        },
+        {
+            "date": "2026-07-26T07:10:31.077Z",
+            "member": "Karthik Raj",
+            "plan": "Weekly Plan",
+            "mode": "UPI",
+            "amount": 800,
+            "status": "PAID"
+        },
+        {
+            "date": "2026-07-24T07:10:31.077Z",
+            "member": "Arjun Das",
+            "plan": "Half-Yearly Plan",
+            "mode": null,
+            "amount": 7500,
+            "status": "PENDING"
+        },
+        {
+            "date": "2026-07-22T07:10:31.077Z",
+            "member": "Manoj Pillai",
+            "plan": "Monthly Plus",
+            "mode": null,
+            "amount": 1100,
+            "status": "PARTIAL"
+        },
+        {
+            "date": "2026-07-21T07:10:31.077Z",
+            "member": "Divya Suresh",
+            "plan": "Monthly Basic",
+            "mode": null,
+            "amount": 1500,
+            "status": "OVERDUE"
+        },
+        {
+            "date": "2026-07-19T07:10:31.077Z",
+            "member": "Anjali Krishnan",
+            "plan": "Daily Pass",
+            "mode": null,
+            "amount": 150,
+            "status": "PENDING"
+        }
+    ]
+}
