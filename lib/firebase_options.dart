@@ -41,7 +41,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAtaQeVpRnE9z4reTYdXs00Jl1zdgc-oLQ',
+    apiKey: '',
     appId: '1:1042379936536:web:889a32e27449435d3c846d',
     messagingSenderId: '1042379936536',
     projectId: 'club-fitness-c7cdf',
@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC_PfUYTdzZH4wXtDP3jzLVbPrl0_qDcas',
+    apiKey: '',
     appId: '1:1042379936536:android:fe8dff9e1ba89b743c846d',
     messagingSenderId: '1042379936536',
     projectId: 'club-fitness-c7cdf',
@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyALlxpQa0CqKaquM7lXvVsXvNAr_bU7twY',
+    apiKey: '',
     appId: '1:1042379936536:ios:ed3df9ffa7ee6c9a3c846d',
     messagingSenderId: '1042379936536',
     projectId: 'club-fitness-c7cdf',
@@ -68,7 +68,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyALlxpQa0CqKaquM7lXvVsXvNAr_bU7twY',
+    apiKey: '',
     appId: '1:1042379936536:ios:ed3df9ffa7ee6c9a3c846d',
     messagingSenderId: '1042379936536',
     projectId: 'club-fitness-c7cdf',
@@ -77,7 +77,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyAtaQeVpRnE9z4reTYdXs00Jl1zdgc-oLQ',
+    apiKey: '',
     appId: '1:1042379936536:web:417598144389be893c846d',
     messagingSenderId: '1042379936536',
     projectId: 'club-fitness-c7cdf',
