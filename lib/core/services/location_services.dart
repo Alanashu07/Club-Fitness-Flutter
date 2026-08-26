@@ -143,7 +143,7 @@ class LocationServices {
   }
 
   static const String googleMapsApiKey =
-      'AIzaSyBRATvAH0HEfWRgSQYM3i_itPytPlm62Mw';
+      '';
 
   static String staticMapUrl(double? latitude, double? longitude) {
     return 'https://maps.googleapis.com/maps/api/staticmap'
