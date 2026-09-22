@@ -97,11 +97,13 @@ void _initMemberManagerDep() {
     )
     ..registerFactory<MemberManagerRepo>(() => MemberManagerRepoImpl(sl()))
     ..registerFactory<CreateMember>(() => CreateMember(sl()))
+    ..registerFactory<CreateMembershipPlan>(() => CreateMembershipPlan(sl()))
+    ..registerFactory<DeleteMembershipPlan>(() => DeleteMembershipPlan(sl()))
     ..registerFactory<GetMemberList>(() => GetMemberList(sl()))
     ..registerFactory<GetPlans>(() => GetPlans(sl()))
-    ..registerFactory<GetTrainers>(() => GetTrainers(sl()));
+    ..registerFactory<GetTrainers>(() => GetTrainers(sl()))
+    ..registerFactory<UpdateMembershipPlan>(() => UpdateMembershipPlan(sl()));
 }
-
 // END OF _initMemberManagerDep
 
 // START OF _initAdminUtilsDep
@@ -142,4 +144,5 @@ void _initWorkoutManagerDep() {
     ..registerFactory<SaveTemplate>(() => SaveTemplate(sl()))
     ..registerFactory<UpdateExercise>(() => UpdateExercise(sl()));
 }
+
 // END OF _initWorkoutManagerDep

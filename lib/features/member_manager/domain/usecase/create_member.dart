@@ -20,6 +20,7 @@ class CreateMember implements UseCase<MemberListEntity, CreateMemberParams> {
       plan: params.plan,
       trainer: params.trainer,
       dob: params.dob,
+      startDate: params.startDate,
     );
   }
 }
@@ -31,6 +32,7 @@ class CreateMemberParams {
   final String plan;
   final String trainer;
   final String dob;
+  final String startDate;
 
   CreateMemberParams({
     required this.name,
@@ -39,5 +41,6 @@ class CreateMemberParams {
     required this.plan,
     required this.trainer,
     required this.dob,
+    required this.startDate,
   });
 }

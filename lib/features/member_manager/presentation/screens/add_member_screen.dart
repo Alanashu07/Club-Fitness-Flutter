@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:club_fitness/config/navigation/routes_class.dart';
 import 'package:club_fitness/config/theme/theme.dart';
-import 'package:club_fitness/core/constants/size_constant.dart';
 import 'package:club_fitness/core/entities/member_status.dart';
+import 'package:club_fitness/core/services/search_services.dart';
 import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/di.dart';
 import 'package:club_fitness/features/member_manager/member_manager.dart';
@@ -99,7 +99,9 @@ class _AdminMembersViewState extends State<AdminMembersView>
   void _scrollListener() {
     if (_scrollController.position.pixels >=
         0.8 * _scrollController.position.maxScrollExtent) {
-      context.read<MembersListingBloc>().add(const GetMoreMembersListingEvent());
+      context.read<MembersListingBloc>().add(
+        const GetMoreMembersListingEvent(),
+      );
     }
   }
 
@@ -1393,7 +1395,7 @@ class MemberDetailScreen extends StatelessWidget {
                 ),
               ),
               Text(
-                member.amount.toString(),
+                "₹ ${member.amount}",
                 style: const TextStyle(
                   color: AppTheme.primary,
                   fontSize: 15,
@@ -1608,7 +1610,7 @@ class MemberDetailScreen extends StatelessWidget {
         ),
       ),
       Text(
-        value,
+        value.toDateTime.fullDateWithShortMonth,
         style: const TextStyle(
           color: Colors.white,
           fontSize: 12,
@@ -1626,6 +1628,10 @@ class _InfoRow {
   const _InfoRow(this.icon, this.label, this.value);
 }
 
+// ─── Sheet Mode ────────────────────────────────────────────────────────────
+
+enum _SheetMode { form, selectPlan, selectTrainer }
+
 // ─── Add Member Bottom Sheet ──────────────────────────────────────────────────
 
 class _AddMemberSheet extends StatefulWidget {
@@ -1637,18 +1643,30 @@ class _AddMemberSheet extends StatefulWidget {
 class _AddMemberSheetState extends State<_AddMemberSheet> {
   String _selectedPlan = '';
   String _selectedTrainer = '';
+  dynamic
+  _selectedPlanEntity; // holds full plan (id, name, price, durationDays)
+  dynamic _selectedTrainerEntity;
+
+  DateTime? _startDate;
+  DateTime? _endDate;
+
+  _SheetMode _sheetMode = _SheetMode.form;
+  final _planSearchCtrl = TextEditingController();
+  final _trainerSearchCtrl = TextEditingController();
+  String _planSearchQuery = '';
+  String _trainerSearchQuery = '';
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _dobController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _refreshPlans();
   }
 
   void _refreshPlans() {
@@ -1661,12 +1679,92 @@ class _AddMemberSheetState extends State<_AddMemberSheet> {
   }
 
   @override
-  void initState() {
-    _refreshPlans();
-    super.initState();
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _dobController.dispose();
+    _planSearchCtrl.dispose();
+    _trainerSearchCtrl.dispose();
+    super.dispose();
   }
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // ── Date helpers ────────────────────────────────────────────────────────
+
+  String _formatDate(DateTime d) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${d.day} ${months[d.month - 1]} ${d.year}';
+  }
+
+  int get _planDurationDays {
+    final d = _selectedPlanEntity?.durationDays;
+    return d is int ? d : 0;
+  }
+
+  void _onPlanPicked(dynamic plan) {
+    setState(() {
+      _selectedPlan = plan.id;
+      _selectedPlanEntity = plan;
+      _startDate ??= DateTime.now();
+      _endDate = _startDate!.add(Duration(days: plan.durationDays as int));
+      _sheetMode = _SheetMode.form;
+    });
+  }
+
+  void _onTrainerPicked(dynamic trainer) {
+    setState(() {
+      _selectedTrainer = trainer.id;
+      _selectedTrainerEntity = trainer;
+      _sheetMode = _SheetMode.form;
+    });
+  }
+
+  Future<void> _pickStartDate() async {
+    final initial = _startDate ?? DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 3650)),
+    );
+    if (picked == null) return;
+    setState(() {
+      _startDate = picked;
+      if (_selectedPlanEntity != null) {
+        _endDate = picked.add(Duration(days: _planDurationDays));
+      }
+    });
+  }
+
+  Future<void> _pickEndDate() async {
+    if (_selectedPlanEntity == null) return; // disabled until a plan is picked
+    final initial =
+        _endDate ?? DateTime.now().add(Duration(days: _planDurationDays));
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: (_startDate ?? DateTime.now()),
+      lastDate: DateTime.now().add(const Duration(days: 3650)),
+    );
+    if (picked == null) return;
+    setState(() {
+      _endDate = picked;
+      _startDate = picked.subtract(Duration(days: _planDurationDays));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1679,262 +1777,561 @@ class _AddMemberSheetState extends State<_AddMemberSheet> {
           color: AppTheme.card,
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            controller: scrollCtrl,
-            padding: EdgeInsets.fromLTRB(
-              24,
-              16,
-              24,
-              MediaQuery.of(context).viewInsets.bottom + 24,
+        child: switch (_sheetMode) {
+          _SheetMode.form => _buildFormView(scrollCtrl),
+          _SheetMode.selectPlan => _buildPlanSelectView(scrollCtrl),
+          _SheetMode.selectTrainer => _buildTrainerSelectView(scrollCtrl),
+        },
+      ),
+    );
+  }
+
+  // ── Form view ───────────────────────────────────────────────────────────
+
+  Widget _buildFormView(ScrollController scrollCtrl) {
+    return Form(
+      key: _formKey,
+      child: ListView(
+        controller: scrollCtrl,
+        padding: EdgeInsets.fromLTRB(
+          24,
+          16,
+          24,
+          MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
+          ),
+          Row(
             children: [
-              // Handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white24,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: AppTheme.primary.withAOpacity(0.15),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: const Icon(
+                  Icons.person_add_rounded,
+                  color: AppTheme.primary,
+                  size: 20,
                 ),
               ),
-              // Title
-              Row(
-                children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primary.withAOpacity(0.15),
-                      borderRadius: BorderRadius.circular(11),
-                    ),
-                    child: const Icon(
-                      Icons.person_add_rounded,
-                      color: AppTheme.primary,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'Add New Member',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ],
+              const SizedBox(width: 12),
+              const Text(
+                'Add New Member',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                ),
               ),
-              const SizedBox(height: 24),
-              // Fields
-              _field(
-                _nameController,
-                'Full Name',
-                Icons.person_outline_rounded,
-                hint: 'e.g. Arjun Menon',
-                isRequired: true,
-              ),
-              const SizedBox(height: 14),
-              _field(
-                _phoneController,
-                'Phone Number',
-                Icons.phone_rounded,
-                hint: '+91 98765 43210',
-                keyboardType: TextInputType.phone,
-                isRequired: true,
-              ),
-              const SizedBox(height: 14),
-              _field(
-                _emailController,
-                'Email Address',
-                Icons.email_outlined,
-                hint: 'member@email.com',
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 14),
-              _field(
-                _dobController,
-                'Date of Birth',
-                Icons.cake_outlined,
-                hint: 'DD / MM / YYYY',
-                keyboardType: TextInputType.number,
-                inputFormatters: [DateOfBirthFormatter()],
-              ),
-              const SizedBox(height: 20),
-              // Plan selector
-              _label('Membership Plan'),
-              const SizedBox(height: 10),
-              BlocBuilder<MembersConfigBloc, MembersConfigState>(
-                builder: (context, state) {
-                  return Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: state.membershipPlans
-                        .map(
-                          (p) => GestureDetector(
-                            onTap: () => setState(() => _selectedPlan = p.id),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 180),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 9,
-                              ),
-                              decoration: BoxDecoration(
-                                color: _selectedPlan == p.id
-                                    ? AppTheme.primary
-                                    : AppTheme.surface,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: _selectedPlan == p.id
-                                      ? AppTheme.primary
-                                      : Colors.white.withAOpacity(0.08),
-                                ),
-                              ),
-                              child: Text(
-                                "${p.name} - ₹${p.price} (${p.durationDays} days)",
-                                style: TextStyle(
-                                  color: _selectedPlan == p.id
-                                      ? Colors.white
-                                      : AppTheme.textSecondary,
-                                  fontSize: 13,
-                                  fontWeight: _selectedPlan == p.id
-                                      ? FontWeight.w800
-                                      : FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
+            ],
+          ),
+          const SizedBox(height: 24),
+          _field(
+            _nameController,
+            'Full Name',
+            Icons.person_outline_rounded,
+            hint: 'e.g. Arjun Menon',
+            isRequired: true,
+          ),
+          const SizedBox(height: 14),
+          _field(
+            _phoneController,
+            'Phone Number',
+            Icons.phone_rounded,
+            hint: '+91 98765 43210',
+            keyboardType: TextInputType.phone,
+            isRequired: true,
+          ),
+          const SizedBox(height: 14),
+          _field(
+            _emailController,
+            'Email Address',
+            Icons.email_outlined,
+            hint: 'member@email.com',
+            keyboardType: TextInputType.emailAddress,
+          ),
+          const SizedBox(height: 14),
+          _field(
+            _dobController,
+            'Date of Birth',
+            Icons.cake_outlined,
+            hint: 'DD / MM / YYYY',
+            keyboardType: TextInputType.number,
+            inputFormatters: [DateOfBirthFormatter()],
+          ),
+          const SizedBox(height: 20),
+
+          // ── Plan selector (limited to 3 lines) ─────────────────────────
+          _label('Membership Plan'),
+          const SizedBox(height: 10),
+          BlocBuilder<MembersConfigBloc, MembersConfigState>(
+            builder: (context, state) {
+              return _LimitedChipWrap(
+                itemLabels: state.membershipPlans
+                    .map(
+                      (p) => "${p.name} - ₹${p.price} (${p.durationDays} days)",
+                    )
+                    .toList(),
+                maxLines: 3,
+                onSeeMore: () =>
+                    setState(() => _sheetMode = _SheetMode.selectPlan),
+                chipBuilder: (i) {
+                  final p = state.membershipPlans[i];
+                  final selected = _selectedPlan == p.id;
+                  return _selectChip(
+                    label: "${p.name} - ₹${p.price} (${p.durationDays} days)",
+                    selected: selected,
+                    onTap: () => _onPlanPicked(p),
                   );
                 },
-              ),
-              const SizedBox(height: 20),
-              // Trainer selector
-              _label('Assign Trainer'),
-              const SizedBox(height: 10),
-              BlocBuilder<MembersConfigBloc, MembersConfigState>(
-                builder: (context, state) {
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: state.trainers
-                          .mapIndexed(
-                            (i, t) => SizedBox(
-                              width: 30.percentToWidth,
-                              child: GestureDetector(
-                                onTap: () =>
-                                    setState(() => _selectedTrainer = t.id),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 180),
-                                  margin: EdgeInsets.only(
-                                    right: t != state.trainers.last ? 8 : 0,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: _selectedTrainer == t.id
-                                        ? AppTheme.primary.withAOpacity(0.12)
-                                        : AppTheme.surface,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      color: _selectedTrainer == t.id
-                                          ? AppTheme.primary.withAOpacity(0.5)
-                                          : Colors.white.withAOpacity(0.06),
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      t.name,
-                                      style: TextStyle(
-                                        color: _selectedTrainer == t.id
-                                            ? AppTheme.primary
-                                            : AppTheme.textSecondary,
-                                        fontSize: 11,
-                                        fontWeight: _selectedTrainer == t.id
-                                            ? FontWeight.w800
-                                            : FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
+              );
+            },
+          ),
+          const SizedBox(height: 20),
+
+          // ── Trainer selector (limited to 3 lines) ───────────────────────
+          _label('Assign Trainer'),
+          const SizedBox(height: 10),
+          BlocBuilder<MembersConfigBloc, MembersConfigState>(
+            builder: (context, state) {
+              return _LimitedChipWrap(
+                itemLabels: state.trainers.map((t) => t.name).toList(),
+                maxLines: 3,
+                onSeeMore: () =>
+                    setState(() => _sheetMode = _SheetMode.selectTrainer),
+                chipBuilder: (i) {
+                  final t = state.trainers[i];
+                  final selected = _selectedTrainer == t.id;
+                  return _selectChip(
+                    label: t.name,
+                    selected: selected,
+                    onTap: () => _onTrainerPicked(t),
                   );
                 },
+              );
+            },
+          ),
+          const SizedBox(height: 20),
+
+          // ── Start / End date ─────────────────────────────────────────────
+          _label('Membership Duration'),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: _dateField(
+                  label: 'Start Date',
+                  value: _startDate,
+                  enabled: true,
+                  onTap: _pickStartDate,
+                ),
               ),
-              const SizedBox(height: 28),
-              // Submit
-              BlocConsumer<MembersActionsBloc, MembersActionsState>(
-                listener: (context, state) {
-                  if (state is CreateMemberSuccessState) {
-                    context.pop(state.member);
-                  } else if (state is CreateMemberFailureState) {
-                    context.showToastFromFailure(state.failure);
+              const SizedBox(width: 12),
+              Expanded(
+                child: _dateField(
+                  label: 'End Date',
+                  value: _endDate,
+                  enabled: _selectedPlanEntity != null,
+                  onTap: _pickEndDate,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 28),
+          BlocConsumer<MembersActionsBloc, MembersActionsState>(
+            listener: (context, state) {
+              if (state is CreateMemberSuccessState) {
+                context.pop(state.member);
+              } else if (state is CreateMemberFailureState) {
+                context.showToastFromFailure(state.failure);
+              }
+            },
+            builder: (context, state) {
+              return ElevatedButton(
+                onPressed: () {
+                  if (!_formKey.currentState!.validate()) return;
+                  if (_selectedPlan.isEmpty) {
+                    return context.showToast("Select a plan");
                   }
-                },
-                builder: (context, state) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      if (!_formKey.currentState!.validate()) return;
-                      if (_selectedPlan.isEmpty) {
-                        return context.showToast("Select a plan");
-                      }
-                      if (_selectedTrainer.isEmpty) {
-                        return context.showToast("Select a trainer");
-                      }
-                      String? dobError = Validators.validateDateOfBirth(
-                        _dobController.text,
-                      );
-                      if (dobError != null) {
-                        return context.showToast(
-                          dobError,
-                          type: ToastificationType.error,
-                        );
-                      }
-                      context.read<MembersActionsBloc>().add(
-                        CreateMemberEvent(
-                          name: _nameController.text.trim(),
-                          dob: _dobController.text.trim(),
-                          email: _emailController.text.trim(),
-                          phone: _phoneController.text.trim(),
-                          plan: _selectedPlan,
-                          trainer: _selectedTrainer,
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primary,
-                      minimumSize: const Size(double.infinity, 54),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
+                  if (_selectedTrainer.isEmpty) {
+                    return context.showToast("Select a trainer");
+                  }
+                  if (_startDate == null || _endDate == null) {
+                    return context.showToast("Select membership dates");
+                  }
+                  String? dobError = Validators.validateDateOfBirth(
+                    _dobController.text,
+                  );
+                  if (dobError != null) {
+                    return context.showToast(
+                      dobError,
+                      type: ToastificationType.error,
+                    );
+                  }
+                  context.read<MembersActionsBloc>().add(
+                    CreateMemberEvent(
+                      name: _nameController.text.trim(),
+                      dob: _dobController.text.trim(),
+                      email: _emailController.text.trim(),
+                      phone: _phoneController.text.trim(),
+                      plan: _selectedPlan,
+                      trainer: _selectedTrainer,
+                      // NOTE: adjust to match your event's actual param names
+                      startDate: _startDate!.toIso8601String(),
                     ),
-                    child: state is CreateMemberLoadingState
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'Add Member',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 15,
-                            ),
-                          ),
                   );
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primary,
+                  minimumSize: const Size(double.infinity, 54),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: state is CreateMemberLoadingState
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        'Add Member',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 15,
+                        ),
+                      ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Plan select view (full list + fuzzy search) ────────────────────────
+
+  Widget _buildPlanSelectView(ScrollController scrollCtrl) {
+    return BlocBuilder<MembersConfigBloc, MembersConfigState>(
+      builder: (context, state) {
+        final results = SearchService.fuzzySearch(
+          state.membershipPlans,
+          _planSearchQuery,
+          (p) => "${p.name} ${p.price} ${p.durationDays}",
+        );
+        return _selectionScaffold(
+          title: 'Select Membership Plan',
+          searchCtrl: _planSearchCtrl,
+          onSearchChanged: (v) => setState(() => _planSearchQuery = v),
+          onBack: () => setState(() => _sheetMode = _SheetMode.form),
+          scrollCtrl: scrollCtrl,
+          itemCount: results.length,
+          itemBuilder: (i) {
+            final p = results[i];
+            final selected = _selectedPlan == p.id;
+            return _selectTile(
+              title: p.name,
+              subtitle: "₹${p.price}  •  ${p.durationDays} days",
+              selected: selected,
+              onTap: () => _onPlanPicked(p),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // ── Trainer select view (full list + fuzzy search) ──────────────────────
+
+  Widget _buildTrainerSelectView(ScrollController scrollCtrl) {
+    return BlocBuilder<MembersConfigBloc, MembersConfigState>(
+      builder: (context, state) {
+        final results = SearchService.fuzzySearch(
+          state.trainers,
+          _trainerSearchQuery,
+          (t) => t.name,
+        );
+        return _selectionScaffold(
+          title: 'Select Trainer',
+          searchCtrl: _trainerSearchCtrl,
+          onSearchChanged: (v) => setState(() => _trainerSearchQuery = v),
+          onBack: () => setState(() => _sheetMode = _SheetMode.form),
+          scrollCtrl: scrollCtrl,
+          itemCount: results.length,
+          itemBuilder: (i) {
+            final t = results[i];
+            final selected = _selectedTrainer == t.id;
+            return _selectTile(
+              title: t.name,
+              subtitle: null,
+              selected: selected,
+              onTap: () => _onTrainerPicked(t),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // ── Shared selection scaffold ────────────────────────────────────────────
+
+  Widget _selectionScaffold({
+    required String title,
+    required TextEditingController searchCtrl,
+    required ValueChanged<String> onSearchChanged,
+    required VoidCallback onBack,
+    required ScrollController scrollCtrl,
+    required int itemCount,
+    required Widget Function(int) itemBuilder,
+  }) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: Colors.white,
+                  size: 18,
+                ),
+                onPressed: onBack,
+              ),
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ],
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            height: 46,
+            decoration: BoxDecoration(
+              color: AppTheme.surface,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: Colors.white.withAOpacity(0.06),
+                width: 1,
+              ),
+            ),
+            child: TextField(
+              controller: searchCtrl,
+              onChanged: onSearchChanged,
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+              decoration: InputDecoration(
+                hintText: 'Search…',
+                hintStyle: const TextStyle(
+                  color: AppTheme.textSecondary,
+                  fontSize: 14,
+                ),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                  color: AppTheme.textSecondary,
+                  size: 20,
+                ),
+                suffixIcon: searchCtrl.text.isNotEmpty
+                    ? GestureDetector(
+                        onTap: () {
+                          searchCtrl.clear();
+                          onSearchChanged('');
+                        },
+                        child: const Icon(
+                          Icons.close_rounded,
+                          color: AppTheme.textSecondary,
+                          size: 18,
+                        ),
+                      )
+                    : null,
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Expanded(
+          child: itemCount == 0
+              ? const Center(
+                  child: Text(
+                    'No results found',
+                    style: TextStyle(color: AppTheme.textSecondary),
+                  ),
+                )
+              : ListView.builder(
+                  controller: scrollCtrl,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                  itemCount: itemCount,
+                  itemBuilder: (_, i) => itemBuilder(i),
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _selectTile({
+    required String title,
+    String? subtitle,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: selected
+              ? AppTheme.primary.withAOpacity(0.12)
+              : AppTheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected
+                ? AppTheme.primary.withAOpacity(0.5)
+                : Colors.white.withAOpacity(0.06),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: selected ? AppTheme.primary : Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (selected)
+              const Icon(
+                Icons.check_circle_rounded,
+                color: AppTheme.primary,
+                size: 20,
+              ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _selectChip({
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: selected ? AppTheme.primary : AppTheme.surface,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: selected
+                ? AppTheme.primary
+                : Colors.white.withAOpacity(0.08),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected ? Colors.white : AppTheme.textSecondary,
+            fontSize: 13,
+            fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _dateField({
+    required String label,
+    required DateTime? value,
+    required bool enabled,
+    required VoidCallback onTap,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _label(label),
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: enabled ? onTap : null,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            decoration: BoxDecoration(
+              color: enabled
+                  ? AppTheme.surface
+                  : AppTheme.surface.withAOpacity(0.4),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.white.withAOpacity(0.06),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.calendar_today_rounded,
+                  size: 15,
+                  color: enabled
+                      ? AppTheme.textSecondary
+                      : AppTheme.textSecondary.withAOpacity(0.35),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    value != null
+                        ? _formatDate(value)
+                        : (enabled ? 'Select date' : 'Select a plan first'),
+                    style: TextStyle(
+                      color: enabled
+                          ? Colors.white
+                          : Colors.white.withAOpacity(0.3),
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -2000,6 +2397,107 @@ class _AddMemberSheetState extends State<_AddMemberSheet> {
       letterSpacing: 0.3,
     ),
   );
+}
+
+// ─── Limited chip wrap (up to N lines, then "See more") ────────────────────
+
+class _LimitedChipWrap extends StatelessWidget {
+  final List<String> itemLabels;
+  final Widget Function(int index) chipBuilder;
+  final VoidCallback onSeeMore;
+  final int maxLines;
+  final double spacing;
+  final double runSpacing;
+
+  const _LimitedChipWrap({
+    required this.itemLabels,
+    required this.chipBuilder,
+    required this.onSeeMore,
+    this.maxLines = 3,
+    this.spacing = 8,
+    this.runSpacing = 8,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (itemLabels.isEmpty) return const SizedBox.shrink();
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxWidth = constraints.maxWidth;
+        const chipTextStyle = TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+        );
+        const chipPadding = EdgeInsets.symmetric(horizontal: 14, vertical: 9);
+
+        final visibleIndices = <int>[];
+        int currentLine = 1;
+        double currentLineWidth = 0;
+        bool hasMore = false;
+
+        for (int i = 0; i < itemLabels.length; i++) {
+          final tp = TextPainter(
+            text: TextSpan(text: itemLabels[i], style: chipTextStyle),
+            textDirection: TextDirection.ltr,
+          )..layout();
+          final chipWidth = tp.width + chipPadding.horizontal;
+          final widthNeeded = currentLineWidth == 0
+              ? chipWidth
+              : currentLineWidth + spacing + chipWidth;
+
+          if (widthNeeded <= maxWidth) {
+            currentLineWidth = widthNeeded;
+            visibleIndices.add(i);
+          } else {
+            currentLine++;
+            if (currentLine > maxLines) {
+              hasMore = true;
+              break;
+            }
+            currentLineWidth = chipWidth;
+            visibleIndices.add(i);
+          }
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              spacing: spacing,
+              runSpacing: runSpacing,
+              children: visibleIndices.map(chipBuilder).toList(),
+            ),
+            if (hasMore) ...[
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: onSeeMore,
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'See more',
+                      style: TextStyle(
+                        color: AppTheme.primary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    SizedBox(width: 2),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: AppTheme.primary,
+                      size: 16,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
 }
 
 // ─── Advanced Filter Sheet ────────────────────────────────────────────────────

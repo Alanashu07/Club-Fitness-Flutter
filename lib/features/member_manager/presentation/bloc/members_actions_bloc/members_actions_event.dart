@@ -11,6 +11,7 @@ final class CreateMemberEvent extends MembersActionsEvent {
   final String plan;
   final String trainer;
   final String dob;
+  final String startDate;
 
   const CreateMemberEvent({
     required this.name,
@@ -19,7 +20,8 @@ final class CreateMemberEvent extends MembersActionsEvent {
     required this.plan,
     required this.trainer,
     required this.dob,
+    required this.startDate,
   });
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [name, phone, email, plan, trainer, dob, startDate];
 }

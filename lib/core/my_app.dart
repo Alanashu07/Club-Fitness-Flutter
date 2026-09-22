@@ -98,7 +98,7 @@ class AppRoot extends StatelessWidget {
         BlocProvider(create: (context) => MembersActionsBloc(sl())),
         BlocProvider(
           create: (context) =>
-              MembersConfigBloc(sl(), sl())..add(const GetMembershipPlansEvent(true)),
+              MembersConfigBloc(sl(), sl(), sl(),sl(),sl())..add(const GetMembershipPlansEvent(true)),
         ),
       ],
       child: MaterialApp.router(

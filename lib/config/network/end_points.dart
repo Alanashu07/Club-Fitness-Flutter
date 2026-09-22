@@ -30,6 +30,7 @@ class EndPoints {
   static const String members = '/api/v1/members';
   static const String trainers = '$members/trainers';
   static const String membershipPlans = '$members/membership-plans';
+  static String updateOrDeleteMembershipPlan(String id) => "$membershipPlans/$id";
 
   //============================================================================
   // FEES

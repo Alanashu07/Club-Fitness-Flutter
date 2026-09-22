@@ -22,8 +22,18 @@ abstract interface class MemberManagerRepo {
     required String plan,
     required String trainer,
     required String dob,
+    required String startDate,
   });
 
   Future<Either<List<TrainerMiniEntity>, Failure>> getTrainers();
-  Future<Either<List<MembershipPlanMiniEntity>, Failure>> getPlans(bool includeInactive);
+  Future<Either<List<MembershipPlanMiniEntity>, Failure>> getPlans(
+    bool includeInactive,
+  );
+  Future<Either<MembershipPlanMiniEntity, Failure>> createMembershipPlan(
+    MembershipPlanMiniEntity model,
+  );
+  Future<Either<MembershipPlanMiniEntity, Failure>> updateMembershipPlan(
+    MembershipPlanMiniEntity model,
+  );
+  Future<Either<bool, Failure>> deleteMembershipPlan(String id);
 }

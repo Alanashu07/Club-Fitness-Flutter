@@ -22,9 +22,13 @@ abstract interface class MemberManagerNetworkDataSource {
     required String plan,
     required String trainer,
     required String dob,
+    required String startDate,
   });
   Future<List<TrainerMiniModel>> getTrainers();
   Future<List<MembershipPlanMiniModel>> getPlans(bool includeInactive);
+  Future<MembershipPlanMiniModel> createMembershipPlan(MembershipPlanMiniModel model);
+  Future<MembershipPlanMiniModel> updateMembershipPlan(MembershipPlanMiniModel model);
+  Future<bool> deleteMembershipPlan(String id);
 }
 
 class MemberManagerNetworkDataSourceImpl
@@ -83,6 +87,7 @@ class MemberManagerNetworkDataSourceImpl
     required String plan,
     required String trainer,
     required String dob,
+    required String startDate,
   }) async {
     final formData = {
       "name": name,
@@ -92,6 +97,7 @@ class MemberManagerNetworkDataSourceImpl
       "password": "",
       "planId": plan,
       "trainerId": trainer,
+      "startDate": startDate
     };
     DioResponse response = await _dio.dioPostCall(EndPoints.members, formData);
     if (response.hasError) return response.handleError();
@@ -114,5 +120,26 @@ class MemberManagerNetworkDataSourceImpl
     return (response.response!.data['trainers'] as List)
         .map((e) => TrainerMiniModel.fromJson(e))
         .toList();
+  }
+
+  @override
+  Future<MembershipPlanMiniModel> createMembershipPlan(MembershipPlanMiniModel model) async {
+    DioResponse response = await _dio.dioPostCall(EndPoints.membershipPlans, model.toJson());
+    if (response.hasError) return response.handleError();
+    return MembershipPlanMiniModel.fromJson(response.response!.data['plan'] ?? {});
+  }
+
+  @override
+  Future<bool> deleteMembershipPlan(String id) async {
+    DioResponse response = await _dio.dioDeleteCall(EndPoints.updateOrDeleteMembershipPlan(id));
+    if (response.hasError) return response.handleError();
+    return true;
+  }
+
+  @override
+  Future<MembershipPlanMiniModel> updateMembershipPlan(MembershipPlanMiniModel model) async {
+    DioResponse response = await _dio.dioPatchCall(EndPoints.updateOrDeleteMembershipPlan(model.id), model.toJson());
+    if (response.hasError) return response.handleError();
+    return MembershipPlanMiniModel.fromJson(response.response!.data['plan'] ?? {});
   }
 }

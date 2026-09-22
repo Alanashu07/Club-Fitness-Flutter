@@ -155,9 +155,10 @@ class AdminProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             BlocListener<AuthBloc, AuthState>(
-              listenWhen: (previous, current) => current is AuthLogoutState || current is AuthFailure,
+              listenWhen: (previous, current) =>
+                  current is AuthLogoutState || current is AuthFailure,
               listener: (context, state) {
-                if(state is AuthLogoutState) {
+                if (state is AuthLogoutState) {
                   context.go(Routes.login);
                 } else if (state is AuthFailure) {
                   context.showToastFromFailure(state.failure);
@@ -193,34 +194,34 @@ class _AdminHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<AuthBloc>().state.user;
     return Row(
       children: [
         const CircleAvatar(
           radius: 36,
           backgroundColor: AppTheme.surface,
-          child: Icon(
-            Icons.person,
-            size: 38,
-            color: AppTheme.textSecondary,
-          ),
+          child: Icon(Icons.person, size: 38, color: AppTheme.textSecondary),
         ),
         const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Vishnu Kumar',
-                style: TextStyle(
+              Text(
+                user.name.capitalizeFirst,
+                style: const TextStyle(
                   color: AppTheme.textPrimary,
                   fontSize: 19,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: 2),
-              const Text(
-                'vishnu.kumar@clubfitness.com',
-                style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+              Text(
+                user.email,
+                style: const TextStyle(
+                  color: AppTheme.textSecondary,
+                  fontSize: 13,
+                ),
               ),
               const SizedBox(height: 6),
               Container(
@@ -232,9 +233,9 @@ class _AdminHeader extends StatelessWidget {
                   color: AppTheme.primary.withAOpacity(0.15),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
-                  'Super Admin',
-                  style: TextStyle(
+                child: Text(
+                  user.role,
+                  style: const TextStyle(
                     color: AppTheme.primary,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,

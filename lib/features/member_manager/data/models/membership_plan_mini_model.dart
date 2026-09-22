@@ -1,3 +1,5 @@
+import 'package:club_fitness/core/utils/utils.dart';
+
 import '../../domain/entities/membership_plan_mini_entity.dart';
 
 class MembershipPlanMiniModel extends MembershipPlanMiniEntity {
@@ -15,8 +17,8 @@ class MembershipPlanMiniModel extends MembershipPlanMiniEntity {
     return MembershipPlanMiniModel(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
-      durationDays: json['durationDays'] as num? ?? 0,
-      price: json['price'] as num? ?? 0,
+      durationDays: json['durationDays']?.toString().toNum ?? 0,
+      price: json['price']?.toString().toNum ?? 0,
       description: json['description'] as String? ?? '',
       features: (json['features'] as List?)?.cast<String>() ?? const [],
       isActive: json['isActive'] as bool? ?? false,
@@ -92,7 +94,6 @@ class MembershipPlanMiniModel extends MembershipPlanMiniEntity {
     if (value is num) return value == 0;
     if (value is String) return value.isEmpty;
     if (value is List) return value.isEmpty;
-    if (value is bool) return !value;
     if (value is Map) {
       return (value..removeWhere((key, value) => _removeEmpty(value))).isEmpty;
     }

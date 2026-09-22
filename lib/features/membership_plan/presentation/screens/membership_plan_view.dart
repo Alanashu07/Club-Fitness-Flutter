@@ -1,4 +1,5 @@
 import 'package:club_fitness/config/theme/theme.dart';
+import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/features/member_manager/member_manager.dart';
 import 'package:club_fitness/widgets/common_widgets.dart';
 import 'package:flutter/material.dart';
@@ -176,34 +177,22 @@ class _MembershipPlansScreenState extends State<MembershipPlansScreen> {
                               .where((e) => e.isNotEmpty)
                               .toList();
 
-                          setState(() {
-                            // if (isEdit) {
-                            //   plan.name = nameController.text.trim();
-                            //   plan.durationDays =
-                            //       int.parse(durationController.text.trim());
-                            //   plan.price = double.parse(priceController.text.trim());
-                            //   plan.description =
-                            //       descriptionController.text.trim().isEmpty
-                            //           ? null
-                            //           : descriptionController.text.trim();
-                            //   plan.features = features;
-                            //   plan.isActive = isActive;
-                            // } else {
-                            //   _plans.add(
-                            //     MembershipPlanMiniEntity(
-                            //       id: DateTime.now().millisecondsSinceEpoch.toString(),
-                            //       name: nameController.text.trim(),
-                            //       durationDays:
-                            //           int.parse(durationController.text.trim()),
-                            //       price: double.parse(priceController.text.trim()),
-                            //       description:
-                            //           descriptionController.text.trim(),
-                            //       features: features,
-                            //       isActive: isActive,
-                            //     ),
-                            //   );
-                            // }
-                          });
+                          final entity = MembershipPlanMiniEntity(
+                            id: plan?.id ?? '',
+                            name: nameController.text.trim(),
+                            durationDays: durationController.text.trim().toNum,
+                            price: priceController.text.trim().toNum,
+                            description: descriptionController.text.trim(),
+                            features: features,
+                            isActive: isActive,
+                          );
+
+                          final bloc = context.read<MembersConfigBloc>();
+                          if (isEdit) {
+                            bloc.add(UpdateMembershipPlanEvent(entity));
+                          } else {
+                            bloc.add(CreateMembershipPlanEvent(entity));
+                          }
 
                           Navigator.pop(ctx);
                         },
@@ -245,7 +234,9 @@ class _MembershipPlansScreenState extends State<MembershipPlansScreen> {
           ),
           TextButton(
             onPressed: () {
-              // setState(() => _plans.removeWhere((p) => p.id == plan.id));
+              context.read<MembersConfigBloc>().add(
+                DeleteMembershipPlanEvent(plan.id),
+              );
               Navigator.pop(ctx);
             },
             child: const Text(

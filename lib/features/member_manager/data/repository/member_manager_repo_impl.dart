@@ -1,4 +1,5 @@
 import 'dart:developer' as dev_log;
+import 'package:club_fitness/features/member_manager/domain/entities/membership_plan_mini_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:club_fitness/core/exceptions/failure.dart';
 import '../data_source/member_manager_network_data_source.dart';
@@ -53,6 +54,7 @@ class MemberManagerRepoImpl implements MemberManagerRepo {
     required String plan,
     required String trainer,
     required String dob,
+    required String startDate,
   }) async {
     try {
       final result = await dataSource.createMember(
@@ -62,6 +64,7 @@ class MemberManagerRepoImpl implements MemberManagerRepo {
         plan: plan,
         trainer: trainer,
         dob: dob,
+        startDate: startDate,
       );
       return Left(result);
     } catch (e, s) {
@@ -100,6 +103,56 @@ class MemberManagerRepoImpl implements MemberManagerRepo {
       dev_log.log(
         e.toString(),
         name: 'getTrainers in MemberManagerRepoImpl',
+        stackTrace: s,
+        error: e,
+      );
+      return Right(Failure.fromException(e));
+    }
+  }
+
+  @override
+  Future<Either<MembershipPlanMiniModel, Failure>> createMembershipPlan(MembershipPlanMiniEntity entity) async {
+    try {
+      final model = MembershipPlanMiniModel.fromEntity(entity);
+      final result = await dataSource.createMembershipPlan(model);
+      return Left(result);
+    } catch (e, s) {
+      dev_log.log(
+        e.toString(),
+        name: 'createMembershipPlan in MemberManagerRepoImpl',
+        stackTrace: s,
+        error: e,
+      );
+      return Right(Failure.fromException(e));
+    }
+  }
+
+  @override
+  Future<Either<bool, Failure>> deleteMembershipPlan(String id) async {
+    try {
+      final result = await dataSource.deleteMembershipPlan(id);
+      return Left(result);
+    } catch (e, s) {
+      dev_log.log(
+        e.toString(),
+        name: 'deleteMembershipPlan in MemberManagerRepoImpl',
+        stackTrace: s,
+        error: e,
+      );
+      return Right(Failure.fromException(e));
+    }
+  }
+
+  @override
+  Future<Either<MembershipPlanMiniModel, Failure>> updateMembershipPlan(MembershipPlanMiniEntity entity) async {
+    try {
+      final model = MembershipPlanMiniModel.fromEntity(entity);
+      final result = await dataSource.updateMembershipPlan(model);
+      return Left(result);
+    } catch (e, s) {
+      dev_log.log(
+        e.toString(),
+        name: 'updateMembershipPlan in MemberManagerRepoImpl',
         stackTrace: s,
         error: e,
       );

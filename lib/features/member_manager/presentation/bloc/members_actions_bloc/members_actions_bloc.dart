@@ -30,6 +30,7 @@ class MembersActionsBloc
       phone: event.phone,
       plan: event.plan,
       trainer: event.trainer,
+      startDate: event.startDate,
     );
     final result = await _createMember(params);
     result.fold(
