@@ -1,6 +1,7 @@
 import 'package:club_fitness/config/local/app_data.dart';
 import 'package:club_fitness/core/entities/user_entity.dart';
 import 'package:club_fitness/core/exceptions/failure.dart';
+import 'package:club_fitness/features/auth/domain/entities/login_user_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -17,6 +18,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Logout _logout;
   final SignInWithEmailRequestOtp _signInWithEmailRequestOtp;
   final SignInWithEmailVerifyOtp _signInWithEmailVerifyOtp;
+  final Login _login;
   AuthBloc(
     SignInWithGoogle signInWithGoogle,
     SignInWithPhoneRequestOtp signInWithPhoneRequestOtp,
@@ -25,6 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Logout logout,
     SignInWithEmailRequestOtp signInWithEmailRequestOtp,
     SignInWithEmailVerifyOtp signInWithEmailVerifyOtp,
+    Login _login,
   ) : _signInWithGoogle = signInWithGoogle,
       _signInWithPhoneRequestOtp = signInWithPhoneRequestOtp,
       _signInWithPhoneVerifyOtp = signInWithPhoneVerifyOtp,
@@ -32,6 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       _logout = logout,
       _signInWithEmailRequestOtp = signInWithEmailRequestOtp,
       _signInWithEmailVerifyOtp = signInWithEmailVerifyOtp,
+      _login = _login,
       super(const AuthInitial(UserEntity())) {
     on<AuthEvent>((event, emit) {});
     on<SignInWithGoogleEvent>(_onSignInWithGoogle);
@@ -41,6 +45,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutEvent>(_onLogout);
     on<SignInWithEmailRequestEvent>(_onSignInWithEmailRequest);
     on<SignInWithEmailVerifyEvent>(_onSignInWithEmailVerify);
+    on<SignInWithEmailPasswordEvent>(_onLoginWithPassword);
   }
 
   Future<void> _onGetMyProfile(
@@ -130,6 +135,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _signInWithEmailVerifyOtp(params);
     result.fold(
       (l) => emit(AuthSuccess(l)),
+      (r) => emit(AuthFailure(state.user, r)),
+    );
+  }
+
+  Future<void> _onLoginWithPassword(
+    SignInWithEmailPasswordEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading(state.user));
+    final result = await _login((event.email, event.password));
+    result.fold(
+      (l) => emit(AuthSuccess(l.toRegularUser())),
       (r) => emit(AuthFailure(state.user, r)),
     );
   }

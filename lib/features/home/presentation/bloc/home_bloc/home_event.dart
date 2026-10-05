@@ -10,3 +10,10 @@ final class GetHomeEvent extends HomeEvent {
   @override
   List<Object?> get props => [role];
 }
+
+final class RemoveAdminPendingApprovalEvent extends HomeEvent {
+  final String id;
+  const RemoveAdminPendingApprovalEvent(this.id);
+  @override
+  List<Object?> get props => [id];
+}

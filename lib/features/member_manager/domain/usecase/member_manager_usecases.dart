@@ -1,7 +1,13 @@
 export 'create_member.dart';
 export 'create_membership_plan.dart';
+export 'delete_member.dart';
 export 'delete_membership_plan.dart';
+export 'get_member_details.dart';
 export 'get_member_list.dart';
 export 'get_plans.dart';
 export 'get_trainers.dart';
+export 'reactivate_member.dart';
+export 'renew_membership.dart';
+export 'suspend_member.dart';
+export 'update_member.dart';
 export 'update_membership_plan.dart';

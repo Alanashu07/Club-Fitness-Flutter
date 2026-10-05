@@ -28,9 +28,13 @@ class EndPoints {
   // MEMBERS
   //============================================================================
   static const String members = '/api/v1/members';
+  static String memberDetails(String id) => '$members/$id';
   static const String trainers = '$members/trainers';
   static const String membershipPlans = '$members/membership-plans';
   static String updateOrDeleteMembershipPlan(String id) => "$membershipPlans/$id";
+  static String reactivateMember(String id) => "$members/$id/reactivate";
+  static String suspendMember(String id) => "$members/$id/suspend";
+  static String renewMembership(String id) => "$members/$id/renew";
 
   //============================================================================
   // FEES

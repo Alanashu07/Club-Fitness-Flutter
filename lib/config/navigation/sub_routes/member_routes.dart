@@ -22,5 +22,13 @@ class MemberRoutes {
       name: RoutesName.memberWorkout,
       builder: (context, state) => const WorkoutPlanScreen(),
     ),
+    GoRoute(
+      path: "${Routes.memberDetails}/:id",
+      name: RoutesName.memberDetails,
+      builder: (context, state) {
+        final id = state.pathParameters['id'];
+        return MemberDetailProvider(memberId: id!);
+      },
+    ),
   ];
 }

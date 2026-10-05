@@ -1,0 +1,86 @@
+{
+    "member": {
+        "id": "cms1gkwqf000guivk04zq5i41",
+        "name": "Anjali Krishnan",
+        "phone": "9000000006",
+        "email": "member1@clubfitness.test",
+        "passwordHash": "$2b$10$0wvQD1RwJFrlSu83q5e8m.9YGP5cQO0x9iCwI3RPtASOiMUSDI.fG",
+        "profileImageUrl": null,
+        "role": "MEMBER",
+        "status": "ACTIVE",
+        "googleId": null,
+        "firebaseUid": null,
+        "dateOfBirth": null,
+        "emergencyContact": null,
+        "medicalNotes": null,
+        "membershipPlanId": "cms1gkwpz0000uivkggngsgvj",
+        "membershipStart": "2026-07-26T07:10:31.077Z",
+        "membershipEnd": "2026-07-27T07:10:31.077Z",
+        "contentAccessUntil": null,
+        "assignedTrainerId": "cms1gkwqc000cuivkk64x3cxv",
+        "staffTitle": null,
+        "hireDate": null,
+        "referralCode": null,
+        "referredById": null,
+        "createdAt": "2026-07-26T07:10:31.095Z",
+        "updatedAt": "2026-07-26T07:10:31.095Z",
+        "devicePin": null,
+        "deviceSN": null,
+        "blocked": false,
+        "graceEntriesUsed": 0
+    },
+    "attendances": [
+        {
+            "id": "cms1gkwul00aguivk1i0larxk",
+            "memberId": "cms1gkwqf000guivk04zq5i41",
+            "checkInAt": "2026-07-26T07:10:31.077Z",
+            "checkOutAt": "2026-07-26T08:40:31.077Z",
+            "method": "QR"
+        },
+        {
+            "id": "cms1gkwuq00auuivkc2jq1qws",
+            "memberId": "cms1gkwqf000guivk04zq5i41",
+            "checkInAt": "2026-07-19T07:10:31.077Z",
+            "checkOutAt": "2026-07-19T08:40:31.077Z",
+            "method": "MANUAL"
+        }
+    ],
+    "fee_historys": [
+        {
+            "id": "cms1gkwqy0018uivk7xes4ru2",
+            "memberId": "cms1gkwqf000guivk04zq5i41",
+            "planId": "cms1gkwq50007uivkytucdnas",
+            "amount": "22000",
+            "paidAmount": null,
+            "status": "OVERDUE",
+            "dueDate": "2026-07-26T07:10:31.077Z",
+            "submittedDate": null,
+            "approvedDate": null,
+            "paidDate": null,
+            "paymentMethod": null,
+            "receiptImageUrl": null,
+            "notes": null,
+            "approvedById": null,
+            "createdAt": "2026-07-26T07:10:31.114Z",
+            "updatedAt": "2026-07-26T07:10:31.114Z"
+        },
+        {
+            "id": "cms1gkwqn000uuivkxn39r6kd",
+            "memberId": "cms1gkwqf000guivk04zq5i41",
+            "planId": "cms1gkwpz0000uivkggngsgvj",
+            "amount": "150",
+            "paidAmount": null,
+            "status": "PENDING",
+            "dueDate": "2026-07-19T07:10:31.077Z",
+            "submittedDate": null,
+            "approvedDate": null,
+            "paidDate": null,
+            "paymentMethod": null,
+            "receiptImageUrl": null,
+            "notes": null,
+            "approvedById": null,
+            "createdAt": "2026-07-26T07:10:31.104Z",
+            "updatedAt": "2026-07-26T07:10:31.104Z"
+        }
+    ]
+}

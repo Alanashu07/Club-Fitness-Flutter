@@ -5,11 +5,14 @@ import 'package:club_fitness/widgets/common_widgets.dart';
 class LetterWidget extends StatelessWidget {
   final String letter;
   final int index;
-  const LetterWidget({super.key, required this.letter, required this.index});
+  final double? height, width;
+  const LetterWidget({super.key, required this.letter, required this.index, this.height, this.width});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: height,
+      width: width,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: AppTheme.clampColor(index),

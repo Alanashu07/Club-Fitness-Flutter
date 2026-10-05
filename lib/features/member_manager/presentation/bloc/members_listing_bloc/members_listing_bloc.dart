@@ -22,6 +22,7 @@ class MembersListingBloc
 
   GetMemberListParams? _lastParams;
   MemberPaginationEntity? _lastPagination;
+  List<MemberListEntity> _allMembers = [];
 
   Future<void> _onGetMembers(
     GetMembersListingEvent event,
@@ -44,6 +45,7 @@ class MembersListingBloc
     result.fold((memberPagination) {
       _lastPagination = memberPagination;
       _lastParams = params;
+      _allMembers = memberPagination.members;
       emit(
         MembersListingSuccess(
           members: memberPagination.members,
@@ -64,7 +66,7 @@ class MembersListingBloc
       isAlreadyLoadingState: state is MembersListingLoadingMore,
       onResultEnded: () => emit(
         MembersListingLoadingMoreFailure(
-          members: _lastPagination!.members,
+          members: _allMembers,
           pagination: _lastPagination!.pagination,
           summary: _lastPagination!.summary,
           failure: Failure.endOfResult,
@@ -75,7 +77,7 @@ class MembersListingBloc
 
     emit(
       MembersListingLoadingMore(
-        members: _lastPagination?.members ?? [],
+        members: _allMembers,
         pagination: _lastPagination?.pagination ?? const Pagination(),
         summary: _lastPagination?.summary ?? const Summary(),
       ),
@@ -99,9 +101,10 @@ class MembersListingBloc
       (memberPagination) {
         _lastPagination = memberPagination;
         _lastParams = params;
+        _allMembers.addAll(memberPagination.members);
         emit(
           MembersListingSuccess(
-            members: memberPagination.members,
+            members: _allMembers,
             pagination: memberPagination.pagination,
             summary: memberPagination.summary,
           ),

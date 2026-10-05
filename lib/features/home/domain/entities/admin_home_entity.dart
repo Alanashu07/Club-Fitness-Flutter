@@ -239,5 +239,19 @@ class AdminHomeEntity {
       'lowStockProducts: $lowStockProducts, '
     ')';
   }
+
+  AdminHomeEntity copyWith({
+    covariant OverviewEntity? overview,
+    covariant RevenueEntity? revenue,
+    covariant List<PendingPaymentEntity>? pendingPayments,
+    covariant List<RecentMemberEntity>? recentMembers,
+    covariant List<LowStockProductEntity>? lowStockProducts,
+  }) => AdminHomeEntity(
+    overview: overview ?? this.overview,
+    revenue: revenue ?? this.revenue,
+    pendingPayments: pendingPayments ?? this.pendingPayments,
+    recentMembers: recentMembers ?? this.recentMembers,
+    lowStockProducts: lowStockProducts ?? this.lowStockProducts,
+  );
 }
 

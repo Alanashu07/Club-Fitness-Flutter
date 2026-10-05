@@ -18,14 +18,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
-  // Mode: 'phone' or 'email'
-  String _mode = 'email';
+  // Mode: 'password' or 'otp'
+  String _mode = 'password';
 
   // Step: 'input' → 'otp'
   String _step = 'input';
 
-  final _phoneCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
   bool _isLoading = false;
 
   // Entrance animations
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen>
   void dispose() {
     _entranceCtrl.dispose();
     _stepCtrl.dispose();
-    _phoneCtrl.dispose();
+    _passwordCtrl.dispose();
     _emailCtrl.dispose();
     super.dispose();
   }
@@ -91,30 +91,18 @@ class _LoginScreenState extends State<LoginScreen>
     _stepCtrl.forward(from: 0);
   }
 
-  void _sendOtpPhone() {
+  void _signInWithPassword() {
+    final email = _emailCtrl.text.trim();
+    final password = _passwordCtrl.text;
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enter your email and password')),
+      );
+      return;
+    }
     setState(() => _isLoading = true);
     context.read<AuthBloc>().add(
-      SignInWithPhoneRequestEvent(
-        phoneNumber: "+91${_phoneCtrl.text.trim()}",
-        onCodeSent: () {
-          setState(() {
-            _isLoading = false;
-            _step = 'otp';
-          });
-          _stepCtrl.forward(from: 0);
-        },
-        onAutoVerified: (user) {
-          switch (user.role.toLowerCase()) {
-            case 'admin':
-              context.go(Routes.adminHome);
-            case 'trainer':
-            case 'staff':
-              context.go(Routes.trainerHome);
-            default:
-              context.go(Routes.home);
-          }
-        },
-      ),
+      SignInWithEmailPasswordEvent(email: email, password: password),
     );
   }
 
@@ -258,7 +246,9 @@ class _LoginScreenState extends State<LoginScreen>
             decoration: BoxDecoration(
               color: AppTheme.card,
               borderRadius: BorderRadius.circular(18),
-              image: const DecorationImage(image: AssetImage(AssetConstants.logo)),
+              image: const DecorationImage(
+                image: AssetImage(AssetConstants.logo),
+              ),
               border: Border.all(
                 color: AppTheme.primary.withAOpacity(0.4),
                 width: 2,
@@ -408,14 +398,15 @@ class _LoginScreenState extends State<LoginScreen>
 
   // ── Input Step ──────────────────────────────────────────────────────────────
   Widget _buildInputStep() {
-    final isPhone = _mode == 'phone';
+    final isPassword = _mode == 'password';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Heading
         Text(
-          isPhone ? 'Enter your\nphone number' : 'Enter your\nemail address',
+          isPassword
+              ? 'Sign in with\nyour password'
+              : 'Enter your\nemail address',
           style: const TextStyle(
             color: Colors.white,
             fontSize: 24,
@@ -426,8 +417,8 @@ class _LoginScreenState extends State<LoginScreen>
         ),
         const SizedBox(height: 6),
         Text(
-          isPhone
-              ? "We'll send a one-time code to verify your number."
+          isPassword
+              ? 'Enter your email and password to continue.'
               : "We'll send a one-time code to your inbox.",
           style: TextStyle(
             color: Colors.white.withAOpacity(0.38),
@@ -437,24 +428,19 @@ class _LoginScreenState extends State<LoginScreen>
         ),
         const SizedBox(height: 24),
 
-        // Input field
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 250),
-          transitionBuilder: (child, anim) =>
-              FadeTransition(opacity: anim, child: child),
-          child: isPhone
-              ? _PhoneField(
-                  key: const ValueKey('phone'),
-                  controller: _phoneCtrl,
-                )
-              : _EmailField(
-                  key: const ValueKey('email'),
-                  controller: _emailCtrl,
-                ),
-        ),
+        _EmailField(controller: _emailCtrl),
+
+        if (isPassword) ...[
+          const SizedBox(height: 12),
+          _PasswordField(
+            controller: _passwordCtrl,
+            onSubmitted: _signInWithPassword,
+          ),
+          const SizedBox(height: 12),
+          _buildFirstTimeInfo(),
+        ],
         const SizedBox(height: 20),
 
-        // CTA button
         BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
             if (_step == 'otp') return;
@@ -468,19 +454,69 @@ class _LoginScreenState extends State<LoginScreen>
             }
           },
           child: _PrimaryButton(
-            label: 'Send OTP',
+            label: isPassword ? 'Sign In' : 'Send OTP',
             isLoading: _isLoading,
-            onTap: isPhone ? _sendOtpPhone : _sendOtp,
+            onTap: isPassword ? _signInWithPassword : _sendOtp,
           ),
         ),
       ],
     );
   }
 
+  Widget _buildFirstTimeInfo() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppTheme.primary.withAOpacity(0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.primary.withAOpacity(0.25),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.info_outline_rounded,
+            color: AppTheme.primary,
+            size: 16,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  color: Colors.white.withAOpacity(0.6),
+                  fontSize: 12,
+                  height: 1.4,
+                ),
+                children: const [
+                  TextSpan(
+                    text:
+                        'First time logging in? Your password is your date of birth in ',
+                  ),
+                  TextSpan(
+                    text: 'DD/MM/YYYY',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  TextSpan(text: ' format.'),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   // ── OTP Step ────────────────────────────────────────────────────────────────
   Widget _buildOtpStep() {
-    final isPhone = _mode == 'phone';
-    final destination = isPhone ? _phoneCtrl.text : _emailCtrl.text;
+    final destination = _emailCtrl.text;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -560,10 +596,10 @@ class _LoginScreenState extends State<LoginScreen>
 
   // ── Mode Switch (bottom of card) ─────────────────────────────────────────────
   Widget _buildModeSwitch() {
-    final isPhone = _mode == 'phone';
+    final isPassword = _mode == 'password';
     return Center(
       child: GestureDetector(
-        onTap: () => _switchMode(isPhone ? 'email' : 'phone'),
+        onTap: () => _switchMode(isPassword ? 'otp' : 'password'),
         child: RichText(
           text: TextSpan(
             style: TextStyle(
@@ -572,9 +608,11 @@ class _LoginScreenState extends State<LoginScreen>
             ),
             children: [
               TextSpan(
-                text: isPhone ? 'Use email instead  ' : 'Use phone instead  ',
+                text: isPassword
+                    ? 'Use email OTP instead  '
+                    : 'Use password instead  ',
               ),
-              TextSpan(text: isPhone ? '✉' : '📱'),
+              TextSpan(text: isPassword ? '✉' : '🔒'),
             ],
           ),
         ),
@@ -585,9 +623,17 @@ class _LoginScreenState extends State<LoginScreen>
 
 // ─── Phone Field ──────────────────────────────────────────────────────────────
 
-class _PhoneField extends StatelessWidget {
+class _PasswordField extends StatefulWidget {
   final TextEditingController controller;
-  const _PhoneField({super.key, required this.controller});
+  final VoidCallback? onSubmitted;
+  const _PasswordField({required this.controller, this.onSubmitted});
+
+  @override
+  State<_PasswordField> createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<_PasswordField> {
+  bool _obscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -597,81 +643,41 @@ class _PhoneField extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: Colors.white.withAOpacity(0.07), width: 1),
       ),
-      child: Row(
-        children: [
-          // Country code
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-            decoration: BoxDecoration(
-              border: Border(
-                right: BorderSide(
-                  color: Colors.white.withAOpacity(0.08),
-                  width: 1,
-                ),
-              ),
-            ),
-            child: Row(
-              children: [
-                const Text('🇮🇳', style: TextStyle(fontSize: 18)),
-                const SizedBox(width: 6),
-                const Text(
-                  '+91',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Icon(
-                  Icons.expand_more_rounded,
-                  color: Colors.white.withAOpacity(0.3),
-                  size: 16,
-                ),
-              ],
-            ),
+      child: TextField(
+        controller: widget.controller,
+        obscureText: _obscure,
+        autocorrect: false,
+        enableSuggestions: false,
+        textInputAction: TextInputAction.done,
+        onSubmitted: (_) => widget.onSubmitted?.call(),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
+        decoration: InputDecoration(
+          hintText: 'Password',
+          hintStyle: const TextStyle(color: AppTheme.textSecondary, fontSize: 15),
+          prefixIcon: const Icon(
+            Icons.lock_outline_rounded,
+            color: AppTheme.textSecondary,
+            size: 20,
           ),
-          // Number input
-          Expanded(
-            child: TextField(
-              controller: controller,
-              keyboardType: TextInputType.phone,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(10),
-              ],
-              decoration: const InputDecoration(
-                hintText: '98765 43210',
-                hintStyle: TextStyle(
-                  color: AppTheme.textSecondary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-                border: InputBorder.none,
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.horizontal(
-                    right: Radius.circular(14),
-                  ),
-                  borderSide: BorderSide(color: AppTheme.primary, width: 2),
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 16,
-                ),
-              ),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+              color: AppTheme.textSecondary,
+              size: 20,
             ),
+            onPressed: () => setState(() => _obscure = !_obscure),
           ),
-        ],
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+        ),
       ),
     );
   }
 }
-
 // ─── Email Field ──────────────────────────────────────────────────────────────
 
 class _EmailField extends StatelessWidget {

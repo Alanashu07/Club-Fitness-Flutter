@@ -167,6 +167,8 @@ class _CustomCachedImageState extends State<CustomCachedImage> {
     return LetterWidget(
       letter: widget.errorLetter ?? '',
       index: widget.id ?? 0,
+      height: widget.height,
+      width: widget.width,
     );
   }
 

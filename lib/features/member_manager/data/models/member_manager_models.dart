@@ -1,4 +1,9 @@
+export 'attendance_model.dart';
+export 'fee_history_model.dart';
+export 'member_detail_model.dart';
 export 'member_list_model.dart';
+export 'member_model.dart';
 export 'member_pagination_model.dart';
 export 'membership_plan_mini_model.dart';
+export 'renew_member_model.dart';
 export 'trainer_mini_model.dart';

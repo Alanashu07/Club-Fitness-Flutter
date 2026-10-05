@@ -15,4 +15,6 @@ abstract interface class AdminUtilsRepo {
   });
   Future<Either<FeeSummaryEntity, Failure>> getFeeSummary();
   Future<Either<ReportDetailsEntity, Failure>> getSalesReport(String range);
+  Future<Either<FeesEntity, Failure>> approveFees(String id);
+  Future<Either<FeesEntity, Failure>> rejectFees(String id);
 }

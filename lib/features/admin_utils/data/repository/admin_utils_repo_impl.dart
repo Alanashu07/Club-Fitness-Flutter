@@ -58,7 +58,9 @@ class AdminUtilsRepoImpl implements AdminUtilsRepo {
   }
 
   @override
-  Future<Either<ReportDetailsModel, Failure>> getSalesReport(String range) async {
+  Future<Either<ReportDetailsModel, Failure>> getSalesReport(
+    String range,
+  ) async {
     try {
       final result = await dataSource.getSalesReport(range);
       return Left(result);
@@ -66,6 +68,38 @@ class AdminUtilsRepoImpl implements AdminUtilsRepo {
       dev_log.log(
         e.toString(),
         name: 'getSalesReport in AdminUtilsRepoImpl',
+        stackTrace: s,
+        error: e,
+      );
+      return Right(Failure.fromException(e));
+    }
+  }
+
+  @override
+  Future<Either<FeesModel, Failure>> approveFees(String id) async {
+    try {
+      final result = await dataSource.approveFees(id);
+      return Left(result);
+    } catch (e, s) {
+      dev_log.log(
+        e.toString(),
+        name: 'approveFees in AdminUtilsRepoImpl',
+        stackTrace: s,
+        error: e,
+      );
+      return Right(Failure.fromException(e));
+    }
+  }
+
+  @override
+  Future<Either<FeesModel, Failure>> rejectFees(String id) async {
+    try {
+      final result = await dataSource.rejectFees(id);
+      return Left(result);
+    } catch (e, s) {
+      dev_log.log(
+        e.toString(),
+        name: 'rejectFees in AdminUtilsRepoImpl',
         stackTrace: s,
         error: e,
       );

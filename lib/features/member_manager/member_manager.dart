@@ -4,6 +4,7 @@ export 'data/repository/member_manager_repo_impl.dart';
 export 'domain/entities/member_manager_entities.dart';
 export 'domain/repository/member_manager_repo.dart';
 export 'domain/usecase/member_manager_usecases.dart';
+export 'presentation/bloc/member_detail_bloc/member_detail_bloc.dart';
 export 'presentation/bloc/members_actions_bloc/members_actions_bloc.dart';
 export 'presentation/bloc/members_config_bloc/members_config_bloc.dart';
 export 'presentation/bloc/members_listing_bloc/members_listing_bloc.dart';

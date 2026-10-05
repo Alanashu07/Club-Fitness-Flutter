@@ -58,6 +58,7 @@ class StatusCodes {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
+      case DioExceptionType.transformTimeout:
         return AppException.timeout;
       case DioExceptionType.badCertificate:
       case DioExceptionType.badResponse:

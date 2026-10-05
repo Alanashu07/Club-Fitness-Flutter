@@ -113,6 +113,8 @@ extension DateTimeExtension on DateTime {
     }
   }
 
+  String get monthShort => _getShortMonth;
+
   String get _getShortMonth {
     switch (month) {
       case 1:
@@ -143,6 +145,8 @@ extension DateTimeExtension on DateTime {
         return 'N/A';
     }
   }
+
+  String get monthFull => _getFullMonth;
 
   String get _getFullMonth {
     switch (month) {

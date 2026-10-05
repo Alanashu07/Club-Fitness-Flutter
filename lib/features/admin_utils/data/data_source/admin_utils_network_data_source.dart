@@ -16,6 +16,8 @@ abstract interface class AdminUtilsNetworkDataSource {
 
   Future<FeeSummaryModel> getFeeSummary();
   Future<ReportDetailsModel> getSalesReport(String range);
+  Future<FeesModel> approveFees(String id);
+  Future<FeesModel> rejectFees(String id);
 }
 
 class AdminUtilsNetworkDataSourceImpl implements AdminUtilsNetworkDataSource {
@@ -56,8 +58,30 @@ class AdminUtilsNetworkDataSourceImpl implements AdminUtilsNetworkDataSource {
 
   @override
   Future<ReportDetailsModel> getSalesReport(String range) async {
-    DioResponse response = await _dio.dioGetCall("${EndPoints.salesReport}?range=$range");
+    DioResponse response = await _dio.dioGetCall(
+      "${EndPoints.salesReport}?range=$range",
+    );
     if (response.hasError) return response.handleError();
     return ReportDetailsModel.fromJson(response.response!.data);
+  }
+
+  @override
+  Future<FeesModel> approveFees(String id) async {
+    DioResponse response = await _dio.dioPatchCall(
+      EndPoints.feeActions(id, FeeActions.approve),
+      {},
+    );
+    if (response.hasError) return response.handleError();
+    return FeesModel.fromJson(response.response!.data['fee'] ?? {});
+  }
+
+  @override
+  Future<FeesModel> rejectFees(String id) async {
+    DioResponse response = await _dio.dioPatchCall(
+      EndPoints.feeActions(id, FeeActions.reject),
+      {},
+    );
+    if (response.hasError) return response.handleError();
+    return FeesModel.fromJson(response.response!.data['fee'] ?? {});
   }
 }

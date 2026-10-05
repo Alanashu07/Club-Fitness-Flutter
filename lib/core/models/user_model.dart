@@ -1,3 +1,4 @@
+import 'package:club_fitness/features/auth/data/models/auth_models.dart';
 
 import '../entities/user_entity.dart';
 
@@ -28,6 +29,20 @@ class UserModel extends UserEntity {
     );
   }
 
+  factory UserModel.fromLoginUserModel(LoginUserModel user) {
+    return UserModel(
+      email: user.email,
+      id: user.id,
+      membershipEnd: user.membershipEnd,
+      membershipPlanId: user.membershipPlanId,
+      name: user.name,
+      phone: user.phone,
+      profileImageUrl: user.profileImageUrl,
+      role: user.role,
+      status: user.status,
+    );
+  }
+
   factory UserModel.fromEntity(UserEntity entity) {
     return UserModel(
       id: entity.id,
@@ -53,42 +68,42 @@ class UserModel extends UserEntity {
     String? membershipPlanId,
     String? membershipEnd,
   }) => UserModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      email: email ?? this.email,
-      phone: phone ?? this.phone,
-      role: role ?? this.role,
-      status: status ?? this.status,
-      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
-      membershipPlanId: membershipPlanId ?? this.membershipPlanId,
-      membershipEnd: membershipEnd ?? this.membershipEnd,
+    id: id ?? this.id,
+    name: name ?? this.name,
+    email: email ?? this.email,
+    phone: phone ?? this.phone,
+    role: role ?? this.role,
+    status: status ?? this.status,
+    profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+    membershipPlanId: membershipPlanId ?? this.membershipPlanId,
+    membershipEnd: membershipEnd ?? this.membershipEnd,
   );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'email': email,
-        'phone': phone,
-        'role': role,
-        'status': status,
-        'profileImageUrl': profileImageUrl,
-        'membershipPlanId': membershipPlanId,
-        'membershipEnd': membershipEnd,
-      }..removeWhere((key, value) => _removeEmpty(value));
+    'id': id,
+    'name': name,
+    'email': email,
+    'phone': phone,
+    'role': role,
+    'status': status,
+    'profileImageUrl': profileImageUrl,
+    'membershipPlanId': membershipPlanId,
+    'membershipEnd': membershipEnd,
+  }..removeWhere((key, value) => _removeEmpty(value));
 
   @override
   String toString() {
     return 'UserModel('
-      'id: $id, '
-      'name: $name, '
-      'email: $email, '
-      'phone: $phone, '
-      'role: $role, '
-      'status: $status, '
-      'profileImageUrl: $profileImageUrl, '
-      'membershipPlanId: $membershipPlanId, '
-      'membershipEnd: $membershipEnd, '
-    ')';
+        'id: $id, '
+        'name: $name, '
+        'email: $email, '
+        'phone: $phone, '
+        'role: $role, '
+        'status: $status, '
+        'profileImageUrl: $profileImageUrl, '
+        'membershipPlanId: $membershipPlanId, '
+        'membershipEnd: $membershipEnd, '
+        ')';
   }
 
   @override
@@ -99,15 +114,16 @@ class UserModel extends UserEntity {
   @override
   int get hashCode => id.hashCode;
 
-// Helper function to remove empty or default values from JSON
-bool _removeEmpty(dynamic value) {
-  if (value == null) return true;
-  if (value is num) return value == 0;
-  if (value is String) return value.isEmpty;
-  if (value is List) return value.isEmpty;
-  if (value is bool) return !value;
-  if (value is Map) {return (value..removeWhere((key, value) => _removeEmpty(value),)).isEmpty;}
-  return false;
+  // Helper function to remove empty or default values from JSON
+  bool _removeEmpty(dynamic value) {
+    if (value == null) return true;
+    if (value is num) return value == 0;
+    if (value is String) return value.isEmpty;
+    if (value is List) return value.isEmpty;
+    if (value is bool) return !value;
+    if (value is Map) {
+      return (value..removeWhere((key, value) => _removeEmpty(value))).isEmpty;
+    }
+    return false;
+  }
 }
-}
-

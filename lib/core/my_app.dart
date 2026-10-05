@@ -5,6 +5,7 @@ import 'package:club_fitness/config/navigation/routes_class.dart';
 import 'package:club_fitness/config/theme/theme.dart';
 import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/di.dart';
+import 'package:club_fitness/features/admin_utils/admin_utils.dart';
 import 'package:club_fitness/features/auth/auth.dart';
 import 'package:club_fitness/features/image_cache/image_cache.dart';
 import 'package:flutter/cupertino.dart';
@@ -93,13 +94,19 @@ class AppRoot extends StatelessWidget {
           create: (context) => CacheImageCubit(sl(), sl())..getAllImages(),
         ),
         BlocProvider(
-          create: (context) => AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()),
+          create: (context) =>
+              AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()),
         ),
-        BlocProvider(create: (context) => MembersActionsBloc(sl())),
         BlocProvider(
           create: (context) =>
-              MembersConfigBloc(sl(), sl(), sl(),sl(),sl())..add(const GetMembershipPlansEvent(true)),
+              MembersActionsBloc(sl(), sl(), sl(), sl(), sl(), sl()),
         ),
+        BlocProvider(
+          create: (context) =>
+              MembersConfigBloc(sl(), sl(), sl(), sl(), sl())
+                ..add(const GetMembershipPlansEvent(true)),
+        ),
+        BlocProvider(create: (context) => FeeActionsBloc(sl(), sl())),
       ],
       child: MaterialApp.router(
         title: AppConstants.appName,

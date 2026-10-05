@@ -11,6 +11,18 @@ final class SignInWithGoogleEvent extends AuthEvent {
   List<Object?> get props => [];
 }
 
+class SignInWithEmailPasswordEvent extends AuthEvent {
+  final String email;
+  final String password;
+  const SignInWithEmailPasswordEvent({
+    required this.email,
+    required this.password,
+  });
+
+  @override
+  List<Object?> get props => [email, password];
+}
+
 final class SignInWithPhoneRequestEvent extends AuthEvent {
   final String phoneNumber;
   final void Function() onCodeSent;

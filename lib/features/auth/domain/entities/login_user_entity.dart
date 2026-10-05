@@ -1,3 +1,5 @@
+import 'package:club_fitness/core/entities/user_entity.dart';
+
 class LoginUserEntity {
   final String id;
   final String name;
@@ -48,35 +50,50 @@ class LoginUserEntity {
   @override
   String toString() {
     return 'LoginUserEntity('
-      'id: $id, '
-      'name: $name, '
-      'phone: $phone, '
-      'email: $email, '
-      'profileImageUrl: $profileImageUrl, '
-      'role: $role, '
-      'status: $status, '
-      'dateOfBirth: $dateOfBirth, '
-      'emergencyContact: $emergencyContact, '
-      'medicalNotes: $medicalNotes, '
-      'membershipPlanId: $membershipPlanId, '
-      'membershipStart: $membershipStart, '
-      'membershipEnd: $membershipEnd, '
-      'contentAccessUntil: $contentAccessUntil, '
-      'assignedTrainerId: $assignedTrainerId, '
-      'staffTitle: $staffTitle, '
-      'hireDate: $hireDate, '
-      'referralCode: $referralCode, '
-      'referredById: $referredById, '
-      'createdAt: $createdAt, '
-      'updatedAt: $updatedAt, '
-    ')';
+        'id: $id, '
+        'name: $name, '
+        'phone: $phone, '
+        'email: $email, '
+        'profileImageUrl: $profileImageUrl, '
+        'role: $role, '
+        'status: $status, '
+        'dateOfBirth: $dateOfBirth, '
+        'emergencyContact: $emergencyContact, '
+        'medicalNotes: $medicalNotes, '
+        'membershipPlanId: $membershipPlanId, '
+        'membershipStart: $membershipStart, '
+        'membershipEnd: $membershipEnd, '
+        'contentAccessUntil: $contentAccessUntil, '
+        'assignedTrainerId: $assignedTrainerId, '
+        'staffTitle: $staffTitle, '
+        'hireDate: $hireDate, '
+        'referralCode: $referralCode, '
+        'referredById: $referredById, '
+        'createdAt: $createdAt, '
+        'updatedAt: $updatedAt, '
+        ')';
   }
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other is LoginUserEntity && other.id == id);
+    return identical(this, other) ||
+        (other is LoginUserEntity && other.id == id);
   }
 
   @override
   int get hashCode => id.hashCode;
+}
+
+extension LoginUserExtension on LoginUserEntity {
+  UserEntity toRegularUser() => UserEntity(
+    email: email,
+    id: id,
+    membershipEnd: membershipEnd,
+    membershipPlanId: membershipPlanId,
+    name: name,
+    phone: phone,
+    profileImageUrl: profileImageUrl,
+    role: role,
+    status: status,
+  );
 }

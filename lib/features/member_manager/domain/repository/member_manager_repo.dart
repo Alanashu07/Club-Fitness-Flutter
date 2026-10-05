@@ -5,15 +5,15 @@ import '../entities/member_manager_entities.dart';
 
 abstract interface class MemberManagerRepo {
   Future<Either<MemberPaginationEntity, Failure>> getMemberList({
-    String search,
-    String status,
+    String search = '',
+    String status = '',
     String? plan,
     String? trainer,
-    bool checkedInToday,
-    bool overdueOnly,
-    String sortBy,
-    String page,
-    String limit,
+    bool checkedInToday = false,
+    bool overdueOnly = false,
+    String sortBy = '',
+    String page = '',
+    String limit = '',
   });
   Future<Either<MemberListEntity, Failure>> createMember({
     required String name,
@@ -23,17 +23,43 @@ abstract interface class MemberManagerRepo {
     required String trainer,
     required String dob,
     required String startDate,
+    required String userRole,
   });
-
+  Future<Either<MemberListEntity, Failure>> updateMember({
+    required String id,
+    required String name,
+    required String phone,
+    required String email,
+    required String plan,
+    required String trainer,
+    required String dob,
+    required String startDate,
+  });
   Future<Either<List<TrainerMiniEntity>, Failure>> getTrainers();
   Future<Either<List<MembershipPlanMiniEntity>, Failure>> getPlans(
     bool includeInactive,
   );
   Future<Either<MembershipPlanMiniEntity, Failure>> createMembershipPlan(
-    MembershipPlanMiniEntity model,
+    MembershipPlanMiniEntity entity,
   );
   Future<Either<MembershipPlanMiniEntity, Failure>> updateMembershipPlan(
-    MembershipPlanMiniEntity model,
+    MembershipPlanMiniEntity entity,
   );
   Future<Either<bool, Failure>> deleteMembershipPlan(String id);
+  Future<Either<MemberDetailEntity, Failure>> getMemberDetails(String id);
+  Future<Either<String, Failure>> reactivateMember(String id);
+  Future<Either<String, Failure>> deleteMember({
+    required String id,
+    bool force = false,
+  });
+  Future<Either<String, Failure>> suspendMember(String id);
+  Future<Either<RenewMemberEntity, Failure>> renewMembership({
+    required String id,
+    required String planId,
+    required num paidAmount,
+    required String paymentMethod,
+    required String notes,
+    String? startOverride,
+    String? receiptPath,
+  });
 }

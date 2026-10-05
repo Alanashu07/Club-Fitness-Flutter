@@ -2,6 +2,7 @@ import 'package:club_fitness/config/navigation/routes_class.dart';
 import 'package:club_fitness/config/theme/theme.dart';
 import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/di.dart';
+import 'package:club_fitness/features/admin_utils/admin_utils.dart';
 import 'package:club_fitness/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:club_fitness/features/image_cache/presentation/widgets/custom_cached_image.dart';
 import 'package:club_fitness/widgets/common_widgets.dart';
@@ -38,11 +39,18 @@ class _RecentMemberVM {
 }
 
 class _PendingPaymentVM {
+  final String id;
   final String name;
   final String amount;
   final String daysAgo;
   final String initials;
-  const _PendingPaymentVM(this.name, this.amount, this.daysAgo, this.initials);
+  const _PendingPaymentVM(
+    this.id,
+    this.name,
+    this.amount,
+    this.daysAgo,
+    this.initials,
+  );
 }
 
 // ─── Formatting helpers ───────────────────────────────────────────────────────
@@ -227,6 +235,7 @@ class _AdminHomeViewState extends State<AdminHomeView>
     return _data.pendingPayments
         .map(
           (p) => _PendingPaymentVM(
+            p.id,
             p.name,
             _formatInr(p.amountDue),
             p.submittedAgo,
@@ -242,50 +251,57 @@ class _AdminHomeViewState extends State<AdminHomeView>
       backgroundColor: AppTheme.background,
       body: FadeTransition(
         opacity: _fadeAnim,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            _buildSliverAppBar(),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  const SizedBox(height: 24),
-                  _buildQuickActions(),
-                  const SizedBox(height: 28),
-                  _buildSectionLabel('Overview', 'Today'),
-                  const SizedBox(height: 16),
-                  _buildStatsGrid(),
-                  const SizedBox(height: 28),
-                  _buildSectionLabel('Revenue', 'This Year'),
-                  const SizedBox(height: 16),
-                  _buildRevenueSummaryRow(),
-                  const SizedBox(height: 14),
-                  if (_data.revenue.monthly.isNotEmpty)
-                    _buildMonthlyRevenueChart(),
-                  const SizedBox(height: 14),
-                  _buildRevenueBottomRow(),
-                  const SizedBox(height: 28),
-                  _buildSectionLabel(
-                    'Pending Approvals',
-                    '${_pendingPayments.length} payments',
-                  ),
-                  const SizedBox(height: 16),
-                  _buildPendingPayments(),
-                  const SizedBox(height: 28),
-                  _buildSectionLabel('Recent Members', 'View all →'),
-                  const SizedBox(height: 16),
-                  _buildRecentMembers(),
-                  const SizedBox(height: 28),
-                  _buildSectionLabel('Quick Announcements', ''),
-                  const SizedBox(height: 16),
-                  _buildAnnouncementComposer(),
-                  const SizedBox(height: 28),
-                  if (_data.lowStockProducts.isNotEmpty) _buildLowStockBanner(),
-                ]),
+        child: LiquidRefresh(
+          onRefresh: () => context.read<HomeBloc>().add(const GetHomeEvent("admin")),
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              _buildSliverAppBar(),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    const SizedBox(height: 24),
+                    _buildQuickActions(),
+                    const SizedBox(height: 28),
+                    _buildSectionLabel('Overview', 'Today'),
+                    const SizedBox(height: 16),
+                    _buildStatsGrid(),
+                    const SizedBox(height: 28),
+                    _buildSectionLabel('Revenue', 'This Year'),
+                    const SizedBox(height: 16),
+                    _buildRevenueSummaryRow(),
+                    const SizedBox(height: 14),
+                    if (_data.revenue.monthly.isNotEmpty)
+                      _buildMonthlyRevenueChart(),
+                    const SizedBox(height: 14),
+                    _buildRevenueBottomRow(),
+                    const SizedBox(height: 28),
+                    _buildSectionLabel(
+                      'Pending Approvals',
+                      '${_pendingPayments.length} payments',
+                    ),
+                    const SizedBox(height: 16),
+                    _buildPendingPayments(),
+                    const SizedBox(height: 28),
+                    _buildSectionLabel(
+                      'Recent Members',
+                      'View all →',
+                      onTap: () => context.push(Routes.addMember),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildRecentMembers(),
+                    const SizedBox(height: 28),
+                    _buildSectionLabel('Quick Announcements', ''),
+                    const SizedBox(height: 16),
+                    _buildAnnouncementComposer(),
+                    const SizedBox(height: 28),
+                    if (_data.lowStockProducts.isNotEmpty) _buildLowStockBanner(),
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: _buildBottomNav(),
@@ -512,7 +528,7 @@ class _AdminHomeViewState extends State<AdminHomeView>
   }
 
   // ── Section Label ───────────────────────────────────────────────────────────
-  Widget _buildSectionLabel(String title, String sub) {
+  Widget _buildSectionLabel(String title, String sub, {VoidCallback? onTap}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -526,9 +542,15 @@ class _AdminHomeViewState extends State<AdminHomeView>
           ),
         ),
         if (sub.isNotEmpty)
-          Text(
-            sub,
-            style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+          GestureDetector(
+            onTap: onTap,
+            child: Text(
+              sub,
+              style: const TextStyle(
+                color: AppTheme.textSecondary,
+                fontSize: 12,
+              ),
+            ),
           ),
       ],
     );
@@ -560,8 +582,17 @@ class _AdminHomeViewState extends State<AdminHomeView>
         style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
       );
     }
-    return Column(
-      children: payments.map((p) => _PendingPaymentTile(payment: p)).toList(),
+    return BlocListener<FeeActionsBloc, FeeActionsState>(
+      listener: (context, state) {
+        if (state is FeeActionsSuccess) {
+          context.read<HomeBloc>().add(
+            RemoveAdminPendingApprovalEvent(state.id),
+          );
+        }
+      },
+      child: Column(
+        children: payments.map((p) => _PendingPaymentTile(payment: p)).toList(),
+      ),
     );
   }
 
@@ -1361,13 +1392,17 @@ class _PendingPaymentTile extends StatelessWidget {
               _ActionBtn(
                 icon: Icons.close_rounded,
                 color: AppTheme.error,
-                onTap: () {},
+                onTap: () => context.read<FeeActionsBloc>().add(
+                  RejectFeesEvent(payment.id),
+                ),
               ),
               const SizedBox(width: 8),
               _ActionBtn(
                 icon: Icons.check_rounded,
                 color: const Color(0xFF4CAF50),
-                onTap: () {},
+                onTap: () => context.read<FeeActionsBloc>().add(
+                  ApproveFeesEvent(payment.id),
+                ),
               ),
             ],
           ),

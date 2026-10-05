@@ -98,10 +98,16 @@ void _initMemberManagerDep() {
     ..registerFactory<MemberManagerRepo>(() => MemberManagerRepoImpl(sl()))
     ..registerFactory<CreateMember>(() => CreateMember(sl()))
     ..registerFactory<CreateMembershipPlan>(() => CreateMembershipPlan(sl()))
+    ..registerFactory<DeleteMember>(() => DeleteMember(sl()))
     ..registerFactory<DeleteMembershipPlan>(() => DeleteMembershipPlan(sl()))
+    ..registerFactory<GetMemberDetails>(() => GetMemberDetails(sl()))
     ..registerFactory<GetMemberList>(() => GetMemberList(sl()))
     ..registerFactory<GetPlans>(() => GetPlans(sl()))
     ..registerFactory<GetTrainers>(() => GetTrainers(sl()))
+    ..registerFactory<ReactivateMember>(() => ReactivateMember(sl()))
+    ..registerFactory<RenewMembership>(() => RenewMembership(sl()))
+    ..registerFactory<SuspendMember>(() => SuspendMember(sl()))
+    ..registerFactory<UpdateMember>(() => UpdateMember(sl()))
     ..registerFactory<UpdateMembershipPlan>(() => UpdateMembershipPlan(sl()));
 }
 // END OF _initMemberManagerDep
@@ -114,11 +120,12 @@ void _initAdminUtilsDep() {
       () => AdminUtilsNetworkDataSourceImpl(sl()),
     )
     ..registerFactory<AdminUtilsRepo>(() => AdminUtilsRepoImpl(sl()))
+    ..registerFactory<ApproveFees>(() => ApproveFees(sl()))
     ..registerFactory<GetFees>(() => GetFees(sl()))
+    ..registerFactory<GetFeeSummary>(() => GetFeeSummary(sl()))
     ..registerFactory<GetSalesReport>(() => GetSalesReport(sl()))
-    ..registerFactory<GetFeeSummary>(() => GetFeeSummary(sl()));
+    ..registerFactory<RejectFees>(() => RejectFees(sl()));
 }
-
 // END OF _initAdminUtilsDep
 
 // START OF _initWorkoutManagerDep

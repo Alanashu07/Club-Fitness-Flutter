@@ -1,5 +1,6 @@
 import 'package:club_fitness/config/network/api.dart';
 import 'package:club_fitness/core/utils/utils.dart';
+import 'package:dio/dio.dart';
 
 import '../models/member_manager_models.dart';
 
@@ -23,12 +24,42 @@ abstract interface class MemberManagerNetworkDataSource {
     required String trainer,
     required String dob,
     required String startDate,
+    required String userRole,
   });
+
+  Future<MemberListModel> updateMember({
+    required String id,
+    required String name,
+    required String phone,
+    required String email,
+    required String plan,
+    required String trainer,
+    required String dob,
+    required String startDate,
+  });
+
   Future<List<TrainerMiniModel>> getTrainers();
   Future<List<MembershipPlanMiniModel>> getPlans(bool includeInactive);
-  Future<MembershipPlanMiniModel> createMembershipPlan(MembershipPlanMiniModel model);
-  Future<MembershipPlanMiniModel> updateMembershipPlan(MembershipPlanMiniModel model);
+  Future<MembershipPlanMiniModel> createMembershipPlan(
+    MembershipPlanMiniModel model,
+  );
+  Future<MembershipPlanMiniModel> updateMembershipPlan(
+    MembershipPlanMiniModel model,
+  );
   Future<bool> deleteMembershipPlan(String id);
+  Future<MemberDetailModel> getMemberDetails(String id);
+  Future<String> reactivateMember(String id);
+  Future<String> deleteMember({required String id, bool force = false});
+  Future<String> suspendMember(String id);
+  Future<RenewMemberModel> renewMembership({
+    required String id,
+    required String planId,
+    required num paidAmount,
+    required String paymentMethod,
+    required String notes,
+    String? startOverride,
+    String? receiptPath,
+  });
 }
 
 class MemberManagerNetworkDataSourceImpl
@@ -88,16 +119,26 @@ class MemberManagerNetworkDataSourceImpl
     required String trainer,
     required String dob,
     required String startDate,
+    required String userRole,
   }) async {
+    String password;
+    if (dob.isEmpty) {
+      password = '';
+    } else {
+      DateTime date = dob.toDateTime;
+      password =
+          '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year.toString().padLeft(4, '0')}';
+    }
     final formData = {
       "name": name,
       "phone": phone,
       "email": email,
       "dateOfBirth": dob,
-      "password": "",
+      "password": password,
       "planId": plan,
       "trainerId": trainer,
-      "startDate": startDate
+      "startDate": startDate,
+      "role": userRole,
     };
     DioResponse response = await _dio.dioPostCall(EndPoints.members, formData);
     if (response.hasError) return response.handleError();
@@ -106,7 +147,9 @@ class MemberManagerNetworkDataSourceImpl
 
   @override
   Future<List<MembershipPlanMiniModel>> getPlans(bool includeInactive) async {
-    DioResponse response = await _dio.dioGetCall("${EndPoints.membershipPlans}?includeInactive=$includeInactive");
+    DioResponse response = await _dio.dioGetCall(
+      "${EndPoints.membershipPlans}?includeInactive=$includeInactive",
+    );
     if (response.hasError) return response.handleError();
     return (response.response!.data['plans'] as List)
         .map((e) => MembershipPlanMiniModel.fromJson(e))
@@ -123,23 +166,128 @@ class MemberManagerNetworkDataSourceImpl
   }
 
   @override
-  Future<MembershipPlanMiniModel> createMembershipPlan(MembershipPlanMiniModel model) async {
-    DioResponse response = await _dio.dioPostCall(EndPoints.membershipPlans, model.toJson());
+  Future<MembershipPlanMiniModel> createMembershipPlan(
+    MembershipPlanMiniModel model,
+  ) async {
+    DioResponse response = await _dio.dioPostCall(
+      EndPoints.membershipPlans,
+      model.toJson(),
+    );
     if (response.hasError) return response.handleError();
-    return MembershipPlanMiniModel.fromJson(response.response!.data['plan'] ?? {});
+    return MembershipPlanMiniModel.fromJson(
+      response.response!.data['plan'] ?? {},
+    );
   }
 
   @override
   Future<bool> deleteMembershipPlan(String id) async {
-    DioResponse response = await _dio.dioDeleteCall(EndPoints.updateOrDeleteMembershipPlan(id));
+    DioResponse response = await _dio.dioDeleteCall(
+      EndPoints.updateOrDeleteMembershipPlan(id),
+    );
     if (response.hasError) return response.handleError();
     return true;
   }
 
   @override
-  Future<MembershipPlanMiniModel> updateMembershipPlan(MembershipPlanMiniModel model) async {
-    DioResponse response = await _dio.dioPatchCall(EndPoints.updateOrDeleteMembershipPlan(model.id), model.toJson());
+  Future<MembershipPlanMiniModel> updateMembershipPlan(
+    MembershipPlanMiniModel model,
+  ) async {
+    DioResponse response = await _dio.dioPatchCall(
+      EndPoints.updateOrDeleteMembershipPlan(model.id),
+      model.toJson(),
+    );
     if (response.hasError) return response.handleError();
-    return MembershipPlanMiniModel.fromJson(response.response!.data['plan'] ?? {});
+    return MembershipPlanMiniModel.fromJson(
+      response.response!.data['plan'] ?? {},
+    );
+  }
+
+  @override
+  Future<MemberDetailModel> getMemberDetails(String id) async {
+    DioResponse response = await _dio.dioGetCall(EndPoints.memberDetails(id));
+    if (response.hasError) return response.handleError();
+    return MemberDetailModel.fromJson(response.response!.data);
+  }
+
+  @override
+  Future<MemberListModel> updateMember({
+    required String id,
+    required String name,
+    required String phone,
+    required String email,
+    required String plan,
+    required String trainer,
+    required String dob,
+    required String startDate,
+  }) async {
+    final formData = {
+      "name": name,
+      "phone": phone,
+      "email": email,
+      "dateOfBirth": dob,
+      "planId": plan,
+      "trainerId": trainer,
+      "startDate": startDate,
+    };
+    DioResponse response = await _dio.dioPatchCall(
+      EndPoints.memberDetails(id),
+      formData,
+    );
+
+    if (response.hasError) return response.handleError();
+    return MemberListModel.fromJson(response.response!.data['member'] ?? {});
+  }
+
+  @override
+  Future<String> reactivateMember(String id) async {
+    DioResponse response = await _dio.dioPatchCall(
+      EndPoints.reactivateMember(id),
+      {},
+    );
+    if (response.hasError) return response.handleError();
+    return response.response!.data['message'].toString();
+  }
+
+  @override
+  Future<String> deleteMember({required String id, bool force = false}) async {
+    DioResponse response = await _dio.dioDeleteCall(
+      EndPoints.memberDetails(id),
+      {},
+      {'force': force},
+    );
+    if (response.hasError) return response.handleError();
+    return response.response!.data['message'].toString();
+  }
+
+  @override
+  Future<RenewMemberModel> renewMembership({
+    required String id,
+    required String planId,
+    required num paidAmount,
+    required String paymentMethod,
+    required String notes,
+    String? startOverride,
+    String? receiptPath,
+  }) async {
+    final form = FormData.fromMap({
+      'planId': planId,
+      if (startOverride != null) 'startDate': startOverride,
+      'paidAmount': paidAmount,
+      'paymentMethod': paymentMethod,
+      'notes': notes,
+      if (receiptPath != null)
+        'receipt': await MultipartFile.fromFile(receiptPath),
+    });
+    DioResponse response = await _dio
+        .dioPostCall(EndPoints.renewMembership(id), form);
+    if (response.hasError) return response.handleError();
+    return RenewMemberModel.fromJson(response.response!.data);
+  }
+
+  @override
+  Future<String> suspendMember(String id) async {
+    DioResponse response = await _dio.dioPatchCall(EndPoints.suspendMember(id));
+    if (response.hasError) return response.handleError();
+    return response.response!.data['message'].toString();
   }
 }

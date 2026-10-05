@@ -2,6 +2,7 @@ import 'package:club_fitness/config/navigation/routes_class.dart';
 import 'package:club_fitness/config/theme/theme.dart';
 import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:club_fitness/features/image_cache/presentation/widgets/custom_cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -195,13 +196,27 @@ class _AdminHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthBloc>().state.user;
+    const avatar = CircleAvatar(
+      radius: 36,
+      backgroundColor: AppTheme.surface,
+      child: Icon(Icons.person, size: 38, color: AppTheme.textSecondary),
+    );
     return Row(
       children: [
-        const CircleAvatar(
-          radius: 36,
-          backgroundColor: AppTheme.surface,
-          child: Icon(Icons.person, size: 38, color: AppTheme.textSecondary),
-        ),
+        if (user.profileImageUrl.isNotEmpty)
+          ClipOval(
+            child: CustomCachedImage(
+              user.profileImageUrl,
+              width: 72,
+              height: 72,
+              placeholder: avatar,
+              errorLetter: user.name.firstLetter,
+              id: user.id.hashCode,
+              errorBuilder: (errorTitle, error, url) => avatar,
+            ),
+          )
+        else
+          avatar,
         const SizedBox(width: 16),
         Expanded(
           child: Column(

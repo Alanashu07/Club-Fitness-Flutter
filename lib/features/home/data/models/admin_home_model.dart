@@ -52,42 +52,42 @@ class OverviewModel extends OverviewEntity {
     num? ordersToday,
     num? ordersReadyToday,
   }) => OverviewModel(
-      totalMembers: totalMembers ?? this.totalMembers,
-      newMembersThisMonth: newMembersThisMonth ?? this.newMembersThisMonth,
-      activeMembers: activeMembers ?? this.activeMembers,
-      todayCheckIns: todayCheckIns ?? this.todayCheckIns,
-      activeTodayPercent: activeTodayPercent ?? this.activeTodayPercent,
-      pendingFeesCount: pendingFeesCount ?? this.pendingFeesCount,
-      outstandingAmount: outstandingAmount ?? this.outstandingAmount,
-      ordersToday: ordersToday ?? this.ordersToday,
-      ordersReadyToday: ordersReadyToday ?? this.ordersReadyToday,
+    totalMembers: totalMembers ?? this.totalMembers,
+    newMembersThisMonth: newMembersThisMonth ?? this.newMembersThisMonth,
+    activeMembers: activeMembers ?? this.activeMembers,
+    todayCheckIns: todayCheckIns ?? this.todayCheckIns,
+    activeTodayPercent: activeTodayPercent ?? this.activeTodayPercent,
+    pendingFeesCount: pendingFeesCount ?? this.pendingFeesCount,
+    outstandingAmount: outstandingAmount ?? this.outstandingAmount,
+    ordersToday: ordersToday ?? this.ordersToday,
+    ordersReadyToday: ordersReadyToday ?? this.ordersReadyToday,
   );
 
   Map<String, dynamic> toJson() => {
-        'totalMembers': totalMembers,
-        'newMembersThisMonth': newMembersThisMonth,
-        'activeMembers': activeMembers,
-        'todayCheckIns': todayCheckIns,
-        'activeTodayPercent': activeTodayPercent,
-        'pendingFeesCount': pendingFeesCount,
-        'outstandingAmount': outstandingAmount,
-        'ordersToday': ordersToday,
-        'ordersReadyToday': ordersReadyToday,
-      }..removeWhere((key, value) => _removeEmpty(value));
+    'totalMembers': totalMembers,
+    'newMembersThisMonth': newMembersThisMonth,
+    'activeMembers': activeMembers,
+    'todayCheckIns': todayCheckIns,
+    'activeTodayPercent': activeTodayPercent,
+    'pendingFeesCount': pendingFeesCount,
+    'outstandingAmount': outstandingAmount,
+    'ordersToday': ordersToday,
+    'ordersReadyToday': ordersReadyToday,
+  }..removeWhere((key, value) => _removeEmpty(value));
 
   @override
   String toString() {
     return 'OverviewModel('
-      'totalMembers: $totalMembers, '
-      'newMembersThisMonth: $newMembersThisMonth, '
-      'activeMembers: $activeMembers, '
-      'todayCheckIns: $todayCheckIns, '
-      'activeTodayPercent: $activeTodayPercent, '
-      'pendingFeesCount: $pendingFeesCount, '
-      'outstandingAmount: $outstandingAmount, '
-      'ordersToday: $ordersToday, '
-      'ordersReadyToday: $ordersReadyToday, '
-    ')';
+        'totalMembers: $totalMembers, '
+        'newMembersThisMonth: $newMembersThisMonth, '
+        'activeMembers: $activeMembers, '
+        'todayCheckIns: $todayCheckIns, '
+        'activeTodayPercent: $activeTodayPercent, '
+        'pendingFeesCount: $pendingFeesCount, '
+        'outstandingAmount: $outstandingAmount, '
+        'ordersToday: $ordersToday, '
+        'ordersReadyToday: $ordersReadyToday, '
+        ')';
   }
 
   // Helper function to remove empty values
@@ -97,16 +97,15 @@ class OverviewModel extends OverviewEntity {
     if (value is String) return value.isEmpty;
     if (value is List) return value.isEmpty;
     if (value is bool) return !value;
-    if (value is Map) {return (value..removeWhere((key, value) => _removeEmpty(value),)).isEmpty;}
+    if (value is Map) {
+      return (value..removeWhere((key, value) => _removeEmpty(value))).isEmpty;
+    }
     return false;
   }
 }
 
 class MonthlModel extends MonthlEntity {
-  const MonthlModel({
-    super.label,
-    super.total,
-  });
+  const MonthlModel({super.label, super.total});
 
   factory MonthlModel.fromJson(Map<String, dynamic> json) {
     return MonthlModel(
@@ -116,31 +115,22 @@ class MonthlModel extends MonthlEntity {
   }
 
   factory MonthlModel.fromEntity(MonthlEntity entity) {
-    return MonthlModel(
-      label: entity.label,
-      total: entity.total,
-    );
+    return MonthlModel(label: entity.label, total: entity.total);
   }
 
-  MonthlModel copyWith({
-    String? label,
-    num? total,
-  }) => MonthlModel(
-      label: label ?? this.label,
-      total: total ?? this.total,
-  );
+  MonthlModel copyWith({String? label, num? total}) =>
+      MonthlModel(label: label ?? this.label, total: total ?? this.total);
 
-  Map<String, dynamic> toJson() => {
-        'label': label,
-        'total': total,
-      }..removeWhere((key, value) => _removeEmpty(value));
+  Map<String, dynamic> toJson() =>
+      {'label': label, 'total': total}
+        ..removeWhere((key, value) => _removeEmpty(value));
 
   @override
   String toString() {
     return 'MonthlModel('
-      'label: $label, '
-      'total: $total, '
-    ')';
+        'label: $label, '
+        'total: $total, '
+        ')';
   }
 
   // Helper function to remove empty values
@@ -150,17 +140,15 @@ class MonthlModel extends MonthlEntity {
     if (value is String) return value.isEmpty;
     if (value is List) return value.isEmpty;
     if (value is bool) return !value;
-    if (value is Map) {return (value..removeWhere((key, value) => _removeEmpty(value),)).isEmpty;}
+    if (value is Map) {
+      return (value..removeWhere((key, value) => _removeEmpty(value))).isEmpty;
+    }
     return false;
   }
 }
 
 class ByPlaModel extends ByPlaEntity {
-  const ByPlaModel({
-    super.label,
-    super.amount,
-    super.fraction,
-  });
+  const ByPlaModel({super.label, super.amount, super.fraction});
 
   factory ByPlaModel.fromJson(Map<String, dynamic> json) {
     return ByPlaModel(
@@ -178,29 +166,24 @@ class ByPlaModel extends ByPlaEntity {
     );
   }
 
-  ByPlaModel copyWith({
-    String? label,
-    num? amount,
-    num? fraction,
-  }) => ByPlaModel(
-      label: label ?? this.label,
-      amount: amount ?? this.amount,
-      fraction: fraction ?? this.fraction,
-  );
+  ByPlaModel copyWith({String? label, num? amount, num? fraction}) =>
+      ByPlaModel(
+        label: label ?? this.label,
+        amount: amount ?? this.amount,
+        fraction: fraction ?? this.fraction,
+      );
 
-  Map<String, dynamic> toJson() => {
-        'label': label,
-        'amount': amount,
-        'fraction': fraction,
-      }..removeWhere((key, value) => _removeEmpty(value));
+  Map<String, dynamic> toJson() =>
+      {'label': label, 'amount': amount, 'fraction': fraction}
+        ..removeWhere((key, value) => _removeEmpty(value));
 
   @override
   String toString() {
     return 'ByPlaModel('
-      'label: $label, '
-      'amount: $amount, '
-      'fraction: $fraction, '
-    ')';
+        'label: $label, '
+        'amount: $amount, '
+        'fraction: $fraction, '
+        ')';
   }
 
   // Helper function to remove empty values
@@ -210,7 +193,9 @@ class ByPlaModel extends ByPlaEntity {
     if (value is String) return value.isEmpty;
     if (value is List) return value.isEmpty;
     if (value is bool) return !value;
-    if (value is Map) {return (value..removeWhere((key, value) => _removeEmpty(value),)).isEmpty;}
+    if (value is Map) {
+      return (value..removeWhere((key, value) => _removeEmpty(value))).isEmpty;
+    }
     return false;
   }
 }
@@ -236,9 +221,17 @@ class RevenueModel extends RevenueEntity {
       lastMonthChangePct: json['lastMonthChangePct'] as num? ?? 0,
       overdueAmount: json['overdueAmount'] as num? ?? 0,
       overdueMemberCount: json['overdueMemberCount'] as num? ?? 0,
-      monthly: (json['monthly'] as List?)?.map((e) => MonthlModel.fromJson(e)).toList() ?? const [],
+      monthly:
+          (json['monthly'] as List?)
+              ?.map((e) => MonthlModel.fromJson(e))
+              .toList() ??
+          const [],
       last7Days: (json['last7Days'] as List?)?.cast<num>() ?? const [],
-      byPlan: (json['byPlan'] as List?)?.map((e) => ByPlaModel.fromJson(e)).toList() ?? const [],
+      byPlan:
+          (json['byPlan'] as List?)
+              ?.map((e) => ByPlaModel.fromJson(e))
+              .toList() ??
+          const [],
     );
   }
 
@@ -267,42 +260,42 @@ class RevenueModel extends RevenueEntity {
     List<num>? last7Days,
     List<ByPlaModel>? byPlan,
   }) => RevenueModel(
-      thisMonth: thisMonth ?? this.thisMonth,
-      thisMonthChangePct: thisMonthChangePct ?? this.thisMonthChangePct,
-      lastMonth: lastMonth ?? this.lastMonth,
-      lastMonthChangePct: lastMonthChangePct ?? this.lastMonthChangePct,
-      overdueAmount: overdueAmount ?? this.overdueAmount,
-      overdueMemberCount: overdueMemberCount ?? this.overdueMemberCount,
-      monthly: monthly ?? this.monthly,
-      last7Days: last7Days ?? this.last7Days,
-      byPlan: byPlan ?? this.byPlan,
+    thisMonth: thisMonth ?? this.thisMonth,
+    thisMonthChangePct: thisMonthChangePct ?? this.thisMonthChangePct,
+    lastMonth: lastMonth ?? this.lastMonth,
+    lastMonthChangePct: lastMonthChangePct ?? this.lastMonthChangePct,
+    overdueAmount: overdueAmount ?? this.overdueAmount,
+    overdueMemberCount: overdueMemberCount ?? this.overdueMemberCount,
+    monthly: monthly ?? this.monthly,
+    last7Days: last7Days ?? this.last7Days,
+    byPlan: byPlan ?? this.byPlan,
   );
 
   Map<String, dynamic> toJson() => {
-        'thisMonth': thisMonth,
-        'thisMonthChangePct': thisMonthChangePct,
-        'lastMonth': lastMonth,
-        'lastMonthChangePct': lastMonthChangePct,
-        'overdueAmount': overdueAmount,
-        'overdueMemberCount': overdueMemberCount,
-        'monthly': monthly.map((e) => MonthlModel.fromEntity(e).toJson()).toList(),
-        'last7Days': last7Days,
-        'byPlan': byPlan.map((e) => ByPlaModel.fromEntity(e).toJson()).toList(),
-      }..removeWhere((key, value) => _removeEmpty(value));
+    'thisMonth': thisMonth,
+    'thisMonthChangePct': thisMonthChangePct,
+    'lastMonth': lastMonth,
+    'lastMonthChangePct': lastMonthChangePct,
+    'overdueAmount': overdueAmount,
+    'overdueMemberCount': overdueMemberCount,
+    'monthly': monthly.map((e) => MonthlModel.fromEntity(e).toJson()).toList(),
+    'last7Days': last7Days,
+    'byPlan': byPlan.map((e) => ByPlaModel.fromEntity(e).toJson()).toList(),
+  }..removeWhere((key, value) => _removeEmpty(value));
 
   @override
   String toString() {
     return 'RevenueModel('
-      'thisMonth: $thisMonth, '
-      'thisMonthChangePct: $thisMonthChangePct, '
-      'lastMonth: $lastMonth, '
-      'lastMonthChangePct: $lastMonthChangePct, '
-      'overdueAmount: $overdueAmount, '
-      'overdueMemberCount: $overdueMemberCount, '
-      'monthly: $monthly, '
-      'last7Days: $last7Days, '
-      'byPlan: $byPlan, '
-    ')';
+        'thisMonth: $thisMonth, '
+        'thisMonthChangePct: $thisMonthChangePct, '
+        'lastMonth: $lastMonth, '
+        'lastMonthChangePct: $lastMonthChangePct, '
+        'overdueAmount: $overdueAmount, '
+        'overdueMemberCount: $overdueMemberCount, '
+        'monthly: $monthly, '
+        'last7Days: $last7Days, '
+        'byPlan: $byPlan, '
+        ')';
   }
 
   // Helper function to remove empty values
@@ -312,7 +305,9 @@ class RevenueModel extends RevenueEntity {
     if (value is String) return value.isEmpty;
     if (value is List) return value.isEmpty;
     if (value is bool) return !value;
-    if (value is Map) {return (value..removeWhere((key, value) => _removeEmpty(value),)).isEmpty;}
+    if (value is Map) {
+      return (value..removeWhere((key, value) => _removeEmpty(value))).isEmpty;
+    }
     return false;
   }
 }
@@ -353,35 +348,36 @@ class PendingPaymentModel extends PendingPaymentEntity {
     num? amountDue,
     String? submittedAgo,
   }) => PendingPaymentModel(
-      id: id ?? this.id,
-      memberId: memberId ?? this.memberId,
-      name: name ?? this.name,
-      amountDue: amountDue ?? this.amountDue,
-      submittedAgo: submittedAgo ?? this.submittedAgo,
+    id: id ?? this.id,
+    memberId: memberId ?? this.memberId,
+    name: name ?? this.name,
+    amountDue: amountDue ?? this.amountDue,
+    submittedAgo: submittedAgo ?? this.submittedAgo,
   );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'memberId': memberId,
-        'name': name,
-        'amountDue': amountDue,
-        'submittedAgo': submittedAgo,
-      }..removeWhere((key, value) => _removeEmpty(value));
+    'id': id,
+    'memberId': memberId,
+    'name': name,
+    'amountDue': amountDue,
+    'submittedAgo': submittedAgo,
+  }..removeWhere((key, value) => _removeEmpty(value));
 
   @override
   String toString() {
     return 'PendingPaymentModel('
-      'id: $id, '
-      'memberId: $memberId, '
-      'name: $name, '
-      'amountDue: $amountDue, '
-      'submittedAgo: $submittedAgo, '
-    ')';
+        'id: $id, '
+        'memberId: $memberId, '
+        'name: $name, '
+        'amountDue: $amountDue, '
+        'submittedAgo: $submittedAgo, '
+        ')';
   }
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other is PendingPaymentModel && other.id == id);
+    return identical(this, other) ||
+        (other is PendingPaymentModel && other.id == id);
   }
 
   @override
@@ -394,18 +390,15 @@ class PendingPaymentModel extends PendingPaymentEntity {
     if (value is String) return value.isEmpty;
     if (value is List) return value.isEmpty;
     if (value is bool) return !value;
-    if (value is Map) {return (value..removeWhere((key, value) => _removeEmpty(value),)).isEmpty;}
+    if (value is Map) {
+      return (value..removeWhere((key, value) => _removeEmpty(value))).isEmpty;
+    }
     return false;
   }
 }
 
 class RecentMemberModel extends RecentMemberEntity {
-  const RecentMemberModel({
-    super.id,
-    super.name,
-    super.plan,
-    super.joinedAgo,
-  });
+  const RecentMemberModel({super.id, super.name, super.plan, super.joinedAgo});
 
   factory RecentMemberModel.fromJson(Map<String, dynamic> json) {
     return RecentMemberModel(
@@ -431,32 +424,30 @@ class RecentMemberModel extends RecentMemberEntity {
     String? plan,
     String? joinedAgo,
   }) => RecentMemberModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      plan: plan ?? this.plan,
-      joinedAgo: joinedAgo ?? this.joinedAgo,
+    id: id ?? this.id,
+    name: name ?? this.name,
+    plan: plan ?? this.plan,
+    joinedAgo: joinedAgo ?? this.joinedAgo,
   );
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'plan': plan,
-        'joinedAgo': joinedAgo,
-      }..removeWhere((key, value) => _removeEmpty(value));
+  Map<String, dynamic> toJson() =>
+      {'id': id, 'name': name, 'plan': plan, 'joinedAgo': joinedAgo}
+        ..removeWhere((key, value) => _removeEmpty(value));
 
   @override
   String toString() {
     return 'RecentMemberModel('
-      'id: $id, '
-      'name: $name, '
-      'plan: $plan, '
-      'joinedAgo: $joinedAgo, '
-    ')';
+        'id: $id, '
+        'name: $name, '
+        'plan: $plan, '
+        'joinedAgo: $joinedAgo, '
+        ')';
   }
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other is RecentMemberModel && other.id == id);
+    return identical(this, other) ||
+        (other is RecentMemberModel && other.id == id);
   }
 
   @override
@@ -469,7 +460,9 @@ class RecentMemberModel extends RecentMemberEntity {
     if (value is String) return value.isEmpty;
     if (value is List) return value.isEmpty;
     if (value is bool) return !value;
-    if (value is Map) {return (value..removeWhere((key, value) => _removeEmpty(value),)).isEmpty;}
+    if (value is Map) {
+      return (value..removeWhere((key, value) => _removeEmpty(value))).isEmpty;
+    }
     return false;
   }
 }
@@ -506,32 +499,30 @@ class LowStockProductModel extends LowStockProductEntity {
     num? stockCount,
     String? imageUrl,
   }) => LowStockProductModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      stockCount: stockCount ?? this.stockCount,
-      imageUrl: imageUrl ?? this.imageUrl,
+    id: id ?? this.id,
+    name: name ?? this.name,
+    stockCount: stockCount ?? this.stockCount,
+    imageUrl: imageUrl ?? this.imageUrl,
   );
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'stockCount': stockCount,
-        'imageUrl': imageUrl,
-      }..removeWhere((key, value) => _removeEmpty(value));
+  Map<String, dynamic> toJson() =>
+      {'id': id, 'name': name, 'stockCount': stockCount, 'imageUrl': imageUrl}
+        ..removeWhere((key, value) => _removeEmpty(value));
 
   @override
   String toString() {
     return 'LowStockProductModel('
-      'id: $id, '
-      'name: $name, '
-      'stockCount: $stockCount, '
-      'imageUrl: $imageUrl, '
-    ')';
+        'id: $id, '
+        'name: $name, '
+        'stockCount: $stockCount, '
+        'imageUrl: $imageUrl, '
+        ')';
   }
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other is LowStockProductModel && other.id == id);
+    return identical(this, other) ||
+        (other is LowStockProductModel && other.id == id);
   }
 
   @override
@@ -544,7 +535,9 @@ class LowStockProductModel extends LowStockProductEntity {
     if (value is String) return value.isEmpty;
     if (value is List) return value.isEmpty;
     if (value is bool) return !value;
-    if (value is Map) {return (value..removeWhere((key, value) => _removeEmpty(value),)).isEmpty;}
+    if (value is Map) {
+      return (value..removeWhere((key, value) => _removeEmpty(value))).isEmpty;
+    }
     return false;
   }
 }
@@ -560,11 +553,27 @@ class AdminHomeModel extends AdminHomeEntity {
 
   factory AdminHomeModel.fromJson(Map<String, dynamic> json) {
     return AdminHomeModel(
-      overview: json['overview'] != null ? OverviewModel.fromJson(json['overview']) : const OverviewModel(),
-      revenue: json['revenue'] != null ? RevenueModel.fromJson(json['revenue']) : const RevenueModel(),
-      pendingPayments: (json['pendingPayments'] as List?)?.map((e) => PendingPaymentModel.fromJson(e)).toList() ?? const [],
-      recentMembers: (json['recentMembers'] as List?)?.map((e) => RecentMemberModel.fromJson(e)).toList() ?? const [],
-      lowStockProducts: (json['lowStockProducts'] as List?)?.map((e) => LowStockProductModel.fromJson(e)).toList() ?? const [],
+      overview: json['overview'] != null
+          ? OverviewModel.fromJson(json['overview'])
+          : const OverviewModel(),
+      revenue: json['revenue'] != null
+          ? RevenueModel.fromJson(json['revenue'])
+          : const RevenueModel(),
+      pendingPayments:
+          (json['pendingPayments'] as List?)
+              ?.map((e) => PendingPaymentModel.fromJson(e))
+              .toList() ??
+          const [],
+      recentMembers:
+          (json['recentMembers'] as List?)
+              ?.map((e) => RecentMemberModel.fromJson(e))
+              .toList() ??
+          const [],
+      lowStockProducts:
+          (json['lowStockProducts'] as List?)
+              ?.map((e) => LowStockProductModel.fromJson(e))
+              .toList() ??
+          const [],
     );
   }
 
@@ -578,6 +587,7 @@ class AdminHomeModel extends AdminHomeEntity {
     );
   }
 
+  @override
   AdminHomeModel copyWith({
     OverviewModel? overview,
     RevenueModel? revenue,
@@ -585,30 +595,36 @@ class AdminHomeModel extends AdminHomeEntity {
     List<RecentMemberModel>? recentMembers,
     List<LowStockProductModel>? lowStockProducts,
   }) => AdminHomeModel(
-      overview: overview ?? this.overview,
-      revenue: revenue ?? this.revenue,
-      pendingPayments: pendingPayments ?? this.pendingPayments,
-      recentMembers: recentMembers ?? this.recentMembers,
-      lowStockProducts: lowStockProducts ?? this.lowStockProducts,
+    overview: overview ?? this.overview,
+    revenue: revenue ?? this.revenue,
+    pendingPayments: pendingPayments ?? this.pendingPayments,
+    recentMembers: recentMembers ?? this.recentMembers,
+    lowStockProducts: lowStockProducts ?? this.lowStockProducts,
   );
 
   Map<String, dynamic> toJson() => {
-        'overview': OverviewModel.fromEntity(overview).toJson(),
-        'revenue': RevenueModel.fromEntity(revenue).toJson(),
-        'pendingPayments': pendingPayments.map((e) => PendingPaymentModel.fromEntity(e).toJson()).toList(),
-        'recentMembers': recentMembers.map((e) => RecentMemberModel.fromEntity(e).toJson()).toList(),
-        'lowStockProducts': lowStockProducts.map((e) => LowStockProductModel.fromEntity(e).toJson()).toList(),
-      }..removeWhere((key, value) => _removeEmpty(value));
+    'overview': OverviewModel.fromEntity(overview).toJson(),
+    'revenue': RevenueModel.fromEntity(revenue).toJson(),
+    'pendingPayments': pendingPayments
+        .map((e) => PendingPaymentModel.fromEntity(e).toJson())
+        .toList(),
+    'recentMembers': recentMembers
+        .map((e) => RecentMemberModel.fromEntity(e).toJson())
+        .toList(),
+    'lowStockProducts': lowStockProducts
+        .map((e) => LowStockProductModel.fromEntity(e).toJson())
+        .toList(),
+  }..removeWhere((key, value) => _removeEmpty(value));
 
   @override
   String toString() {
     return 'AdminHomeModel('
-      'overview: $overview, '
-      'revenue: $revenue, '
-      'pendingPayments: $pendingPayments, '
-      'recentMembers: $recentMembers, '
-      'lowStockProducts: $lowStockProducts, '
-    ')';
+        'overview: $overview, '
+        'revenue: $revenue, '
+        'pendingPayments: $pendingPayments, '
+        'recentMembers: $recentMembers, '
+        'lowStockProducts: $lowStockProducts, '
+        ')';
   }
 
   // Helper function to remove empty values
@@ -618,8 +634,9 @@ class AdminHomeModel extends AdminHomeEntity {
     if (value is String) return value.isEmpty;
     if (value is List) return value.isEmpty;
     if (value is bool) return !value;
-    if (value is Map) {return (value..removeWhere((key, value) => _removeEmpty(value),)).isEmpty;}
+    if (value is Map) {
+      return (value..removeWhere((key, value) => _removeEmpty(value))).isEmpty;
+    }
     return false;
   }
 }
-

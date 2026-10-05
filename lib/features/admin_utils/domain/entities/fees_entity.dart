@@ -46,25 +46,25 @@ class FeesEntity {
   @override
   String toString() {
     return 'FeesEntity('
-      'id: $id, '
-      'memberId: $memberId, '
-      'memberName: $memberName, '
-      'memberPhone: $memberPhone, '
-      'memberEmail: $memberEmail, '
-      'plan: $plan, '
-      'planId: $planId, '
-      'amount: $amount, '
-      'paidAmount: $paidAmount, '
-      'status: $status, '
-      'dueDate: $dueDate, '
-      'paidDate: $paidDate, '
-      'paymentMethod: $paymentMethod, '
-      'receiptUrl: $receiptUrl, '
-      'notes: $notes, '
-      'overdueDays: $overdueDays, '
-      'createdAt: $createdAt, '
-      'updatedAt: $updatedAt, '
-    ')';
+        'id: $id, '
+        'memberId: $memberId, '
+        'memberName: $memberName, '
+        'memberPhone: $memberPhone, '
+        'memberEmail: $memberEmail, '
+        'plan: $plan, '
+        'planId: $planId, '
+        'amount: $amount, '
+        'paidAmount: $paidAmount, '
+        'status: $status, '
+        'dueDate: $dueDate, '
+        'paidDate: $paidDate, '
+        'paymentMethod: $paymentMethod, '
+        'receiptUrl: $receiptUrl, '
+        'notes: $notes, '
+        'overdueDays: $overdueDays, '
+        'createdAt: $createdAt, '
+        'updatedAt: $updatedAt, '
+        ')';
   }
 
   @override
@@ -83,12 +83,26 @@ class FeesEntity {
   String get memberInitials => memberName.twoLetters;
 }
 
-enum FeeStatus { paid, pending, overdue, partial, waived }
+enum FeeStatus {
+  paid('PAID', 'Paid', AppTheme.success),
+  pending('PENDING', 'Pending', AppTheme.warning),
+  overdue('OVERDUE', 'Overdue', AppTheme.error),
+  partial('PARTIAL', 'Partial', Color.fromARGB(255, 25, 118, 210)),
+  waived('WAIVED', 'Waived', AppTheme.secondary);
+
+  const FeeStatus(this.key, this.label, this.color);
+
+  final String key;
+  final String label;
+  final Color color;
+  static FeeStatus fromKey(String? key) =>
+      values.firstWhere((e) => e.key == key, orElse: () => pending);
+}
 
 enum PaymentMethod { cash, bankTransfer, upi, other }
 
 extension FeesExtension on FeesEntity {
-  FeeStatus get statusEnum => FeeStatus.values.byName(status.toLowerCase());
+  FeeStatus get statusEnum => FeeStatus.fromKey(status.toUpperCase());
 
   PaymentMethod get paymentMethodEnum {
     switch (paymentMethod.toLowerCase()) {

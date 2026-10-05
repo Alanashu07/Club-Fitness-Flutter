@@ -359,10 +359,10 @@ class DioConfig {
     return DioResponse.hasResponse(response);
   }
 
-  Future<DioResponse> dioDeleteCall(String url, [formData]) async {
+  Future<DioResponse> dioDeleteCall(String url, [formData, Map<String, dynamic>? queryParams]) async {
     Response response;
     try {
-      response = await getDio!.delete(url, data: formData);
+      response = await getDio!.delete(url, data: formData, queryParameters: queryParams);
     } on DioException catch (dioError) {
       return DioResponse.hasError(dioError);
     }
@@ -503,6 +503,9 @@ class DioResponse {
         break;
       case DioExceptionType.unknown:
         errorMessage = 'Unknown error';
+        break;
+      case DioExceptionType.transformTimeout:
+        errorMessage = 'Transform timeout';
         break;
     }
   }

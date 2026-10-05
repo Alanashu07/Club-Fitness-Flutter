@@ -16,6 +16,7 @@ class Routes {
   // MEMBER MANAGEMENT SCREEN
   //====================================================================================
   static const String addMember = '/admin/add-member';
+  static const String memberDetails = '/member-details';
   static const String renewMembership = '/renew-membership';
   static const String profile = '/profile';
 
@@ -67,6 +68,7 @@ class RoutesName {
   // MEMBER MANAGEMENT SCREEN
   //====================================================================================
   static const String addMember = 'add-member';
+  static const String memberDetails = 'member-details';
   static const String renewMembership = 'renew-membership';
   static const String profile = 'profile';
 

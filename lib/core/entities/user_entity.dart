@@ -1,5 +1,19 @@
 import 'package:club_fitness/core/utils/utils.dart';
 
+enum UserRole {
+  admin('ADMIN', 'Admin'),
+  trainer('STAFF', 'Trainer'),
+  member('MEMBER', 'Member');
+
+  const UserRole(this.key, this.label);
+  final String key;
+  final String label;
+
+  static UserRole fromKey(String? key) {
+    return values.firstWhere((e) => e.key == key?.toUpperCase(), orElse: () => member);
+  }
+}
+
 class UserEntity {
   final String id;
   final String name;
@@ -49,4 +63,8 @@ class UserEntity {
 
   @override
   int get hashCode => id.hashCode;
+}
+
+extension UserExtension on UserEntity {
+  UserRole get userRole => UserRole.fromKey(role);
 }

@@ -1,0 +1,32 @@
+{
+    "feeRecord": {
+        "id": "cmututoc80001uip4cs8jquwh",
+        "memberId": "cmskhrff60001ui884wfkrlg0",
+        "planId": "cms1gkwq20002uivk6nb8j0wi",
+        "amount": "1500",
+        "paidAmount": null,
+        "status": "PENDING",
+        "dueDate": "2026-10-04T13:26:12.339Z",
+        "submittedDate": null,
+        "approvedDate": null,
+        "paidDate": null,
+        "paymentMethod": null,
+        "receiptImageUrl": null,
+        "notes": null,
+        "approvedById": "cms1gkwq7000auivkt60y64sr",
+        "createdAt": "2026-10-04T13:26:12.344Z",
+        "updatedAt": "2026-10-04T13:26:12.356Z",
+        "periodStart": "2026-10-04T13:26:12.339Z",
+        "periodEnd": "2026-11-03T13:26:12.339Z",
+        "appliedAt": "2026-10-04T13:26:12.354Z"
+    },
+    "member": {
+        "id": "cmskhrff60001ui884wfkrlg0",
+        "status": "ACTIVE",
+        "membershipPlanId": "cms1gkwq20002uivk6nb8j0wi",
+        "membershipStart": "2026-10-04T13:26:12.339Z",
+        "membershipEnd": "2026-11-03T13:26:12.339Z"
+    },
+    "applied": true,
+    "message": "Membership renewed and active now."
+}
