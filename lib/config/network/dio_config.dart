@@ -49,7 +49,8 @@ class DioConfig {
         },
         onError: (DioException error, handler) async {
           // Skip interception for refresh endpoint to avoid recursion
-          if (error.requestOptions.path.contains('/auth/') && !error.requestOptions.path.endsWith('me')) {
+          if (error.requestOptions.path.contains('/auth/') &&
+              !error.requestOptions.path.endsWith('me')) {
             return handler.next(error);
           }
 
@@ -68,7 +69,7 @@ class DioConfig {
                 final newToken = bearer;
                 error.requestOptions.headers['Authorization'] =
                     'Bearer $newToken';
-                final cloneReq = await _dio!.fetch(error.requestOptions);
+                final cloneReq = await _retryRequest(error.requestOptions);
                 return handler.resolve(cloneReq);
               } else {
                 // Refresh failed, try rotation token
@@ -81,7 +82,7 @@ class DioConfig {
                   final newToken = bearer;
                   error.requestOptions.headers['Authorization'] =
                       'Bearer $newToken';
-                  final cloneReq = await _dio!.fetch(error.requestOptions);
+                  final cloneReq = await _retryRequest(error.requestOptions);
                   return handler.resolve(cloneReq);
                 } else {
                   // Both refresh and rotation failed, force logout
@@ -98,7 +99,7 @@ class DioConfig {
                 final newToken = bearer;
                 error.requestOptions.headers['Authorization'] =
                     'Bearer $newToken';
-                final cloneReq = await _dio!.fetch(error.requestOptions);
+                final cloneReq = await _retryRequest(error.requestOptions);
                 return handler.resolve(cloneReq);
               } else {
                 return handler.reject(error);
@@ -110,6 +111,13 @@ class DioConfig {
         },
       ),
     ]);
+  }
+
+  Future<Response> _retryRequest(RequestOptions options) {
+    final data = options.data;
+    return _dio!.fetch(
+      options.copyWith(data: data is FormData ? data.clone() : data),
+    );
   }
 
   Completer<bool>? _refreshCompleter;
@@ -359,10 +367,18 @@ class DioConfig {
     return DioResponse.hasResponse(response);
   }
 
-  Future<DioResponse> dioDeleteCall(String url, [formData, Map<String, dynamic>? queryParams]) async {
+  Future<DioResponse> dioDeleteCall(
+    String url, [
+    formData,
+    Map<String, dynamic>? queryParams,
+  ]) async {
     Response response;
     try {
-      response = await getDio!.delete(url, data: formData, queryParameters: queryParams);
+      response = await getDio!.delete(
+        url,
+        data: formData,
+        queryParameters: queryParams,
+      );
     } on DioException catch (dioError) {
       return DioResponse.hasError(dioError);
     }
@@ -410,7 +426,7 @@ class DioResponse {
       );
     }
     final failure = data['failure'];
-    if(failure != null) {
+    if (failure != null) {
       throw AppException.fromJson(failure);
     }
 

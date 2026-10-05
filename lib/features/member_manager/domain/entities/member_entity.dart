@@ -127,6 +127,8 @@ extension MemberExtension on MemberEntity {
 
   DateTime get membershipStartDate => membershipStart.toDateTime;
   DateTime get membershipEndDate => membershipEnd.toDateTime;
+  DateTime get createdAtDate => createdAt.toDateTime;
+  DateTime get updatedAtDate => updatedAt.toDateTime;
   int get daysLeft {
     return membershipEndDate.difference(DateTime.now()).inDays;
   }

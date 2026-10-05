@@ -1227,7 +1227,7 @@ class MemberDetailScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  member.id,
+                                  "Joined: ${member.createdAtDate.fullDateWithShortMonth}",
                                   style: TextStyle(
                                     color: Colors.white.withAOpacity(0.4),
                                     fontSize: 12,
@@ -1600,7 +1600,7 @@ class MemberDetailScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _miniInfo('Joined', member.createdAt),
+              _miniInfo('Started', member.membershipStart),
               _miniInfo('Expires', member.membershipEnd),
             ],
           ),
@@ -3214,6 +3214,7 @@ class _RenewMembershipSheetState extends State<_RenewMembershipSheet> {
   @override
   void initState() {
     super.initState();
+    _amountCtrl.text = widget.member.membershipPlan.price.toString();
     final s = context.read<MembersConfigBloc>().state;
     if (s is! MembersConfigSuccess && s is! MembersConfigLoading) {
       context.read<MembersConfigBloc>().add(
