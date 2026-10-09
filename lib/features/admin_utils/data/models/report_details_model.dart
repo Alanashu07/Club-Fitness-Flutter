@@ -63,7 +63,7 @@ class TotalRevenueModel extends TotalRevenueEntity {
   factory TotalRevenueModel.fromJson(Map<String, dynamic> json) {
     return TotalRevenueModel(
       value: json['value'] as num? ?? 0,
-      changePercent: json['changePercent'] as num? ?? 0,
+      changePercent: json['changePercent'] as num?,
       positive: json['positive'] as bool? ?? false,
     );
   }
@@ -123,7 +123,7 @@ class MembershipsSoldModel extends MembershipsSoldEntity {
   factory MembershipsSoldModel.fromJson(Map<String, dynamic> json) {
     return MembershipsSoldModel(
       value: json['value'] as num? ?? 0,
-      delta: json['delta'] as num? ?? 0,
+      delta: json['delta'] as num?,
       positive: json['positive'] as bool? ?? false,
     );
   }
@@ -183,7 +183,7 @@ class ShopSalesModel extends ShopSalesEntity {
   factory ShopSalesModel.fromJson(Map<String, dynamic> json) {
     return ShopSalesModel(
       value: json['value'] as num? ?? 0,
-      changePercent: json['changePercent'] as num? ?? 0,
+      changePercent: json['changePercent'] as num?,
       positive: json['positive'] as bool? ?? false,
     );
   }
@@ -437,7 +437,7 @@ class RevenueTrendModel extends RevenueTrendEntity {
   factory RevenueTrendModel.fromJson(Map<String, dynamic> json) {
     return RevenueTrendModel(
       total: json['total'] as num? ?? 0,
-      changePercent: json['changePercent'] as num? ?? 0,
+      changePercent: json['changePercent'] as num?,
       months: (json['months'] as List?)?.map((e) => MonthModel.fromJson(e)).toList() ?? const [],
     );
   }

@@ -71,11 +71,6 @@ class _RenewMembershipScreenState extends State<RenewMembershipScreen> {
   int _selectedPlan = 1; // Quarterly selected by default
   int _selectedPayment = 0;
 
-  String get _planTotal {
-    final p = _plans[_selectedPlan];
-    return p.price;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

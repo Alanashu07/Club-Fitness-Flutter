@@ -1,0 +1,1 @@
+enum OfferLifecycle { active, inactive, scheduled, expired }

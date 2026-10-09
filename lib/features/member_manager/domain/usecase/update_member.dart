@@ -20,6 +20,8 @@ class UpdateMember implements UseCase<MemberListEntity, UpdateMemberParams> {
       trainer: params.trainer,
       dob: params.dob,
       startDate: params.startDate,
+      profileImagePath: params.profileImagePath,
+      removeProfileImage: params.removeProfileImage,
     );
   }
 }
@@ -33,6 +35,8 @@ class UpdateMemberParams {
   final String trainer;
   final String dob;
   final String startDate;
+  final String? profileImagePath;
+  final bool removeProfileImage;
 
   const UpdateMemberParams({
     required this.id,
@@ -43,5 +47,7 @@ class UpdateMemberParams {
     required this.trainer,
     required this.dob,
     required this.startDate,
+    required this.profileImagePath,
+    required this.removeProfileImage,
   });
 }

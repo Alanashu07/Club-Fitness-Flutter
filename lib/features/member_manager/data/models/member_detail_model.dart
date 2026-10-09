@@ -1,14 +1,12 @@
-import '../models/member_model.dart';
-import '../models/attendance_model.dart';
-import '../models/fee_history_model.dart';
-
 import '../../domain/entities/member_detail_entity.dart';
+import 'member_manager_models.dart';
 
 class MemberDetailModel extends MemberDetailEntity {
   const MemberDetailModel({
     super.member,
     super.attendance,
     super.feeHistory,
+    super.offerRedemptions,
   });
 
   factory MemberDetailModel.fromJson(Map<String, dynamic> json) {
@@ -16,6 +14,7 @@ class MemberDetailModel extends MemberDetailEntity {
       member: json['member'] != null ? MemberModel.fromJson(json['member']) : const MemberModel(),
       attendance: (json['attendance'] as List?)?.map((e) => AttendanceModel.fromJson(e)).toList() ?? const [],
       feeHistory: (json['feeHistory'] as List?)?.map((e) => FeeHistoryModel.fromJson(e)).toList() ?? const [],
+      offerRedemptions: (json['offerRedemptions'] as List?)?.map((e) => OfferRedemptionModel.fromJson(e)).toList() ?? const [],
     );
   }
 
@@ -24,6 +23,7 @@ class MemberDetailModel extends MemberDetailEntity {
       member: entity.member,
       attendance: entity.attendance,
       feeHistory: entity.feeHistory,
+      offerRedemptions: entity.offerRedemptions,
     );
   }
 
@@ -31,16 +31,19 @@ class MemberDetailModel extends MemberDetailEntity {
     MemberModel? member,
     List<AttendanceModel>? attendance,
     List<FeeHistoryModel>? feeHistory,
+    List<OfferRedemptionModel>? offerRedemptions,
   }) => MemberDetailModel(
       member: member ?? this.member,
       attendance: attendance ?? this.attendance,
       feeHistory: feeHistory ?? this.feeHistory,
+      offerRedemptions: offerRedemptions ?? this.offerRedemptions
   );
 
   Map<String, dynamic> toJson() => {
         'member': MemberModel.fromEntity(member).toJson(),
         'attendance': attendance.map((e) => AttendanceModel.fromEntity(e).toJson()).toList(),
         'feeHistory': feeHistory.map((e) => FeeHistoryModel.fromEntity(e).toJson()).toList(),
+        'offerRedemptions': offerRedemptions.map((e) => OfferRedemptionModel.fromEntity(e).toJson()).toList(),
       }..removeWhere((key, value) => _removeEmpty(value));
 
   @override

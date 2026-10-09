@@ -24,7 +24,20 @@ class UrlServices {
     }
   }
 
-  static Future<void> whatsappNumber(String number) async {
-    await launchSchemeUrl(scheme: 'https', path: 'wa.me/$number');
+  static Future<void> whatsappMessage({
+  required String number,
+  String? message,
+}) async {
+  try {
+    final uri = Uri(
+      scheme: 'https',
+      host: 'wa.me',
+      path: number,
+      queryParameters: message == null ? null : {'text': message},
+    );
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } catch (e) {
+    log(e.toString());
   }
+}
 }

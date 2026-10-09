@@ -10,3 +10,4 @@ export '../shop_admin/presentation/screens/shop_admin_screens.dart';
 export '../profile/presentation/screens/profile_screens.dart';
 export '../notifications/presentation/screens/notifications_screens.dart';
 export '../membership_plan/presentation/screens/membership_plan_screens.dart';
+export '../offers/presentation/screens/offers_screens.dart';

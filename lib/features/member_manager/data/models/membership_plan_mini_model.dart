@@ -1,6 +1,7 @@
 import 'package:club_fitness/core/utils/utils.dart';
 
 import '../../domain/entities/membership_plan_mini_entity.dart';
+import 'member_manager_models.dart';
 
 class MembershipPlanMiniModel extends MembershipPlanMiniEntity {
   const MembershipPlanMiniModel({
@@ -10,6 +11,7 @@ class MembershipPlanMiniModel extends MembershipPlanMiniEntity {
     super.price,
     super.description,
     super.features,
+    super.offers,
     super.isActive,
   });
 
@@ -21,6 +23,11 @@ class MembershipPlanMiniModel extends MembershipPlanMiniEntity {
       price: json['price']?.toString().toNum ?? 0,
       description: json['description'] as String? ?? '',
       features: (json['features'] as List?)?.cast<String>() ?? const [],
+      offers:
+          (json['offers'] as List?)
+              ?.map((e) => PlanOfferModel.fromJson(e))
+              .toList() ??
+          const [],
       isActive: json['isActive'] as bool? ?? false,
     );
   }
@@ -33,6 +40,7 @@ class MembershipPlanMiniModel extends MembershipPlanMiniEntity {
       price: entity.price,
       description: entity.description,
       features: entity.features,
+      offers: entity.offers,
       isActive: entity.isActive,
     );
   }
@@ -45,6 +53,7 @@ class MembershipPlanMiniModel extends MembershipPlanMiniEntity {
     num? price,
     String? description,
     List<String>? features,
+    List<PlanOfferModel>? offers,
     bool? isActive,
   }) => MembershipPlanMiniModel(
     id: id ?? this.id,
@@ -53,6 +62,7 @@ class MembershipPlanMiniModel extends MembershipPlanMiniEntity {
     price: price ?? this.price,
     description: description ?? this.description,
     features: features ?? this.features,
+    offers: offers ?? this.offers,
     isActive: isActive ?? this.isActive,
   );
 
@@ -63,6 +73,7 @@ class MembershipPlanMiniModel extends MembershipPlanMiniEntity {
     'price': price,
     'description': description,
     'features': features,
+    'offers': offers.map((e) => PlanOfferModel.fromEntity(e).toJson()).toList(),
     'isActive': isActive,
   }..removeWhere((key, value) => _removeEmpty(value));
 

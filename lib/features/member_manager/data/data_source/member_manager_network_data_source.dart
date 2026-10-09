@@ -25,6 +25,9 @@ abstract interface class MemberManagerNetworkDataSource {
     required String dob,
     required String startDate,
     required String userRole,
+    required String? profileImagePath,
+    required String? offerId,
+    required String? offerCode,
   });
 
   Future<MemberListModel> updateMember({
@@ -36,6 +39,8 @@ abstract interface class MemberManagerNetworkDataSource {
     required String trainer,
     required String dob,
     required String startDate,
+    required String? profileImagePath,
+    required bool removeProfileImage,
   });
 
   Future<List<TrainerMiniModel>> getTrainers();
@@ -59,7 +64,12 @@ abstract interface class MemberManagerNetworkDataSource {
     required String notes,
     String? startOverride,
     String? receiptPath,
+    required bool waiveRemaining,
+    required String? offerId,
+    required String? offerCode,
   });
+
+  Future<String> revertLastRenewal(String id);
 }
 
 class MemberManagerNetworkDataSourceImpl
@@ -120,6 +130,9 @@ class MemberManagerNetworkDataSourceImpl
     required String dob,
     required String startDate,
     required String userRole,
+    required String? profileImagePath,
+    required String? offerId,
+    required String? offerCode,
   }) async {
     String password;
     if (dob.isEmpty) {
@@ -129,7 +142,7 @@ class MemberManagerNetworkDataSourceImpl
       password =
           '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year.toString().padLeft(4, '0')}';
     }
-    final formData = {
+    final formData = FormData.fromMap({
       "name": name,
       "phone": phone,
       "email": email,
@@ -139,7 +152,11 @@ class MemberManagerNetworkDataSourceImpl
       "trainerId": trainer,
       "startDate": startDate,
       "role": userRole,
-    };
+      "offerId": offerId,
+      "offerCode": offerCode,
+      if (profileImagePath != null)
+        "profileImage": await MultipartFile.fromFile(profileImagePath),
+    });
     DioResponse response = await _dio.dioPostCall(EndPoints.members, formData);
     if (response.hasError) return response.handleError();
     return MemberListModel.fromJson(response.response!.data['member'] ?? {});
@@ -219,8 +236,10 @@ class MemberManagerNetworkDataSourceImpl
     required String trainer,
     required String dob,
     required String startDate,
+    required String? profileImagePath,
+    required bool removeProfileImage,
   }) async {
-    final formData = {
+    final formData = FormData.fromMap({
       "name": name,
       "phone": phone,
       "email": email,
@@ -228,7 +247,10 @@ class MemberManagerNetworkDataSourceImpl
       "planId": plan,
       "trainerId": trainer,
       "startDate": startDate,
-    };
+      if (profileImagePath != null)
+        "profileImage": await MultipartFile.fromFile(profileImagePath),
+      "removeProfileImage": removeProfileImage,
+    });
     DioResponse response = await _dio.dioPatchCall(
       EndPoints.memberDetails(id),
       formData,
@@ -268,6 +290,9 @@ class MemberManagerNetworkDataSourceImpl
     required String notes,
     String? startOverride,
     String? receiptPath,
+    required bool waiveRemaining,
+    required String? offerId,
+    required String? offerCode,
   }) async {
     final form = FormData.fromMap({
       'planId': planId,
@@ -277,9 +302,14 @@ class MemberManagerNetworkDataSourceImpl
       'notes': notes,
       if (receiptPath != null)
         'receipt': await MultipartFile.fromFile(receiptPath),
+      'waiveRemaining': waiveRemaining,
+      if (offerId != null) 'offerId': offerId,
+      if (offerCode != null) 'offerCode': offerCode,
     });
-    DioResponse response = await _dio
-        .dioPostCall(EndPoints.renewMembership(id), form);
+    DioResponse response = await _dio.dioPostCall(
+      EndPoints.renewMembership(id),
+      form,
+    );
     if (response.hasError) return response.handleError();
     return RenewMemberModel.fromJson(response.response!.data);
   }
@@ -287,6 +317,15 @@ class MemberManagerNetworkDataSourceImpl
   @override
   Future<String> suspendMember(String id) async {
     DioResponse response = await _dio.dioPatchCall(EndPoints.suspendMember(id));
+    if (response.hasError) return response.handleError();
+    return response.response!.data['message'].toString();
+  }
+
+  @override
+  Future<String> revertLastRenewal(String id) async {
+    DioResponse response = await _dio.dioDeleteCall(
+      EndPoints.revertLastRenewal(id),
+    );
     if (response.hasError) return response.handleError();
     return response.response!.data['message'].toString();
   }

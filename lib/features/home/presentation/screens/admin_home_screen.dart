@@ -24,12 +24,14 @@ class _StatItem {
 }
 
 class _RecentMemberVM {
+  final String id;
   final String name;
   final String plan;
   final String joinedAgo;
   final String initials;
   final Color avatarColor;
   const _RecentMemberVM(
+    this.id,
     this.name,
     this.plan,
     this.joinedAgo,
@@ -222,6 +224,7 @@ class _AdminHomeViewState extends State<AdminHomeView>
     return List.generate(list.length, (i) {
       final m = list[i];
       return _RecentMemberVM(
+        m.id,
         m.name,
         m.plan,
         m.joinedAgo,
@@ -252,7 +255,8 @@ class _AdminHomeViewState extends State<AdminHomeView>
       body: FadeTransition(
         opacity: _fadeAnim,
         child: LiquidRefresh(
-          onRefresh: () => context.read<HomeBloc>().add(const GetHomeEvent("admin")),
+          onRefresh: () =>
+              context.read<HomeBloc>().add(const GetHomeEvent("admin")),
           child: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
@@ -296,7 +300,8 @@ class _AdminHomeViewState extends State<AdminHomeView>
                     const SizedBox(height: 16),
                     _buildAnnouncementComposer(),
                     const SizedBox(height: 28),
-                    if (_data.lowStockProducts.isNotEmpty) _buildLowStockBanner(),
+                    if (_data.lowStockProducts.isNotEmpty)
+                      _buildLowStockBanner(),
                   ]),
                 ),
               ),
@@ -611,7 +616,12 @@ class _AdminHomeViewState extends State<AdminHomeView>
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         itemCount: members.length,
-        itemBuilder: (_, i) => _MemberCard(member: members[i]),
+        itemBuilder: (_, i) => _MemberCard(member: members[i]).onTap(
+          () => context.pushNamed(
+            RoutesName.memberDetails,
+            pathParameters: {'id': members[i].id},
+          ),
+        ),
       ),
     );
   }
@@ -780,6 +790,10 @@ class _AdminHomeViewState extends State<AdminHomeView>
     );
   }
 
+  void _navigateToReport() {
+    context.push(Routes.adminReports);
+  }
+
   // ── Revenue Summary Row ─────────────────────────────────────────────────────
   Widget _buildRevenueSummaryRow() {
     final r = _data.revenue;
@@ -878,7 +892,7 @@ class _AdminHomeViewState extends State<AdminHomeView>
                 ),
               ],
             ),
-          ),
+          ).onTap(_navigateToReport),
         );
       }).toList(),
     );
@@ -967,7 +981,7 @@ class _AdminHomeViewState extends State<AdminHomeView>
           ),
         ],
       ),
-    );
+    ).onTap(_navigateToReport);
   }
 
   // ── Revenue Bottom Row: Sparkline + Donut ───────────────────────────────────
@@ -1047,7 +1061,7 @@ class _AdminHomeViewState extends State<AdminHomeView>
                 ),
               ],
             ),
-          ),
+          ).onTap(_navigateToReport),
         ),
         const SizedBox(width: 12),
         // Membership plan donut
@@ -1096,7 +1110,7 @@ class _AdminHomeViewState extends State<AdminHomeView>
                 _DonutLegend(segments: donutSegments),
               ],
             ),
-          ),
+          ).onTap(_navigateToReport),
         ),
       ],
     );
@@ -1407,6 +1421,11 @@ class _PendingPaymentTile extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    ).onTap(
+      () => context.pushNamed(
+        RoutesName.feeDetails,
+        pathParameters: {'id': payment.id},
       ),
     );
   }

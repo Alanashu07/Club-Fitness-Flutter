@@ -13,6 +13,9 @@ final class CreateMemberEvent extends MembersActionsEvent {
   final String dob;
   final String startDate;
   final String userRole;
+  final String? profileImagePath; // multipart file
+  final String? offerId;
+  final String? offerCode;
 
   const CreateMemberEvent({
     required this.name,
@@ -23,6 +26,9 @@ final class CreateMemberEvent extends MembersActionsEvent {
     required this.dob,
     required this.startDate,
     required this.userRole,
+    this.profileImagePath,
+    this.offerId,
+    this.offerCode,
   });
   @override
   List<Object?> get props => [
@@ -34,6 +40,9 @@ final class CreateMemberEvent extends MembersActionsEvent {
     dob,
     startDate,
     userRole,
+    profileImagePath,
+    offerId,
+    offerCode,
   ];
 }
 
@@ -46,6 +55,8 @@ final class UpdateMemberEvent extends MembersActionsEvent {
   final String trainer;
   final String dob;
   final String startDate;
+  final String? profileImagePath;
+  final bool removeProfileImage;
 
   const UpdateMemberEvent({
     required this.id,
@@ -56,6 +67,8 @@ final class UpdateMemberEvent extends MembersActionsEvent {
     required this.trainer,
     required this.dob,
     required this.startDate,
+    this.profileImagePath,
+    this.removeProfileImage = false,
   });
   @override
   List<Object?> get props => [
@@ -67,6 +80,8 @@ final class UpdateMemberEvent extends MembersActionsEvent {
     trainer,
     dob,
     startDate,
+    profileImagePath,
+    removeProfileImage,
   ];
 }
 
@@ -100,6 +115,9 @@ final class RenewMembershipEvent extends MembersActionsEvent {
   final String notes;
   final String? startOverride;
   final String? receiptPath;
+  final bool waiveRemaining;
+  final String? offerId;
+  final String? offerCode;
   const RenewMembershipEvent({
     required this.id,
     required this.planId,
@@ -107,8 +125,30 @@ final class RenewMembershipEvent extends MembersActionsEvent {
     required this.paymentMethod,
     required this.notes,
     this.startOverride,
-    this.receiptPath
+    this.receiptPath,
+    this.waiveRemaining = false,
+    this.offerId,
+    this.offerCode,
   });
   @override
-  List<Object?> get props => [id, planId, paidAmount, paymentMethod, notes, startOverride, receiptPath];
+  List<Object?> get props => [
+    id,
+    planId,
+    paidAmount,
+    paymentMethod,
+    notes,
+    startOverride,
+    receiptPath,
+    waiveRemaining,
+    offerId,
+    offerCode,
+  ];
+}
+
+class RevertLastRenewalEvent extends MembersActionsEvent {
+  final String id;
+  const RevertLastRenewalEvent({required this.id});
+
+  @override
+  List<Object?> get props => [id];
 }

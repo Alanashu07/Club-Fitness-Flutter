@@ -20,6 +20,7 @@ class MemberListEntity {
   final num workoutStreak;
   final String feeStatus;
   final num amount;
+  final String profileImageUrl;
 
   MemberStatus get memberStatus => MemberStatus.fromKey(status);
   String get initials => name.twoLetters;
@@ -41,6 +42,7 @@ class MemberListEntity {
     this.workoutStreak = 0,
     this.feeStatus = '',
     this.amount = 0,
+    this.profileImageUrl = '',
   });
 
   Color get avatarColor {

@@ -43,6 +43,8 @@ class FeesEntity {
     this.updatedAt = '',
   });
 
+  num get balance => amount - paidAmount;
+
   @override
   String toString() {
     return 'FeesEntity('
@@ -80,7 +82,7 @@ class FeesEntity {
     return colors[Randomizer.clampInt(memberId.hashCode, colors.length)];
   }
 
-  String get memberInitials => memberName.twoLetters;
+  String get memberInitials => memberName.twoLetters.toUpperCase();
 }
 
 enum FeeStatus {

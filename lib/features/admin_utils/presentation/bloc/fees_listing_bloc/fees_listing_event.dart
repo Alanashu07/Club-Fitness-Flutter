@@ -5,12 +5,15 @@ sealed class FeesListingEvent extends Equatable {
 }
 
 final class GetFeesSummaryEvent extends FeesListingEvent {
-  const GetFeesSummaryEvent();
+  final bool silent;
+  final bool continueLoading;
+  const GetFeesSummaryEvent({this.silent = false, this.continueLoading = true});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [silent, continueLoading];
 }
 
 final class GetFeesListingEvent extends FeesListingEvent {
+  final bool silent;
   final String search;
   final String status;
   final String? memberId;
@@ -19,6 +22,7 @@ final class GetFeesListingEvent extends FeesListingEvent {
   final String page;
   final String limit;
   const GetFeesListingEvent({
+    this.silent = false,
     this.search = '',
     this.status = '',
     this.memberId,
@@ -28,7 +32,16 @@ final class GetFeesListingEvent extends FeesListingEvent {
     this.limit = '',
   });
   @override
-  List<Object?> get props => [search, status, memberId, planId, sortBy, page, limit];
+  List<Object?> get props => [
+    silent,
+    search,
+    status,
+    memberId,
+    planId,
+    sortBy,
+    page,
+    limit,
+  ];
 }
 
 final class GetMoreFeesListingEvent extends FeesListingEvent {

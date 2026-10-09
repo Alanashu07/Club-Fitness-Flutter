@@ -5,6 +5,7 @@ export 'domain/entities/admin_utils_entities.dart';
 export 'domain/repository/admin_utils_repo.dart';
 export 'domain/usecase/admin_utils_usecases.dart';
 export 'presentation/bloc/fee_actions_bloc/fee_actions_bloc.dart';
+export 'presentation/bloc/fee_detail_bloc/fee_detail_bloc.dart';
 export 'presentation/bloc/fees_listing_bloc/fees_listing_bloc.dart';
 export 'presentation/bloc/report_bloc/report_bloc.dart';
 export 'presentation/screens/admin_utils_screens.dart';

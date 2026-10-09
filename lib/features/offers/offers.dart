@@ -1,0 +1,9 @@
+export 'data/data_source/offers_network_data_source.dart';
+export 'data/models/offers_models.dart';
+export 'data/repository/offers_repo_impl.dart';
+export 'domain/entities/offers_entities.dart';
+export 'domain/repository/offers_repo.dart';
+export 'domain/usecase/offers_usecases.dart';
+export 'presentation/bloc/offers_bloc/offers_bloc.dart';
+export 'presentation/screens/offers_screens.dart';
+export 'presentation/widgets/offers_widgets.dart';

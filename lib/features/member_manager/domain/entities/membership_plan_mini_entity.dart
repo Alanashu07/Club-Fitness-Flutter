@@ -1,3 +1,5 @@
+import 'member_manager_entities.dart';
+
 class MembershipPlanMiniEntity {
   final String id;
   final String name;
@@ -5,6 +7,7 @@ class MembershipPlanMiniEntity {
   final num price;
   final String description;
   final List<String> features;
+  final List<PlanOfferEntity> offers;
   final bool isActive;
 
   const MembershipPlanMiniEntity({
@@ -14,6 +17,7 @@ class MembershipPlanMiniEntity {
     this.price = 0,
     this.description = '',
     this.features = const [],
+    this.offers = const [],
     this.isActive = false,
   });
 
@@ -38,19 +42,20 @@ class MembershipPlanMiniEntity {
   @override
   String toString() {
     return 'MembershipPlanMiniEntity('
-      'id: $id, '
-      'name: $name, '
-      'durationDays: $durationDays, '
-      'price: $price, '
-      'description: $description, '
-      'features: $features, '
-      'isActive: $isActive, '
-    ')';
+        'id: $id, '
+        'name: $name, '
+        'durationDays: $durationDays, '
+        'price: $price, '
+        'description: $description, '
+        'features: $features, '
+        'isActive: $isActive, '
+        ')';
   }
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other is MembershipPlanMiniEntity && other.id == id);
+    return identical(this, other) ||
+        (other is MembershipPlanMiniEntity && other.id == id);
   }
 
   @override

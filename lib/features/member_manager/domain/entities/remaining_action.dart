@@ -1,0 +1,1 @@
+enum RemainingAction { pending, waive }

@@ -8,6 +8,7 @@ export 'get_plans.dart';
 export 'get_trainers.dart';
 export 'reactivate_member.dart';
 export 'renew_membership.dart';
+export 'revert_last_renewal.dart';
 export 'suspend_member.dart';
 export 'update_member.dart';
 export 'update_membership_plan.dart';

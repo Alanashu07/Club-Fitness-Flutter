@@ -36,8 +36,8 @@ class AdminRoutes {
       path: Routes.feeDetails(':id'),
       name: RoutesName.feeDetails,
       builder: (context, state) {
-        final extra = state.extra as Map;
-        return FeeDetailScreen(record: extra['fee']);
+        final params = state.pathParameters;
+        return FeeDetailProvider(id: params['id']!);
       },
     ),
     GoRoute(
@@ -54,6 +54,11 @@ class AdminRoutes {
       path: Routes.membershipPlans,
       name: RoutesName.membershipPlans,
       builder: (context, state) => const MembershipPlansScreen(),
+    ),
+    GoRoute(
+      path: Routes.offers,
+      name: RoutesName.offers,
+      builder: (context, state) => const OffersScreen(),
     ),
   ];
 }

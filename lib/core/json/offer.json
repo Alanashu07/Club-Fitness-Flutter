@@ -1,0 +1,20 @@
+{
+        "id": "cmuxrz92f0006uisooixvg3mz",
+        "name": "TEST OFFER 2",
+        "code": "TEST1234",
+        "description": "This is to test offer",
+        "discountType": "PERCENTAGE",
+        "discountValue": "5",
+        "maxDiscountAmount": 0,
+        "appliesTo": "NEW_MEMBER",
+        "appliesToAllPlans": false,
+        "validFrom": "null",
+        "validUntil": "null",
+        "maxRedemptions": 50,
+        "perUserLimit": 3,
+        "redemptionCount": 0,
+        "isActive": true,
+        "createdAt": "2026-10-07T07:17:38.344Z",
+        "updatedAt": "2026-10-07T07:17:38.344Z",
+        "plans": []
+    }

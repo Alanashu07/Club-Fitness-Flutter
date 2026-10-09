@@ -39,7 +39,7 @@ class FeesModel extends FeesEntity {
       dueDate: json['dueDate'] as String? ?? '',
       paidDate: json['paidDate'] as String? ?? '',
       paymentMethod: json['paymentMethod'] as String? ?? '',
-      receiptUrl: json['receiptUrl'] as String? ?? '',
+      receiptUrl: json['receiptUrl'] as String? ?? json['receiptImageUrl'] as String? ?? '',
       notes: json['notes'] as String? ?? '',
       overdueDays: json['overdueDays'] as num? ?? 0,
       createdAt: json['createdAt'] as String? ?? '',

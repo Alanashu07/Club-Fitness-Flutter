@@ -30,12 +30,19 @@ class FeesListingBloc extends Bloc<FeesListingEvent, FeesListingState> {
     GetFeesSummaryEvent event,
     Emitter<FeesListingState> emit,
   ) async {
-    emit(SummaryLoading());
+    if(!event.silent) {
+      emit(SummaryLoading());
+    }
     final failureOrSummary = await _getFeeSummary(null);
     failureOrSummary.fold((s) {
       _summary = s;
+      if(event.silent) {
+        emit(SummaryLoading());
+      }
       emit(FeesSummaryLoaded(s));
-      add(const GetFeesListingEvent());
+      if(event.continueLoading) {
+        add(GetFeesListingEvent(silent: event.silent));
+      }
     }, (f) => emit(SummaryLoadFailure(f)));
   }
 
@@ -45,7 +52,9 @@ class FeesListingBloc extends Bloc<FeesListingEvent, FeesListingState> {
   ) async {
     final summary = _summary;
     if (summary == null) return;
-    emit(FeesListingLoading(summary));
+    if (!event.silent) {
+      emit(FeesListingLoading(summary));
+    }
     final params = GetFeesParams(
       limit: event.limit,
       memberId: event.memberId,
@@ -60,6 +69,9 @@ class FeesListingBloc extends Bloc<FeesListingEvent, FeesListingState> {
       _activeParams = params;
       _activePagination = fees.pagination;
       _fees = fees.fees;
+      if (event.silent) {
+        emit(FeesListingLoading(summary));
+      }
       emit(FeesListingLoaded(summary, fees.fees));
     }, (f) => emit(FeesListingFailure(summary, f)));
   }
@@ -69,7 +81,7 @@ class FeesListingBloc extends Bloc<FeesListingEvent, FeesListingState> {
     Emitter<FeesListingState> emit,
   ) async {
     final summary = _summary;
-    if(summary == null) return;
+    if (summary == null) return;
     bool skip = BlocLoadMoreSkipper.skipLoadMore(
       hasMore: _activePagination.hasNextPage,
       isFailureState: state is FeesListingLoadingMoreFailure,

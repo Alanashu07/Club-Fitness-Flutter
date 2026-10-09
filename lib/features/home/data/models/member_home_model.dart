@@ -71,7 +71,7 @@ class PlanModel extends PlanEntity {
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
       durationDays: json['durationDays'] as num? ?? 0,
-      price: json['price'] as num? ?? 0,
+      price: json['price']?.toString().toNum ?? 0,
     );
   }
 
@@ -874,7 +874,7 @@ class FeeStatusModel extends FeeStatusEntity {
   factory FeeStatusModel.fromJson(Map<String, dynamic> json) {
     return FeeStatusModel(
       status: json['status'] as String? ?? '',
-      amount: json['amount'] as num? ?? 0,
+      amount: json['amount']?.toString().toNum ?? 0,
       dueDate: json['dueDate'] as String? ?? '',
       paidDate: json['paidDate'] as String? ?? '',
       planName: json['planName'] as String? ?? '',

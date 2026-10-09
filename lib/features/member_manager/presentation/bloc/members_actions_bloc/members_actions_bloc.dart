@@ -16,6 +16,7 @@ class MembersActionsBloc
   final SuspendMember _suspendMember;
   final ReactivateMember _reactivateMember;
   final RenewMembership _renewMembership;
+  final RevertLastRenewal _revertLastRenewal;
   MembersActionsBloc(
     CreateMember createMember,
     UpdateMember updateMember,
@@ -23,12 +24,14 @@ class MembersActionsBloc
     SuspendMember suspendMember,
     ReactivateMember reactivateMember,
     RenewMembership renewMembership,
+    RevertLastRenewal revertLastRenewal
   ) : _createMember = createMember,
       _updateMember = updateMember,
       _deleteMember = deleteMember,
       _suspendMember = suspendMember,
       _reactivateMember = reactivateMember,
       _renewMembership = renewMembership,
+      _revertLastRenewal = revertLastRenewal,
       super(MembersActionsInitial()) {
     on<MembersActionsEvent>((event, emit) {});
     on<CreateMemberEvent>(_onCreateMember);
@@ -37,6 +40,7 @@ class MembersActionsBloc
     on<SuspendMemberEvent>(_onSuspendMember);
     on<ReactivateMemberEvent>(_onReactivateMember);
     on<RenewMembershipEvent>(_onRenewMembership);
+    on<RevertLastRenewalEvent>(_onRevertLastRenewal);
   }
 
   Future<void> _onCreateMember(
@@ -53,6 +57,9 @@ class MembersActionsBloc
       trainer: event.trainer,
       startDate: event.startDate,
       userRole: event.userRole,
+      offerCode: event.offerCode,
+      offerId: event.offerId,
+      profileImagePath: event.profileImagePath,
     );
     final result = await _createMember(params);
     result.fold(
@@ -75,6 +82,8 @@ class MembersActionsBloc
       plan: event.plan,
       trainer: event.trainer,
       startDate: event.startDate,
+      removeProfileImage: event.removeProfileImage,
+      profileImagePath: event.profileImagePath,
     );
     final result = await _updateMember(params);
     result.fold(
@@ -134,11 +143,26 @@ class MembersActionsBloc
       paymentMethod: event.paymentMethod,
       startOverride: event.startOverride,
       receiptPath: event.receiptPath,
+      offerCode: event.offerCode,
+      offerId: event.offerId,
+      waiveRemaining: event.waiveRemaining,
     );
     final result = await _renewMembership(params);
     result.fold(
       (member) => emit(RenewMembershipSuccessState(member)),
       (failure) => emit(RenewMembershipFailureState(failure)),
+    );
+  }
+
+  Future<void> _onRevertLastRenewal(
+    RevertLastRenewalEvent event,
+    Emitter<MembersActionsState> emit,
+  ) async {
+    emit(RevertLastRenewalLoadingState());
+    final result = await _revertLastRenewal(event.id);
+    result.fold(
+      (member) => emit(RevertLastRenewalSuccessState(event.id, member)),
+      (failure) => emit(RevertLastRenewalFailureState(failure)),
     );
   }
 }

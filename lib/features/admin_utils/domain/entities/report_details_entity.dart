@@ -15,12 +15,12 @@ class WindowEntity {
 
 class TotalRevenueEntity {
   final num value;
-  final num changePercent;
+  final num? changePercent;
   final bool positive;
 
   const TotalRevenueEntity({
     this.value = 0,
-    this.changePercent = 0,
+    this.changePercent,
     this.positive = false,
   });
 
@@ -36,12 +36,12 @@ class TotalRevenueEntity {
 
 class MembershipsSoldEntity {
   final num value;
-  final num delta;
+  final num? delta;
   final bool positive;
 
   const MembershipsSoldEntity({
     this.value = 0,
-    this.delta = 0,
+    this.delta,
     this.positive = false,
   });
 
@@ -57,12 +57,12 @@ class MembershipsSoldEntity {
 
 class ShopSalesEntity {
   final num value;
-  final num changePercent;
+  final num? changePercent;
   final bool positive;
 
   const ShopSalesEntity({
     this.value = 0,
-    this.changePercent = 0,
+    this.changePercent,
     this.positive = false,
   });
 
@@ -147,12 +147,12 @@ class MonthEntity {
 
 class RevenueTrendEntity {
   final num total;
-  final num changePercent;
+  final num? changePercent;
   final List<MonthEntity> months;
 
   const RevenueTrendEntity({
     this.total = 0,
-    this.changePercent = 0,
+    this.changePercent,
     this.months = const [],
   });
 

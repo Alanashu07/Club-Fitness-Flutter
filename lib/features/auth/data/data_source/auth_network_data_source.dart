@@ -92,7 +92,7 @@ class AuthNetworkDataSourceImpl implements AuthNetworkDataSource {
         code: 300,
       );
     }
-    return LoginUserModel.fromJson(data);
+    return LoginUserModel.fromJson(data['user'] ?? {});
   }
 
   @override

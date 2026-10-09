@@ -1,0 +1,1 @@
+enum DeleteMode { deactivate, permanent }

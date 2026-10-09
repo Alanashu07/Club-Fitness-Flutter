@@ -1,5 +1,6 @@
 import 'package:club_fitness/config/navigation/routes_class.dart';
 import 'package:club_fitness/config/theme/theme.dart';
+import 'package:club_fitness/core/constants/constants.dart';
 import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:club_fitness/features/image_cache/presentation/widgets/custom_cached_image.dart';
@@ -128,10 +129,17 @@ class AdminProfileScreen extends StatelessWidget {
             ),
             _AdminTile(
               icon: Icons.campaign_outlined,
-              title: 'Announcements & offers',
+              title: 'Announcements & Notifications',
               subtitle: 'Push notifications to all members',
               color: AppTheme.textSecondary,
               onTap: () {},
+            ),
+            _AdminTile(
+              icon: Icons.discount_outlined,
+              title: 'Offers & Discounts',
+              subtitle: 'Promotions and discounts for members',
+              color: AppTheme.textSecondary,
+              onTap: () => context.push(Routes.offers),
             ),
             _AdminTile(
               icon: Icons.payments_outlined,

@@ -218,9 +218,9 @@ class _CustomCachedImageState extends State<CustomCachedImage> {
     }
 
     if (url.contains('media')) {
-      return '${EndPoints.baseUrl}/$url';
+      return '${EndPoints.baseMediaUrl}/$url';
     }
 
-    return '${EndPoints.baseUrl}/media/$url';
+    return '${EndPoints.baseMediaUrl}/media/$url';
   }
 }

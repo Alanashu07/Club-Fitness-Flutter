@@ -307,9 +307,10 @@ class _LoginScreenState extends State<LoginScreen>
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        // mainAxisSize: MainAxisSize.min,
+        shrinkWrap: true,
         children: [
           // Step content
           FadeTransition(

@@ -1,7 +1,6 @@
 import 'dart:developer' as dev_log;
 import 'package:dartz/dartz.dart';
 import 'package:club_fitness/core/exceptions/failure.dart';
-// TODO: Import necessary models used in parameters or return types
 import '../../domain/entities/member_manager_entities.dart';
 import '../data_source/member_manager_network_data_source.dart';
 import '../../domain/repository/member_manager_repo.dart';
@@ -57,6 +56,9 @@ class MemberManagerRepoImpl implements MemberManagerRepo {
     required String dob,
     required String startDate,
     required String userRole,
+    required String? profileImagePath,
+    required String? offerId,
+    required String? offerCode,
   }) async {
     try {
       final result = await dataSource.createMember(
@@ -68,6 +70,9 @@ class MemberManagerRepoImpl implements MemberManagerRepo {
         email: email,
         phone: phone,
         name: name,
+        profileImagePath: profileImagePath,
+        offerId: offerId,
+        offerCode: offerCode,
       );
       return Left(result);
     } catch (e, s) {
@@ -91,6 +96,8 @@ class MemberManagerRepoImpl implements MemberManagerRepo {
     required String trainer,
     required String dob,
     required String startDate,
+    required String? profileImagePath,
+    required bool removeProfileImage,
   }) async {
     try {
       final result = await dataSource.updateMember(
@@ -102,6 +109,8 @@ class MemberManagerRepoImpl implements MemberManagerRepo {
         phone: phone,
         name: name,
         id: id,
+        profileImagePath: profileImagePath,
+        removeProfileImage: removeProfileImage,
       );
       return Left(result);
     } catch (e, s) {
@@ -279,6 +288,9 @@ class MemberManagerRepoImpl implements MemberManagerRepo {
     required String notes,
     String? startOverride,
     String? receiptPath,
+    required bool waiveRemaining,
+    required String? offerId,
+    required String? offerCode,
   }) async {
     try {
       final result = await dataSource.renewMembership(
@@ -289,12 +301,31 @@ class MemberManagerRepoImpl implements MemberManagerRepo {
         paymentMethod: paymentMethod,
         notes: notes,
         receiptPath: receiptPath,
+        waiveRemaining: waiveRemaining,
+        offerId: offerId,
+        offerCode: offerCode,
       );
       return Left(result);
     } catch (e, s) {
       dev_log.log(
         e.toString(),
         name: 'renewMembership in MemberManagerRepoImpl',
+        stackTrace: s,
+        error: e,
+      );
+      return Right(Failure.fromException(e));
+    }
+  }
+
+  @override
+  Future<Either<String, Failure>> revertLastRenewal(String id) async {
+    try {
+      final result = await dataSource.revertLastRenewal(id);
+      return Left(result);
+    } catch (e, s) {
+      dev_log.log(
+        e.toString(),
+        name: 'revertLastRenewal in MemberManagerRepoImpl',
         stackTrace: s,
         error: e,
       );

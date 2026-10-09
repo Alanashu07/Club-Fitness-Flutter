@@ -7,6 +7,7 @@ import 'features/auth/auth.dart';
 import 'features/home/home.dart';
 import 'features/member_manager/member_manager.dart';
 import 'features/workout_manager/workout_manager.dart';
+import 'features/offers/offers.dart';
 
 GetIt sl = GetIt.instance;
 
@@ -18,6 +19,7 @@ void initDep() {
   _initMemberManagerDep();
   _initAdminUtilsDep();
   _initWorkoutManagerDep();
+  _initOffersDep();
 }
 
 void _initCommon() {
@@ -106,6 +108,7 @@ void _initMemberManagerDep() {
     ..registerFactory<GetTrainers>(() => GetTrainers(sl()))
     ..registerFactory<ReactivateMember>(() => ReactivateMember(sl()))
     ..registerFactory<RenewMembership>(() => RenewMembership(sl()))
+    ..registerFactory<RevertLastRenewal>(() => RevertLastRenewal(sl()))
     ..registerFactory<SuspendMember>(() => SuspendMember(sl()))
     ..registerFactory<UpdateMember>(() => UpdateMember(sl()))
     ..registerFactory<UpdateMembershipPlan>(() => UpdateMembershipPlan(sl()));
@@ -121,10 +124,23 @@ void _initAdminUtilsDep() {
     )
     ..registerFactory<AdminUtilsRepo>(() => AdminUtilsRepoImpl(sl()))
     ..registerFactory<ApproveFees>(() => ApproveFees(sl()))
+    ..registerFactory<AttachReceipt>(() => AttachReceipt(sl()))
+    ..registerFactory<CreateFee>(() => CreateFee(sl()))
+    ..registerFactory<DeleteFee>(() => DeleteFee(sl()))
+    ..registerFactory<ExportFeesPdf>(() => ExportFeesPdf(sl()))
+    ..registerFactory<ExportSalesReportExcel>(
+      () => ExportSalesReportExcel(sl()),
+    )
+    ..registerFactory<ExportSalesReportPdf>(() => ExportSalesReportPdf(sl()))
     ..registerFactory<GetFees>(() => GetFees(sl()))
+    ..registerFactory<GetFeeById>(() => GetFeeById(sl()))
     ..registerFactory<GetFeeSummary>(() => GetFeeSummary(sl()))
     ..registerFactory<GetSalesReport>(() => GetSalesReport(sl()))
-    ..registerFactory<RejectFees>(() => RejectFees(sl()));
+    ..registerFactory<GetSalesReportParams>(() => GetSalesReportParams(sl()))
+    ..registerFactory<MarkFeePaid>(() => MarkFeePaid(sl()))
+    ..registerFactory<RejectFees>(() => RejectFees(sl()))
+    ..registerFactory<UpdateFee>(() => UpdateFee(sl()))
+    ..registerFactory<WaiveFee>(() => WaiveFee(sl()));
 }
 // END OF _initAdminUtilsDep
 
@@ -153,3 +169,19 @@ void _initWorkoutManagerDep() {
 }
 
 // END OF _initWorkoutManagerDep
+
+// START OF _initOffersDep
+void _initOffersDep() {
+  ///* Service Locator Implementation for Offers *///
+  sl
+    ..registerFactory<OffersNetworkDataSource>(
+      () => OffersNetworkDataSourceImpl(sl()),
+    )
+    ..registerFactory<OffersRepo>(() => OffersRepoImpl(sl()))
+    ..registerFactory<CreateOffer>(() => CreateOffer(sl()))
+    ..registerFactory<DeleteOffer>(() => DeleteOffer(sl()))
+    ..registerFactory<GetOffers>(() => GetOffers(sl()))
+    ..registerFactory<UpdateOffer>(() => UpdateOffer(sl()));
+}
+
+// END OF _initOffersDep

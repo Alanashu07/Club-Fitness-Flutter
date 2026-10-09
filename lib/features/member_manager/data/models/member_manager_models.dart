@@ -5,5 +5,7 @@ export 'member_list_model.dart';
 export 'member_model.dart';
 export 'member_pagination_model.dart';
 export 'membership_plan_mini_model.dart';
+export 'offer_redemption_model.dart';
+export 'plan_offer_model.dart';
 export 'renew_member_model.dart';
 export 'trainer_mini_model.dart';

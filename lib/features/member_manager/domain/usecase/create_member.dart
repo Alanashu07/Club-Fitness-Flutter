@@ -10,9 +10,7 @@ class CreateMember implements UseCase<MemberListEntity, CreateMemberParams> {
   const CreateMember(this.repo);
 
   @override
-  Future<Either<MemberListEntity, Failure>> call(
-    CreateMemberParams params,
-  ) async {
+  Future<Either<MemberListEntity, Failure>> call(CreateMemberParams params) async {
     return await repo.createMember(
       name: params.name,
       phone: params.phone,
@@ -22,6 +20,9 @@ class CreateMember implements UseCase<MemberListEntity, CreateMemberParams> {
       dob: params.dob,
       startDate: params.startDate,
       userRole: params.userRole,
+      profileImagePath: params.profileImagePath,
+      offerId: params.offerId,
+      offerCode: params.offerCode,
     );
   }
 }
@@ -35,8 +36,11 @@ class CreateMemberParams {
   final String dob;
   final String startDate;
   final String userRole;
+  final String? profileImagePath;
+  final String? offerId;
+  final String? offerCode;
 
-  CreateMemberParams({
+  const CreateMemberParams({
     required this.name,
     required this.phone,
     required this.email,
@@ -45,5 +49,8 @@ class CreateMemberParams {
     required this.dob,
     required this.startDate,
     required this.userRole,
+    required this.profileImagePath,
+    required this.offerId,
+    required this.offerCode,
   });
 }

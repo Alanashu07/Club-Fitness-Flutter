@@ -19,6 +19,7 @@ class MemberListModel extends MemberListEntity {
     super.workoutStreak,
     super.feeStatus,
     super.amount,
+    super.profileImageUrl,
   });
 
   factory MemberListModel.fromJson(Map<String, dynamic> json) {
@@ -39,6 +40,7 @@ class MemberListModel extends MemberListEntity {
       workoutStreak: json['workoutStreak'] as num? ?? 0,
       feeStatus: json['feeStatus'] as String? ?? '',
       amount: json['amount'] as num? ?? 0,
+      profileImageUrl: json['profileImageUrl'] as String? ?? '',
     );
   }
 
@@ -60,6 +62,7 @@ class MemberListModel extends MemberListEntity {
       workoutStreak: entity.workoutStreak,
       feeStatus: entity.feeStatus,
       amount: entity.amount,
+      profileImageUrl: entity.profileImageUrl,
     );
   }
 
@@ -80,6 +83,7 @@ class MemberListModel extends MemberListEntity {
     num? workoutStreak,
     String? feeStatus,
     num? amount,
+    String? profileImageUrl
   }) => MemberListModel(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -97,6 +101,7 @@ class MemberListModel extends MemberListEntity {
       workoutStreak: workoutStreak ?? this.workoutStreak,
       feeStatus: feeStatus ?? this.feeStatus,
       amount: amount ?? this.amount,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl
   );
 
   Map<String, dynamic> toJson() => {
@@ -116,6 +121,7 @@ class MemberListModel extends MemberListEntity {
         'workoutStreak': workoutStreak,
         'feeStatus': feeStatus,
         'amount': amount,
+        'profileImageUrl': profileImageUrl
       }..removeWhere((key, value) => _removeEmpty(value));
 
   @override

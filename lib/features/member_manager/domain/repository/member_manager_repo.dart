@@ -24,6 +24,9 @@ abstract interface class MemberManagerRepo {
     required String dob,
     required String startDate,
     required String userRole,
+    required String? profileImagePath,
+    required String? offerId,
+    required String? offerCode,
   });
   Future<Either<MemberListEntity, Failure>> updateMember({
     required String id,
@@ -34,6 +37,8 @@ abstract interface class MemberManagerRepo {
     required String trainer,
     required String dob,
     required String startDate,
+    required String? profileImagePath,
+    required bool removeProfileImage,
   });
   Future<Either<List<TrainerMiniEntity>, Failure>> getTrainers();
   Future<Either<List<MembershipPlanMiniEntity>, Failure>> getPlans(
@@ -61,5 +66,10 @@ abstract interface class MemberManagerRepo {
     required String notes,
     String? startOverride,
     String? receiptPath,
+    required bool waiveRemaining,
+    required String? offerId,
+    required String? offerCode,
   });
+
+  Future<Either<String, Failure>> revertLastRenewal(String id);
 }

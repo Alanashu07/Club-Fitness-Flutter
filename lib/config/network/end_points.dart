@@ -1,12 +1,40 @@
+enum Env {
+  local('local'), dev('dev'), production('production');
+  const Env(this.key);
+  final String key;
+  bool get isProduction => this == Env.production;
+
+  static Env fromKey(String? key) {
+    return values.firstWhere((e) => e.key == key?.toLowerCase(), orElse: () => local);
+  }
+}
+
 class EndPoints {
   static bool get isProduction => false;
+  static const String environment = String.fromEnvironment('ENV', defaultValue: 'local');
 
-  ///Build for production with `flutter build appbundle --dart-define=BASE_URL=https://www.club_fitness.com`
-  static const String baseUrl = String.fromEnvironment(
-    'BASE_URL',
-    defaultValue: 'http://192.168.29.50:3000',
-  );
-  static const String appBaseUrl = '$baseUrl/app';
+  static Env get env => Env.fromKey(environment);
+
+  static String get baseUrl {
+    switch (env) {
+      case Env.local:
+      case Env.dev:
+        return 'http://192.168.29.50:3000';
+      case Env.production:
+        return 'https://api.clubfitness.co.in';
+    }
+  }
+
+  static String get baseMediaUrl {
+    switch (env) {
+      case Env.local:
+      case Env.dev:
+        return 'http://localhost:3000';
+      case Env.production:
+        return 'https://api.clubfitness.co.in';
+    }
+  }
+  static String appBaseUrl = '$baseUrl/app';
   static const String login = '/api/v1/auth/login';
   static const String register = '/api/v1/auth/register';
   static const String refresh = '/api/v1/auth/refresh';
@@ -35,6 +63,7 @@ class EndPoints {
   static String reactivateMember(String id) => "$members/$id/reactivate";
   static String suspendMember(String id) => "$members/$id/suspend";
   static String renewMembership(String id) => "$members/$id/renew";
+  static String revertLastRenewal(String id) => "$members/$id/renew/revert-last";
 
   //============================================================================
   // FEES
@@ -65,14 +94,24 @@ class EndPoints {
   static const String salesReport = '$reports/sales';
   static const String exportSalesReportPdf = '$salesReport/export/pdf';
   static const String exportSalesReportExcel = '$salesReport/export/excel';
+
+  //============================================================================
+  // REPORTS
+  //============================================================================
+  static const String offers = '/api/v1/offers';
+  static String offerDetails(String id) => '$offers/$id';
 }
 
 enum FeeActions {
+  create('create'),
+  update('update'),
+  delete('delete'),
   approve('approve'),
   reject('reject'),
   markPaid('mark-paid'),
   waive('waive'),
   remind('remind'),
+  export('export'),
   receipt('receipt');
 
   const FeeActions(this.key);

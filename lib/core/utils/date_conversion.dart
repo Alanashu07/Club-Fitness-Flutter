@@ -424,7 +424,7 @@ extension ConvertToDateTimeExtension on String {
     }
 
     // Otherwise parse normally (includes timezone)
-    return DateTime.tryParse(date)?.toLocal() ?? DateTime.now();
+    return DateTime.tryParse(date)?.toLocal() ?? DateTime(0);
   }
 
   DateTime? get yearToDate {

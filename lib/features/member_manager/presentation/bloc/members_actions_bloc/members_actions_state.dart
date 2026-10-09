@@ -145,3 +145,27 @@ final class RenewMembershipFailureState extends MembersActionsState {
   @override
   List<Object> get props => [failure];
 }
+
+final class RevertLastRenewalLoadingState extends MembersActionsState {
+  @override
+  List<Object> get props => [];
+}
+
+final class RevertLastRenewalSuccessState extends MembersActionsState {
+  final String id;
+  final String message;
+
+  const RevertLastRenewalSuccessState(this.id, this.message);
+
+  @override
+  List<Object> get props => [id, message];
+}
+
+final class RevertLastRenewalFailureState extends MembersActionsState {
+  final Failure failure;
+
+  const RevertLastRenewalFailureState(this.failure);
+
+  @override
+  List<Object> get props => [failure];
+}

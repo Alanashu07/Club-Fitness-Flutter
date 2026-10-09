@@ -50,6 +50,7 @@ class Routes {
   // MEMBERSHIP PLANS
   //====================================================================================
   static const String membershipPlans = '/membership-plans';
+  static const String offers = '/offers';
 }
 
 class RoutesName {
@@ -102,4 +103,5 @@ class RoutesName {
   // MEMBERSHIP PLANS
   //====================================================================================
   static const String membershipPlans = 'membership-plans';
+  static const String offers = 'offers';
 }

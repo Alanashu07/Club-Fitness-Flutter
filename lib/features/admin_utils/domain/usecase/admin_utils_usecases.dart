@@ -1,5 +1,15 @@
 export 'approve_fees.dart';
+export 'attach_receipt.dart';
+export 'create_fee.dart';
+export 'delete_fee.dart';
+export 'export_fees_pdf.dart';
+export 'export_sales_report_excel.dart';
+export 'export_sales_report_pdf.dart';
+export 'get_fee_by_id.dart';
 export 'get_fee_summary.dart';
 export 'get_fees.dart';
 export 'get_sales_report.dart';
+export 'mark_fee_paid.dart';
 export 'reject_fees.dart';
+export 'update_fee.dart';
+export 'waive_fee.dart';

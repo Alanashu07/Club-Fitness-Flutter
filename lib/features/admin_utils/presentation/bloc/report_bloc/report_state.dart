@@ -21,6 +21,32 @@ final class ReportLoaded extends ReportState {
   List<Object> get props => [report];
 }
 
+final class ReportExportLoading extends ReportLoaded {
+  final bool isPdf;
+  const ReportExportLoading(super.report, this.isPdf);
+
+  @override
+  List<Object> get props => [...super.props, isPdf];
+}
+
+final class ReportExportSuccess extends ReportLoaded {
+  final String path;
+  final bool isPdf;
+  const ReportExportSuccess(super.report, this.path, this.isPdf);
+
+  @override
+  List<Object> get props => [...super.props, path, isPdf];
+}
+
+final class ReportExportFailure extends ReportLoaded {
+  final Failure failure;
+  final bool isPdf;
+  const ReportExportFailure(super.report, this.failure, this.isPdf);
+
+  @override
+  List<Object> get props => [...super.props, failure, isPdf];
+}
+
 final class ReportFailure extends ReportState {
   final Failure failure;
   const ReportFailure(this.failure);

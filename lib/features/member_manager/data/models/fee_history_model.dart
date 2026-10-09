@@ -22,6 +22,7 @@ class FeeHistoryModel extends FeeHistoryEntity {
     super.createdAt,
     super.updatedAt,
     super.plan,
+    super.discountAmount
   });
 
   factory FeeHistoryModel.fromJson(Map<String, dynamic> json) {
@@ -43,6 +44,7 @@ class FeeHistoryModel extends FeeHistoryEntity {
       createdAt: json['createdAt'] as String? ?? '',
       updatedAt: json['updatedAt'] as String? ?? '',
       plan: MembershipPlanMiniModel.fromJson(json['plan'] ?? {}),
+      discountAmount: json['discountAmount']?.toString().toNum ?? 0.0
     );
   }
 
@@ -65,6 +67,7 @@ class FeeHistoryModel extends FeeHistoryEntity {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       plan: MembershipPlanMiniModel.fromEntity(entity.plan),
+      discountAmount: entity.discountAmount
     );
   }
 
@@ -86,6 +89,7 @@ class FeeHistoryModel extends FeeHistoryEntity {
     String? createdAt,
     String? updatedAt,
     MembershipPlanMiniModel? plan,
+    num? discountAmount
   }) => FeeHistoryModel(
     id: id ?? this.id,
     memberId: memberId ?? this.memberId,
@@ -104,6 +108,7 @@ class FeeHistoryModel extends FeeHistoryEntity {
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     plan: plan ?? this.plan,
+    discountAmount: discountAmount ?? this.discountAmount
   );
 
   Map<String, dynamic> toJson() => {
@@ -124,6 +129,7 @@ class FeeHistoryModel extends FeeHistoryEntity {
     'createdAt': createdAt,
     'updatedAt': updatedAt,
     'plan': MembershipPlanMiniModel.fromEntity(plan).toJson(),
+    'discountAmount': discountAmount
   }..removeWhere((key, value) => _removeEmpty(value));
 
   @override

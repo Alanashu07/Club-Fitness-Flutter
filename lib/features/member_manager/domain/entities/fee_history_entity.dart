@@ -20,6 +20,7 @@ class FeeHistoryEntity {
   final String createdAt;
   final String updatedAt;
   final MembershipPlanMiniEntity plan;
+  final num discountAmount;
 
   const FeeHistoryEntity({
     this.id = '',
@@ -39,6 +40,7 @@ class FeeHistoryEntity {
     this.createdAt = '',
     this.updatedAt = '',
     this.plan = const MembershipPlanMiniEntity(),
+    this.discountAmount = 0.0,
   });
 
   @override

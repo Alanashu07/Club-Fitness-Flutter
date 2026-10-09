@@ -7,10 +7,15 @@ sealed class MembersConfigEvent extends Equatable {
 final class GetMembershipPlansEvent extends MembersConfigEvent {
   final bool continueLoading;
   final bool includeInactive;
-  const GetMembershipPlansEvent([this.continueLoading = false, this.includeInactive = false]);
+  final String? context;
+  const GetMembershipPlansEvent([
+    this.continueLoading = false,
+    this.includeInactive = false,
+    this.context,
+  ]);
 
   @override
-  List<Object?> get props => [continueLoading];
+  List<Object?> get props => [continueLoading, includeInactive, context];
 }
 
 final class CreateMembershipPlanEvent extends MembersConfigEvent {

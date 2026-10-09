@@ -324,12 +324,12 @@ class DioConfig {
     return DioResponse.hasResponse(response);
   }
 
-  Future<DioResponse> dioGetCallParams(String url, Map queryParams) async {
+  Future<DioResponse> dioGetCallParams(String url, [Map<String, dynamic>? queryParams]) async {
     Response response;
     try {
       response = await getDio!.get(
         url,
-        queryParameters: queryParams as Map<String, dynamic>?,
+        queryParameters: queryParams,
       );
     } on DioException catch (dioError) {
       return DioResponse.hasError(dioError);
@@ -354,12 +354,12 @@ class DioConfig {
     return DioResponse.hasResponse(response);
   }
 
-  Future<DioResponse> dioPostCallParams(String url, Map queryParams) async {
+  Future<DioResponse> dioPostCallParams(String url, [Map<String, dynamic>? queryParams]) async {
     Response response;
     try {
       response = await getDio!.post(
         url,
-        data: queryParams as Map<String, dynamic>?,
+        data: queryParams,
       );
     } on DioException catch (dioError) {
       return DioResponse.hasError(dioError);
