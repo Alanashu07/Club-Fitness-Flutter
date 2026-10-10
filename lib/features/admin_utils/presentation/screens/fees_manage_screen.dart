@@ -236,7 +236,7 @@ class _FeesManagementScreenState extends State<FeesManagementScreen>
           ),
         ),
       ),
-      floatingActionButton: _buildFAB(),
+      // floatingActionButton: _buildFAB(),
     );
   }
 
@@ -425,18 +425,18 @@ class _FeesManagementScreenState extends State<FeesManagementScreen>
           ),
           onPressed: _exportPdf,
         ),
-        IconButton(
-          icon: Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: AppTheme.primary,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
-          ),
-          onPressed: _showAddFeeSheet,
-        ),
+        // IconButton(
+        //   icon: Container(
+        //     width: 34,
+        //     height: 34,
+        //     decoration: BoxDecoration(
+        //       color: AppTheme.primary,
+        //       borderRadius: BorderRadius.circular(10),
+        //     ),
+        //     child: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
+        //   ),
+        //   onPressed: _showAddFeeSheet,
+        // ),
         const SizedBox(width: 8),
       ],
       bottom: const PreferredSize(
@@ -799,7 +799,7 @@ class _FeesManagementScreenState extends State<FeesManagementScreen>
     final subtitle = filtered
         ? 'No ${_status == 'All' ? '' : '${_status.toLowerCase()} '}invoices'
               '${_search.isNotEmpty ? ' for "$_search"' : ''}'
-        : 'Tap "Record Fee" to create the first invoice';
+        : 'Create a member to get started';
 
     return RefreshIndicator(
       onRefresh: () async => _refreshAll(),
@@ -3122,7 +3122,7 @@ class _FeeDetailScreenState extends State<FeeDetailScreen> {
           children: [
             BlocConsumer<FeeDetailBloc, FeeDetailState>(
               listener: (context, state) {
-                if(state is FeeDetailSuccessState) {
+                if (state is FeeDetailSuccessState) {
                   _initMarkPaidSheet(state.detail.fee);
                 }
               },
@@ -3868,34 +3868,38 @@ class _FeeDetailScreenState extends State<FeeDetailScreen> {
   }
 
   void _openReceipt(String url) {
-    showDialog(
-      context: context,
-      builder: (_) => Dialog.fullscreen(
-        backgroundColor: Colors.black,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: InteractiveViewer(
-                minScale: 1,
-                maxScale: 5,
-                child: Center(
-                  child: _ReceiptImage(url: url, fit: BoxFit.contain),
-                ),
-              ),
-            ),
-            SafeArea(
-              child: Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  icon: const Icon(Icons.close_rounded, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+    context.pushNamed(
+      RoutesName.imageViewer,
+      extra: {'image': url, 'title': 'Payment Receipt'},
     );
+    // showDialog(
+    //   context: context,
+    //   builder: (_) => Dialog.fullscreen(
+    //     backgroundColor: Colors.black,
+    //     child: Stack(
+    //       children: [
+    //         Positioned.fill(
+    //           child: InteractiveViewer(
+    //             minScale: 1,
+    //             maxScale: 5,
+    //             child: Center(
+    //               child: _ReceiptImage(url: url, fit: BoxFit.contain),
+    //             ),
+    //           ),
+    //         ),
+    //         SafeArea(
+    //           child: Align(
+    //             alignment: Alignment.topRight,
+    //             child: IconButton(
+    //               icon: const Icon(Icons.close_rounded, color: Colors.white),
+    //               onPressed: () => Navigator.pop(context),
+    //             ),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }
 
@@ -4435,80 +4439,77 @@ class _LinkedFeeTile extends StatelessWidget {
 }
 
 Future<void> _onExported(BuildContext context, String path) async {
-    final action = await showModalBottomSheet<String>(
-      context: context,
-      backgroundColor: AppTheme.card,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'PDF Report is ready',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
+  final action = await showModalBottomSheet<String>(
+    context: context,
+    backgroundColor: AppTheme.card,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) => SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'PDF Report is ready',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'What would you like to do with it?',
+              style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => Navigator.pop(context, 'open'),
+                    icon: const Icon(Icons.open_in_new_rounded, size: 18),
+                    label: const Text('Open'),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 48),
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                'What would you like to do with it?',
-                style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => Navigator.pop(context, 'open'),
-                      icon: const Icon(Icons.open_in_new_rounded, size: 18),
-                      label: const Text('Open'),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 48),
-                      ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => Navigator.pop(context, 'share'),
+                    icon: const Icon(Icons.ios_share_rounded, size: 18),
+                    label: const Text('Share'),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 48),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () => Navigator.pop(context, 'share'),
-                      icon: const Icon(Icons.ios_share_rounded, size: 18),
-                      label: const Text('Share'),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 48),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-    );
-    if (!context.mounted || action == null) return;
+    ),
+  );
+  if (!context.mounted || action == null) return;
 
-    if (action == 'share') {
-      await SharePlus.instance.share(
-        ShareParams(
-          text: 'Check out our Fee record',
-          files: [XFile(path)],
+  if (action == 'share') {
+    await SharePlus.instance.share(
+      ShareParams(text: 'Check out our Fee record', files: [XFile(path)]),
+    );
+  } else {
+    final result = await OpenFilex.open(path);
+    if (result.type != ResultType.done && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No app found to open this file. ${result.message}'),
         ),
       );
-    } else {
-      final result = await OpenFilex.open(path);
-      if (result.type != ResultType.done && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('No app found to open this file. ${result.message}'),
-          ),
-        );
-      }
     }
   }
+}

@@ -84,7 +84,7 @@ class MemberCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                member.name,
+                                member.name.capitalizeEachWord,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w800,

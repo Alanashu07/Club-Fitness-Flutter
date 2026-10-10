@@ -294,6 +294,7 @@ class _AddMemberSheetState extends State<AddMemberSheet> {
             Icons.person_outline_rounded,
             hint: 'e.g. Arjun Menon',
             isRequired: true,
+            textCapitalization: TextCapitalization.words,
           ),
           const SizedBox(height: 14),
           _field(
@@ -311,6 +312,7 @@ class _AddMemberSheetState extends State<AddMemberSheet> {
             Icons.email_outlined,
             hint: 'member@email.com',
             keyboardType: TextInputType.emailAddress,
+            textCapitalization: TextCapitalization.none,
           ),
           const SizedBox(height: 14),
           _dateField(
@@ -657,6 +659,7 @@ class _AddMemberSheetState extends State<AddMemberSheet> {
     TextInputType? keyboardType,
     List<TextInputFormatter>? inputFormatters,
     bool isRequired = false,
+    TextCapitalization textCapitalization = TextCapitalization.sentences,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -669,6 +672,7 @@ class _AddMemberSheetState extends State<AddMemberSheet> {
             controller: controller,
             keyboardType: keyboardType,
             inputFormatters: inputFormatters,
+            textCapitalization: textCapitalization,
             validator: (value) {
               if (!isRequired) return null;
               if (value == null) return null;

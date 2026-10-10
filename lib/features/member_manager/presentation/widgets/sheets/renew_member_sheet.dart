@@ -444,6 +444,7 @@ class _RenewMembershipSheetState extends State<RenewMembershipSheet> {
               child: TextField(
                 controller: _notesCtrl,
                 maxLines: 2,
+                textCapitalization: TextCapitalization.sentences,
                 style: const TextStyle(color: Colors.white, fontSize: 14),
                 decoration: const InputDecoration(
                   hintText: 'Any remarks about this renewal',
