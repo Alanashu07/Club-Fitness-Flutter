@@ -2,6 +2,29 @@ part of 'routes_class.dart';
 
 class Routes {
   static const String initial = '/';
+
+  ///When using make sure to pass either list of images with optional initialIndex or single image via extra
+  ///
+  ///This is a sample
+  ///[image] for single image
+  ///
+  ///[images] for multiple
+  ///
+  ///[index] for image index only used if list otherwise, ignored
+  ///
+  ///[title] to show title of image viewer empty by default
+  ///
+  ///Eg:
+  ///{
+  ///"image": "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
+  ///"images": [["https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg","https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"]],
+  ///"index": 1,
+  ///"title": "Image Viewer"
+  ///"caption": "Caption here..."
+  ///"captions": "if more than one image, same indexing as images"
+  ///"tags": "tags here"
+  ///}
+  static const String imageViewer = '/image-viewer';
   static const String roleSelect = '/auth/role-select';
   static const String login = '/auth/login';
 
@@ -40,7 +63,7 @@ class Routes {
   //====================================================================================
   static const String shopHome = "/shop/home";
   static const String shopAdminHome = "/shop/admin/home";
-  
+
   //====================================================================================
   // NOTIFICATIONS
   //====================================================================================
@@ -55,6 +78,26 @@ class Routes {
 
 class RoutesName {
   static const String initial = 'initial';
+
+  ///When using make sure to pass either list of images with optional initialIndex or single image via extra
+  ///
+  ///This is a sample
+  ///[image] for single image
+  ///
+  ///[images] for multiple
+  ///
+  ///[index] for image index only used if list otherwise, ignored
+  ///
+  ///[title] to show title of image viewer empty by default
+  ///
+  ///Eg:
+  ///{
+  ///"image": "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
+  ///"images": [["https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg","https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"]],
+  ///"index": 1,
+  ///"title": "Image Viewer"
+  ///}
+  static const String imageViewer = 'image-viewer';
   static const String roleSelect = 'role-select';
   static const String login = 'login';
 

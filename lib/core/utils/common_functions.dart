@@ -233,8 +233,8 @@ extension StringFormatExtension on String {
   String get toUrl => startsWith('http')
       ? this
       : contains('media')
-      ? '${EndPoints.baseUrl}/$this'
-      : '${EndPoints.baseUrl}/media/$this';
+      ? '${EndPoints.baseUrl}$this'
+      : '${EndPoints.baseUrl}media/$this';
 
   String toPascalCase() {
     String pascal = toLowerCase()

@@ -1,3 +1,4 @@
+import 'package:club_fitness/config/navigation/routes_class.dart';
 import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/features/image_cache/presentation/widgets/custom_cached_image.dart';
 import 'package:flutter/material.dart';
@@ -35,22 +36,30 @@ class MemberAvatar extends StatelessWidget {
     );
     final hasImage = imageUrl?.orNull() != null;
 
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: primary,
-        borderRadius: BorderRadius.circular(radius),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: hasImage
-          ? CustomCachedImage(
-              imageUrl!, // prefix with your base URL here if the API returns a relative path
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => fallback,
-              placeholder: fallback,
+    return GestureDetector(
+      onTap: hasImage
+          ? () => context.pushNamed(
+              RoutesName.imageViewer,
+              extra: {'image': imageUrl},
             )
-          : fallback,
+          : null,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: primary,
+          borderRadius: BorderRadius.circular(radius),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: hasImage
+            ? CustomCachedImage(
+                imageUrl!, // prefix with your base URL here if the API returns a relative path
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => fallback,
+                placeholder: fallback,
+              )
+            : fallback,
+      ),
     );
   }
 }
