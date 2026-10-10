@@ -683,6 +683,7 @@ class _FeesManagementScreenState extends State<FeesManagementScreen>
       ),
       child: TextField(
         controller: _searchCtrl,
+        textCapitalization: TextCapitalization.words,
         style: const TextStyle(color: Colors.white, fontSize: 14),
         onChanged: (_) => _searchWithDebounce(),
         decoration: InputDecoration(

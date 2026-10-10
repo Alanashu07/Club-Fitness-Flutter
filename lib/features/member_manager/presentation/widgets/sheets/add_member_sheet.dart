@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../image_cache/presentation/widgets/image_cache_widgets.dart';
+
 class AddMemberSheet extends StatefulWidget {
   /// When non-null the sheet works in edit mode.
   final MemberEntity? member;
@@ -530,13 +532,6 @@ class _AddMemberSheetState extends State<AddMemberSheet> {
     final existing = _removeImage ? null : widget.member?.profileImageUrl;
     final hasAny = _pickedImage != null || (existing?.isNotEmpty ?? false);
 
-    ImageProvider? provider;
-    if (_pickedImage != null) {
-      provider = FileImage(File(_pickedImage!.path));
-    } else if (existing != null && existing.isNotEmpty) {
-      provider = NetworkImage(existing);
-    }
-
     return Row(
       children: [
         GestureDetector(
@@ -544,21 +539,29 @@ class _AddMemberSheetState extends State<AddMemberSheet> {
           child: Container(
             width: 72,
             height: 72,
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               color: AppTheme.surface,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: AppTheme.cardBorder),
-              image: provider == null
-                  ? null
-                  : DecorationImage(image: provider, fit: BoxFit.cover),
+              // image: _pickedImage == null
+              //     ? null
+              //     : DecorationImage(image: provider, fit: BoxFit.cover),
             ),
-            child: provider == null
+            child: !hasAny
                 ? const Icon(
                     Icons.add_a_photo_rounded,
                     color: AppTheme.textSecondary,
                     size: 24,
                   )
-                : null,
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CustomCachedImage(
+                      existing ?? _pickedImage!.path,
+                      fit: BoxFit.cover,
+                      isNetwork: existing != null,
+                    ),
+                  ),
           ),
         ),
         const SizedBox(width: 14),

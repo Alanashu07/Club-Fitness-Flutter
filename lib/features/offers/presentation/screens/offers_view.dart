@@ -1466,6 +1466,7 @@ class _OfferFormSheetState extends State<OfferFormSheet> {
                 label: 'Description',
                 icon: Icons.notes_rounded,
                 hint: 'Short description shown to staff',
+                textCapitalization: TextCapitalization.sentences,
                 maxLines: 2,
               ),
 

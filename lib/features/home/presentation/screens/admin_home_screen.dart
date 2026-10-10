@@ -1354,14 +1354,14 @@ class _PendingPaymentTile extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppTheme.primary.withAOpacity(0.15),
+              color: AppTheme.primary,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
               child: Text(
                 payment.initials,
                 style: const TextStyle(
-                  color: AppTheme.primary,
+                  color: AppTheme.secondary,
                   fontWeight: FontWeight.w800,
                   fontSize: 13,
                 ),
@@ -1485,14 +1485,14 @@ class _MemberCard extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: member.avatarColor.withAOpacity(0.2),
+                  color: AppTheme.primary,
                   borderRadius: BorderRadius.circular(9),
                 ),
                 child: Center(
                   child: Text(
                     member.initials,
-                    style: TextStyle(
-                      color: member.avatarColor,
+                    style: const TextStyle(
+                      color: AppTheme.secondary,
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
                     ),

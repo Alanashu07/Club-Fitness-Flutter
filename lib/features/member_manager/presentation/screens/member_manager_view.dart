@@ -363,6 +363,7 @@ class _AdminMembersViewState extends State<AdminMembersView>
       ),
       child: TextField(
         controller: _searchCtrl,
+        textCapitalization: TextCapitalization.words,
         onChanged: (value) {
           setState(() => _searchQuery = value.toLowerCase());
           _debounceQuery();

@@ -1401,6 +1401,7 @@ class _PlanFormSheetState extends State<_PlanFormSheet> {
                 icon: Icons.notes_rounded,
                 hint: 'Optional',
                 maxLines: 2,
+                textCapitalization: TextCapitalization.sentences,
               ),
               const SizedBox(height: 14),
               _field(
@@ -1408,6 +1409,7 @@ class _PlanFormSheetState extends State<_PlanFormSheet> {
                 label: 'Features',
                 icon: Icons.checklist_rounded,
                 hint: 'Comma separated, e.g. Gym, Cardio, Steam',
+                textCapitalization: TextCapitalization.words
               ),
               const SizedBox(height: 14),
               _switchRow(),
