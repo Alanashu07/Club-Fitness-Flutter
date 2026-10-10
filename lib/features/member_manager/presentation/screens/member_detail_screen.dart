@@ -1,6 +1,7 @@
 import 'package:club_fitness/config/navigation/routes_class.dart';
 import 'package:club_fitness/config/theme/theme.dart';
 import 'package:club_fitness/core/entities/member_status.dart';
+import 'package:club_fitness/core/services/url_services.dart';
 import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/features/admin_utils/domain/entities/admin_utils_entities.dart';
 import 'package:club_fitness/features/member_manager/member_manager.dart';
@@ -664,6 +665,25 @@ class MemberDetailScreen extends StatelessWidget {
     );
   }
 
+  void _sendReminder(BuildContext context, MemberEntity m) async {
+    final state = await dispatchMemberAction(
+      context,
+      SendReminderEvent(m.id),
+      isDone: (s) =>
+          s is SendReminderSuccessState || s is SendReminderFailureState,
+    );
+    if (!context.mounted) return;
+    finishMemberAction(
+      context,
+      failure: state is SendReminderFailureState ? state.failure : null,
+      memberId: m.id,
+      successMessage: state is SendReminderSuccessState
+          ? state.message
+          : '${m.name} has been reminded about due.',
+    );
+    return;
+  }
+
   List<(String, IconData, Color, void Function()?)> _buildMemberActions(
     BuildContext context,
     MemberEntity m,
@@ -681,13 +701,22 @@ class MemberDetailScreen extends StatelessWidget {
           queryParameters: {'memberId': m.id},
         ),
       ),
-      if (m.membershipEndDate.isBefore(DateTime.now()))
-        (
-          'Send Reminder',
-          Icons.notifications_rounded,
-          neutral,
-          null, // no reminder event in MembersActionsBloc yet
-        ),
+      (
+        'Send Reminder',
+        Icons.notifications_rounded,
+        m.membershipEndDate.isBefore(DateTime.now())
+            ? AppTheme.error
+            : AppTheme.warning,
+        () => showSendReminderDialog(
+          context,
+          name: m.name,
+          onEmail: () => _sendReminder(context, m),
+          onWhatsapp: () => UrlServices.whatsappMessage(
+            number: normalizePhone(m.phone),
+            message: buildReminderMessage(m),
+          ),
+        ), // no reminder event in MembersActionsBloc yet
+      ),
       if (lastFee != null && lastFee.statusEnum == FeeStatus.pending)
         (
           'Mark Fee Paid',
@@ -699,7 +728,7 @@ class MemberDetailScreen extends StatelessWidget {
         (
           'Suspend Member',
           Icons.block_rounded,
-          neutral,
+          AppTheme.error,
           () => suspendMember(context, m),
         )
       else

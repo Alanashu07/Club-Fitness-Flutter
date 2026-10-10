@@ -388,8 +388,7 @@ class _AssignWorkoutScreenState extends State<AssignWorkoutScreen>
           opacity: _fadeAnim,
           child: Column(
             children: [
-              _buildTopBar(),
-              _buildStepIndicator(),
+              if (_step != 1) ...[_buildTopBar(), _buildStepIndicator()],
               Expanded(
                 child: FadeTransition(
                   opacity: _stepFade,
@@ -916,16 +915,205 @@ class _AssignWorkoutScreenState extends State<AssignWorkoutScreen>
 
   // ── STEP 1 — Build Workout ───────────────────────────────────────────────────
   Widget _buildStep1() {
-    return Column(
-      children: [
-        if (_planType == 'weekly') ...[
-          const SizedBox(height: 16),
-          _buildDayTabs(),
-        ] else
-          const SizedBox(height: 16),
-        _buildCurrentDayExercises(),
-        Expanded(child: _buildExercisePicker()),
-      ],
+    final day = _planType == 'weekly' ? _currentDay : _weekPlan[0];
+    final dayIdx = _planType == 'weekly' ? _selectedDayIndex : 0;
+
+    return SafeArea(
+      bottom: false,
+      child: CustomScrollView(
+        controller: _scrollCtrl,
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          // Scrolls away: top bar, step indicator, day tabs
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                _buildTopBar(),
+                _buildStepIndicator(),
+                const SizedBox(height: 16),
+                if (_planType == 'weekly') _buildDayTabs(),
+              ],
+            ),
+          ),
+
+          // Pinned + floating: collapses to a single horizontal line on scroll,
+          // expands back gradually when scrolling back down/up.
+          SliverPersistentHeader(
+            pinned: true,
+            floating: true,
+            delegate: _PlanHeaderDelegate(
+              day: day,
+              title: _planType == 'weekly' ? day.day : 'Today',
+              showRestToggle: _planType == 'weekly',
+              onToggleRest: () => setState(() {
+                day.isRest = !day.isRest;
+                if (day.isRest) day.exercises.clear();
+              }),
+              onReorder: (oldIdx, newIdx) => setState(() {
+                if (newIdx > oldIdx) newIdx--;
+                final item = day.exercises.removeAt(oldIdx);
+                day.exercises.insert(newIdx, item);
+              }),
+              onRemove: (i) => _removeExercise(dayIdx, i),
+              onEdit: _editExercise,
+            ),
+          ),
+
+          // Scrolls away: search + categories
+          SliverToBoxAdapter(child: _buildPickerHeader()),
+
+          _buildExerciseGridSliver(),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPickerHeader() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 10),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: _SearchBar(
+                  hint: 'Search exercises…',
+                  onChanged: _onSearchChanged,
+                ),
+              ),
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: _openAddExerciseSheet,
+                child: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: AppTheme.primary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.add_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          BlocBuilder<AssignWorkoutBloc, AssignWorkoutState>(
+            builder: (context, state) {
+              final categories = [
+                ...state.exercise.categories.map((c) => c.name),
+              ];
+              return SizedBox(
+                height: 32,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: categories.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 6),
+                  itemBuilder: (_, i) {
+                    final c = categories[i];
+                    final sel = _categoryFilter == c;
+                    return GestureDetector(
+                      onTap: () => _onCategoryChanged(c),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 160),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: sel ? AppTheme.primary : AppTheme.card,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: sel
+                                ? AppTheme.primary
+                                : Colors.white.withAOpacity(0.07),
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          c,
+                          style: TextStyle(
+                            color: sel ? Colors.white : AppTheme.textSecondary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExerciseGridSliver() {
+    return BlocBuilder<AssignWorkoutBloc, AssignWorkoutState>(
+      builder: (context, state) {
+        Widget message(Widget child) => SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 40),
+            child: Center(child: child),
+          ),
+        );
+
+        if (state is ExerciseLoadingState && state.exercise.exercises.isEmpty) {
+          return message(
+            const CircularProgressIndicator(color: AppTheme.primary),
+          );
+        }
+        if (state is AssignWorkoutFailureState &&
+            state.exercise.exercises.isEmpty) {
+          return message(
+            Text(
+              state.failure.message,
+              style: const TextStyle(
+                color: AppTheme.textSecondary,
+                fontSize: 12,
+              ),
+            ),
+          );
+        }
+        final exercises = state.exercise.exercises;
+        if (exercises.isEmpty) {
+          return message(
+            const Text(
+              'No exercises found',
+              style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+            ),
+          );
+        }
+
+        final day = _planType == 'weekly' ? _currentDay : _weekPlan[0];
+        return SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 2.4,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            delegate: SliverChildBuilderDelegate((_, i) {
+              final ex = exercises[i];
+              final added = day.exercises.any((e) => e.exercise.id == ex.id);
+              return _ExerciseLibraryTile(
+                exercise: ex,
+                added: added,
+                onTap: () => _addExerciseToPlan(ex),
+              );
+            }, childCount: exercises.length),
+          ),
+        );
+      },
     );
   }
 
@@ -3185,6 +3373,326 @@ class _SearchBar extends StatelessWidget {
             horizontal: 14,
             vertical: 12,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Collapsing plan header ───────────────────────────────────────────────────
+
+class _PlanHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final _WorkoutDay day;
+  final String title;
+  final bool showRestToggle;
+  final VoidCallback onToggleRest;
+  final void Function(int oldIdx, int newIdx) onReorder;
+  final void Function(int index) onRemove;
+  final void Function(_PlanExercise pe) onEdit;
+
+  _PlanHeaderDelegate({
+    required this.day,
+    required this.title,
+    required this.showRestToggle,
+    required this.onToggleRest,
+    required this.onReorder,
+    required this.onRemove,
+    required this.onEdit,
+  });
+
+  static const double _collapsed = 64;
+
+  @override
+  double get minExtent => _collapsed;
+
+  @override
+  double get maxExtent {
+    // 12 top + 48 header row + body + 8 bottom
+    final body = (day.isRest || day.exercises.isEmpty)
+        ? 64.0
+        : (day.exercises.length * 62.0).clamp(62.0, 170.0);
+    return 12 + 48 + body + 8;
+  }
+
+  @override
+  bool shouldRebuild(covariant _PlanHeaderDelegate old) => true;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    final range = maxExtent - minExtent;
+    final t = range <= 0 ? 1.0 : (shrinkOffset / range).clamp(0.0, 1.0);
+
+    return Container(
+      color: AppTheme.background,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClipRect(
+        child: Stack(
+          children: [
+            if (t < 1)
+              Positioned.fill(
+                child: IgnorePointer(
+                  ignoring: t > 0.5,
+                  child: Opacity(
+                    opacity: 1 - t,
+                    child: OverflowBox(
+                      alignment: Alignment.topCenter,
+                      minHeight: maxExtent,
+                      maxHeight: maxExtent,
+                      child: _buildExpanded(),
+                    ),
+                  ),
+                ),
+              ),
+            if (t > 0)
+              Positioned.fill(
+                child: IgnorePointer(
+                  ignoring: t <= 0.5,
+                  child: Opacity(opacity: t, child: _buildCollapsed()),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Expanded: vertical reorderable list (original card) ─────────────────────
+  Widget _buildExpanded() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12, bottom: 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.card,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: Colors.white.withAOpacity(0.06), width: 1),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 48,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '$title — ${day.exercises.length} exercises',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    if (showRestToggle)
+                      GestureDetector(
+                        onTap: onToggleRest,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: day.isRest
+                                ? Colors.white.withAOpacity(0.08)
+                                : AppTheme.surface,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Colors.white.withAOpacity(0.08),
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            day.isRest ? '🛌 Rest Day' : 'Set Rest',
+                            style: TextStyle(
+                              color: day.isRest
+                                  ? Colors.white
+                                  : AppTheme.textSecondary,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: day.isRest
+                  ? const Center(
+                      child: Text(
+                        'Rest day — no exercises',
+                        style: TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 13,
+                        ),
+                      ),
+                    )
+                  : day.exercises.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Tap exercises below to add',
+                        style: TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 13,
+                        ),
+                      ),
+                    )
+                  : ReorderableListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      buildDefaultDragHandles: false,
+                      itemCount: day.exercises.length,
+                      onReorder: onReorder,
+                      itemBuilder: (_, i) {
+                        final pe = day.exercises[i];
+                        return _PlanExerciseTile(
+                          key: ValueKey('v_${pe.exercise.id}_${day.day}'),
+                          planEx: pe,
+                          index: i,
+                          onRemove: () => onRemove(i),
+                          onEdit: () => onEdit(pe),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Collapsed: single-line horizontal reorderable list ──────────────────────
+  Widget _buildCollapsed() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Container(
+        height: 48,
+        padding: const EdgeInsets.only(left: 12),
+        decoration: BoxDecoration(
+          color: AppTheme.card,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.white.withAOpacity(0.06), width: 1),
+        ),
+        child: Row(
+          children: [
+            Text(
+              '$title · ${day.exercises.length}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: day.isRest || day.exercises.isEmpty
+                  ? Text(
+                      day.isRest ? '🛌 Rest day' : 'Add exercises below',
+                      style: const TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 12,
+                      ),
+                    )
+                  : SizedBox(
+                      height: 36,
+                      child: ReorderableListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        buildDefaultDragHandles: false,
+                        itemCount: day.exercises.length,
+                        onReorder: onReorder,
+                        proxyDecorator: (child, _, __) =>
+                            Material(color: Colors.transparent, child: child),
+                        itemBuilder: (_, i) {
+                          final pe = day.exercises[i];
+                          return ReorderableDelayedDragStartListener(
+                            key: ValueKey('h_${pe.exercise.id}_${day.day}'),
+                            index: i,
+                            child: _PlanExerciseChip(
+                              planEx: pe,
+                              onEdit: () => onEdit(pe),
+                              onRemove: () => onRemove(i),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PlanExerciseChip extends StatelessWidget {
+  final _PlanExercise planEx;
+  final VoidCallback onEdit;
+  final VoidCallback onRemove;
+  const _PlanExerciseChip({
+    required this.planEx,
+    required this.onEdit,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ex = planEx.exercise;
+    final color = _colorForCategory(ex.category);
+    return GestureDetector(
+      onTap: onEdit,
+      child: Container(
+        margin: const EdgeInsets.only(right: 6),
+        padding: const EdgeInsets.only(left: 8, right: 4),
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withAOpacity(0.3), width: 1),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(_iconForCategory(ex.category), color: color, size: 13),
+            const SizedBox(width: 6),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 90),
+              child: Text(
+                ex.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              '${planEx.sets}×${planEx.reps}',
+              style: const TextStyle(
+                color: AppTheme.textSecondary,
+                fontSize: 10,
+              ),
+            ),
+            GestureDetector(
+              onTap: onRemove,
+              behavior: HitTestBehavior.opaque,
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                child: Icon(
+                  Icons.close_rounded,
+                  color: AppTheme.error,
+                  size: 14,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

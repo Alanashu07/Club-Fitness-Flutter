@@ -13,6 +13,7 @@ import 'package:club_fitness/widgets/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../admin_utils.dart';
 
@@ -250,8 +251,7 @@ class _FeesManagementScreenState extends State<FeesManagementScreen>
     );
     await file.writeAsBytes(bytes);
     if (!mounted) return;
-    _showSnack('Report ready');
-    await OpenFilex.open(file.path);
+    _onExported(context, file.path);
   }
 
   TabBar _buildTabBar(dynamic counts) {
@@ -2457,7 +2457,9 @@ class _EditFeeSheetState extends State<_EditFeeSheet> {
     widget.onSubmit(
       FeeEditData(
         amount: amount != (r?.amount ?? d?.amount)?.toDouble() ? amount : null,
-        dueDate: _fmtDate(_dueDate) != _fmtDate((r?.dueDate ?? d?.dueDate ?? '').toDateTime)
+        dueDate:
+            _fmtDate(_dueDate) !=
+                _fmtDate((r?.dueDate ?? d?.dueDate ?? '').toDateTime)
             ? _dueDate
             : null,
         planId: plan.isEmpty ? null : plan,
@@ -2491,7 +2493,8 @@ class _EditFeeSheetState extends State<_EditFeeSheet> {
               icon: Icons.edit_rounded,
               color: _kAmber,
               title: 'Edit Fee Record',
-              subtitle: '${widget.record?.memberName ?? widget.detail?.memberName} · ${widget.record?.id ?? widget.detail?.id}',
+              subtitle:
+                  '${widget.record?.memberName ?? widget.detail?.memberName} · ${widget.record?.id ?? widget.detail?.id}',
             ),
             const SizedBox(height: 24),
             const _SheetLabel('Amount'),
@@ -2512,7 +2515,8 @@ class _EditFeeSheetState extends State<_EditFeeSheet> {
             const SizedBox(height: 8),
             _SheetField(
               controller: _planCtrl,
-              hint: 'Leave empty to keep ${widget.record?.plan ?? widget.detail?.plan}',
+              hint:
+                  'Leave empty to keep ${widget.record?.plan ?? widget.detail?.plan}',
               icon: Icons.inventory_2_rounded,
             ),
             const SizedBox(height: 16),
@@ -3080,6 +3084,15 @@ class _FeeDetailScreenState extends State<FeeDetailScreen> {
       );
   }
 
+  void _initMarkPaidSheet(FeeEntity fee) {
+    final router = context.router;
+    final query = router.state.uri.queryParameters;
+    if (query.isEmpty) return;
+    bool openPaidSheet = query['open-mark-paid-sheet'] == 'true';
+    if (!openPaidSheet) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _markPaid(null, fee));
+  }
+
   // ── Build ───────────────────────────────────────────────────────────────────
 
   @override
@@ -3107,7 +3120,12 @@ class _FeeDetailScreenState extends State<FeeDetailScreen> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            BlocBuilder<FeeDetailBloc, FeeDetailState>(
+            BlocConsumer<FeeDetailBloc, FeeDetailState>(
+              listener: (context, state) {
+                if(state is FeeDetailSuccessState) {
+                  _initMarkPaidSheet(state.detail.fee);
+                }
+              },
               builder: (context, state) => switch (state) {
                 FeeDetailLoadingState() => _shell(
                   const Center(child: CircularProgressIndicator()),
@@ -3943,7 +3961,7 @@ class _ReceiptImage extends StatelessWidget {
   Widget build(BuildContext context) => CustomCachedImage(
     url,
     fit: fit,
-    placeholder:const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+    placeholder: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
     errorBuilder: (_, __, ___) => const Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -4415,3 +4433,82 @@ class _LinkedFeeTile extends StatelessWidget {
     );
   }
 }
+
+Future<void> _onExported(BuildContext context, String path) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: AppTheme.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'PDF Report is ready',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'What would you like to do with it?',
+                style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => Navigator.pop(context, 'open'),
+                      icon: const Icon(Icons.open_in_new_rounded, size: 18),
+                      label: const Text('Open'),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 48),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => Navigator.pop(context, 'share'),
+                      icon: const Icon(Icons.ios_share_rounded, size: 18),
+                      label: const Text('Share'),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 48),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (!context.mounted || action == null) return;
+
+    if (action == 'share') {
+      await SharePlus.instance.share(
+        ShareParams(
+          text: 'Check out our Fee record',
+          files: [XFile(path)],
+        ),
+      );
+    } else {
+      final result = await OpenFilex.open(path);
+      if (result.type != ResultType.done && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('No app found to open this file. ${result.message}'),
+          ),
+        );
+      }
+    }
+  }

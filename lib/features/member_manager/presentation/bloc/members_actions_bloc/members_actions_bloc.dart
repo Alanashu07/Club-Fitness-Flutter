@@ -17,6 +17,7 @@ class MembersActionsBloc
   final ReactivateMember _reactivateMember;
   final RenewMembership _renewMembership;
   final RevertLastRenewal _revertLastRenewal;
+  final SendReminder _sendReminder;
   MembersActionsBloc(
     CreateMember createMember,
     UpdateMember updateMember,
@@ -24,7 +25,8 @@ class MembersActionsBloc
     SuspendMember suspendMember,
     ReactivateMember reactivateMember,
     RenewMembership renewMembership,
-    RevertLastRenewal revertLastRenewal
+    RevertLastRenewal revertLastRenewal,
+    SendReminder sendReminder,
   ) : _createMember = createMember,
       _updateMember = updateMember,
       _deleteMember = deleteMember,
@@ -32,6 +34,7 @@ class MembersActionsBloc
       _reactivateMember = reactivateMember,
       _renewMembership = renewMembership,
       _revertLastRenewal = revertLastRenewal,
+      _sendReminder = sendReminder,
       super(MembersActionsInitial()) {
     on<MembersActionsEvent>((event, emit) {});
     on<CreateMemberEvent>(_onCreateMember);
@@ -41,6 +44,7 @@ class MembersActionsBloc
     on<ReactivateMemberEvent>(_onReactivateMember);
     on<RenewMembershipEvent>(_onRenewMembership);
     on<RevertLastRenewalEvent>(_onRevertLastRenewal);
+    on<SendReminderEvent>(_onSendReminder);
   }
 
   Future<void> _onCreateMember(
@@ -163,6 +167,18 @@ class MembersActionsBloc
     result.fold(
       (member) => emit(RevertLastRenewalSuccessState(event.id, member)),
       (failure) => emit(RevertLastRenewalFailureState(failure)),
+    );
+  }
+
+  Future<void> _onSendReminder(
+    SendReminderEvent event,
+    Emitter<MembersActionsState> emit,
+  ) async {
+    emit(SendReminderLoadingState(event.id));
+    final result = await _sendReminder(event.id);
+    result.fold(
+      (message) => emit(SendReminderSuccessState(event.id, message)),
+      (failure) => emit(SendReminderFailureState(event.id, failure)),
     );
   }
 }

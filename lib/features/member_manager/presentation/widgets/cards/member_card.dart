@@ -1,6 +1,6 @@
-
 import 'package:club_fitness/config/navigation/routes_class.dart';
 import 'package:club_fitness/config/theme/theme.dart';
+import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/features/member_manager/member_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -207,7 +207,20 @@ class MemberCard extends StatelessWidget {
                   MemberActionButton(
                     icon: Icons.payments_outlined,
                     label: 'Mark as Paid',
-                    onTap: () {},
+                    onTap: () {
+                      if (member.feeStatus == 'paid') {
+                        return context.showToast(
+                          'Already paid',
+                          message: '${member.name} has already paid their fee.',
+                          type: ToastificationType.warning,
+                        );
+                      }
+                      context.pushNamed(
+                        RoutesName.feeDetails,
+                        pathParameters: {'id': member.lastFee},
+                        queryParameters: {'open-mark-paid-sheet': 'true'},
+                      );
+                    },
                   ),
                   const MemberCardDivider(),
                   MemberActionButton(

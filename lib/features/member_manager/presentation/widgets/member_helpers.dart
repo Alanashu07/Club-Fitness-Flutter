@@ -95,8 +95,9 @@ String buildWelcomeMessage(AddMemberResult r) {
       ..writeln()
       ..writeln('*Your membership details*')
       ..writeln('Plan: ${r.planName}');
-    if (r.startDate != null)
+    if (r.startDate != null) {
       b.writeln('Starts: ${formatShortDate(r.startDate!)}');
+    }
     if (r.endDate != null) {
       b.writeln('Ends: ${formatShortDate(r.endDate!.subtract(1.min))}');
     }
@@ -135,6 +136,58 @@ String buildRenewMessage(RenewResult r, MemberEntity m) {
   b
     ..writeln()
     ..write('Keep pushing towards your goals. See you at the gym! 🏋️');
+  return b.toString();
+}
+
+String buildReminderMessage(MemberEntity? m, [MemberListEntity? l]) {
+  final now = DateTime.now();
+  final end = m?.membershipEndDate ?? l!.expiryDateTime;
+  final expired = end.isBefore(now);
+  final b = StringBuffer();
+  String name = m?.name ?? l?.name ?? '';
+  String planName = m?.membershipPlan.name ?? l?.plan ?? '';
+  num price = m?.membershipPlan.price ?? l?.amount ?? 0;
+  num daysLeft = m?.daysLeft ?? l?.daysLeft ?? 0;
+
+  if (expired) {
+    final daysOverdue = now.difference(end).inDays;
+    b
+      ..writeln('Hi $name, your Club Fitness membership has expired. ⏰')
+      ..writeln()
+      ..writeln(
+        'Please renew at the earliest to continue your fitness journey with us.',
+      )
+      ..writeln()
+      ..writeln('*Your membership details*')
+      ..writeln('Plan: $planName')
+      ..writeln('Expired on: ${formatShortDate(end)}');
+    if (daysOverdue > 0) {
+      b.writeln(
+        'Overdue by: $daysOverdue ${daysOverdue == 1 ? 'day' : 'days'}',
+      );
+    }
+    b
+      ..writeln('Renewal amount: ₹$price')
+      ..writeln()
+      ..write('Let us know if you need any help with the renewal. 🏋️');
+  } else {
+    final when = daysLeft <= 0
+        ? 'today'
+        : daysLeft == 1
+        ? 'tomorrow'
+        : 'in $daysLeft days';
+    b
+      ..writeln('Hi $name, your Club Fitness membership expires $when. ⏰')
+      ..writeln()
+      ..writeln('Renew in time to keep your workouts going without a break.')
+      ..writeln()
+      ..writeln('*Your membership details*')
+      ..writeln('Plan: $planName')
+      ..writeln('Expires on: ${formatShortDate(end)}')
+      ..writeln('Renewal amount: ₹$price')
+      ..writeln()
+      ..write('Let us know if you need anything. See you at the gym! 💪');
+  }
   return b.toString();
 }
 
@@ -497,5 +550,71 @@ Future<void> revertLastRenewal(BuildContext context, MemberEntity m) async {
     successMessage: state is RevertLastRenewalSuccessState
         ? state.message
         : 'Last renewal reverted',
+  );
+}
+
+Future<void> showSendReminderDialog(
+  BuildContext context, {
+  required String name,
+  required VoidCallback onEmail,
+  required VoidCallback onWhatsapp,
+}) {
+  return showDialog<void>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      backgroundColor: AppTheme.card,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      title: const Text(
+        'Send Reminder',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      content: Text(
+        'How would you like to remind $name?',
+        style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+      ),
+      actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext),
+          child: const Text(
+            'Cancel',
+            style: TextStyle(color: AppTheme.textSecondary),
+          ),
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(0, 44),
+                side: const BorderSide(color: AppTheme.success, width: 1.5),
+                foregroundColor: AppTheme.success,
+              ),
+              icon: const Icon(Icons.chat_rounded, size: 18),
+              label: const Text('WhatsApp'),
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                onWhatsapp();
+              },
+            ),
+            const SizedBox(width: 8),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(minimumSize: const Size(0, 44)),
+              icon: const Icon(Icons.email_rounded, size: 18),
+              label: const Text('Email'),
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                onEmail();
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
   );
 }

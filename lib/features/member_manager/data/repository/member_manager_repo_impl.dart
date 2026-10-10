@@ -332,4 +332,20 @@ class MemberManagerRepoImpl implements MemberManagerRepo {
       return Right(Failure.fromException(e));
     }
   }
+
+  @override
+  Future<Either<String, Failure>> sendReminder(String id) async {
+    try {
+      final result = await dataSource.sendReminder(id);
+      return Left(result);
+    } catch (e, s) {
+      dev_log.log(
+        e.toString(),
+        name: 'sendReminder in MemberManagerRepoImpl',
+        stackTrace: s,
+        error: e,
+      );
+      return Right(Failure.fromException(e));
+    }
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/features/image_cache/presentation/widgets/custom_cached_image.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +25,7 @@ class MemberAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final fallback = Center(
       child: Text(
-        initials,
+        initials.toUpperCase(),
         style: TextStyle(
           color: secondary,
           fontWeight: FontWeight.w900,
@@ -32,7 +33,7 @@ class MemberAvatar extends StatelessWidget {
         ),
       ),
     );
-    final hasImage = imageUrl != null && imageUrl!.isNotEmpty;
+    final hasImage = imageUrl?.orNull() != null;
 
     return Container(
       width: size,

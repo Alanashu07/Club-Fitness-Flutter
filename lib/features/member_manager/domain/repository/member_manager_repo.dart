@@ -72,4 +72,5 @@ abstract interface class MemberManagerRepo {
   });
 
   Future<Either<String, Failure>> revertLastRenewal(String id);
+  Future<Either<String, Failure>> sendReminder(String id);
 }

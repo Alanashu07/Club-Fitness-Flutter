@@ -99,7 +99,7 @@ class AppRoot extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) =>
-              MembersActionsBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()),
+              MembersActionsBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()),
         ),
         BlocProvider(
           create: (context) =>

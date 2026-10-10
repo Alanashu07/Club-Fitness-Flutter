@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
-
 class AdminMembersView extends StatefulWidget {
   const AdminMembersView({super.key});
   @override
@@ -577,10 +575,35 @@ class _AdminMembersViewState extends State<AdminMembersView>
     _refreshMembers();
   }
 
-  void _sendReminder(MemberListEntity m) {
-    ScaffoldMessenger.of(
+  void _sendEmailReminder(BuildContext context, MemberListEntity m) async {
+    final state = await dispatchMemberAction(
       context,
-    ).showSnackBar(SnackBar(content: Text('Reminder sent to ${m.name}')));
+      SendReminderEvent(m.id),
+      isDone: (s) =>
+          s is SendReminderSuccessState || s is SendReminderFailureState,
+    );
+    if (!context.mounted) return;
+    finishMemberAction(
+      context,
+      failure: state is SendReminderFailureState ? state.failure : null,
+      memberId: null,
+      successMessage: state is SendReminderSuccessState
+          ? state.message
+          : '${m.name} has been reminded about due.',
+    );
+    return;
+  }
+
+  void _sendReminder(MemberListEntity m) {
+    showSendReminderDialog(
+      context,
+      name: m.name,
+      onEmail: () => _sendEmailReminder(context, m),
+      onWhatsapp: () => UrlServices.whatsappMessage(
+        number: normalizePhone(m.phone),
+        message: buildReminderMessage(null, m),
+      ),
+    );
   }
 
   Future<void> _showSortSheet() async {

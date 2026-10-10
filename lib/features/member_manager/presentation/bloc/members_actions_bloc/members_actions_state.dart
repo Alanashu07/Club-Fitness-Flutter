@@ -169,3 +169,30 @@ final class RevertLastRenewalFailureState extends MembersActionsState {
   @override
   List<Object> get props => [failure];
 }
+
+final class SendReminderLoadingState extends MembersActionsState {
+  final String id;
+  const SendReminderLoadingState(this.id);
+  @override
+  List<Object> get props => [id];
+}
+
+final class SendReminderSuccessState extends MembersActionsState {
+  final String id;
+  final String message;
+
+  const SendReminderSuccessState(this.id, this.message);
+
+  @override
+  List<Object> get props => [id, message];
+}
+
+final class SendReminderFailureState extends MembersActionsState {
+  final String id;
+  final Failure failure;
+
+  const SendReminderFailureState(this.id, this.failure);
+
+  @override
+  List<Object> get props => [id, failure];
+}

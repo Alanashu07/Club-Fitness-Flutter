@@ -32,7 +32,7 @@ class _RenewMembershipSheetState extends State<RenewMembershipSheet> {
   late String _planId = widget.member.membershipPlan.id;
   MembershipPlanMiniEntity? _plan;
   DateTime? _startDate; // null = automatically after the current membership
-  String? _method;
+  String? _method = _methods.firstOrNull?.key;
   PlatformFile? _receipt;
   String? _error;
 

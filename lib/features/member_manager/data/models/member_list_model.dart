@@ -20,6 +20,7 @@ class MemberListModel extends MemberListEntity {
     super.feeStatus,
     super.amount,
     super.profileImageUrl,
+    super.lastFee,
   });
 
   factory MemberListModel.fromJson(Map<String, dynamic> json) {
@@ -41,6 +42,7 @@ class MemberListModel extends MemberListEntity {
       feeStatus: json['feeStatus'] as String? ?? '',
       amount: json['amount'] as num? ?? 0,
       profileImageUrl: json['profileImageUrl'] as String? ?? '',
+      lastFee: json['lastFee'] as String? ?? '',
     );
   }
 
@@ -63,6 +65,7 @@ class MemberListModel extends MemberListEntity {
       feeStatus: entity.feeStatus,
       amount: entity.amount,
       profileImageUrl: entity.profileImageUrl,
+      lastFee: entity.lastFee
     );
   }
 
@@ -83,7 +86,8 @@ class MemberListModel extends MemberListEntity {
     num? workoutStreak,
     String? feeStatus,
     num? amount,
-    String? profileImageUrl
+    String? profileImageUrl,
+    String? lastFee
   }) => MemberListModel(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -101,7 +105,8 @@ class MemberListModel extends MemberListEntity {
       workoutStreak: workoutStreak ?? this.workoutStreak,
       feeStatus: feeStatus ?? this.feeStatus,
       amount: amount ?? this.amount,
-      profileImageUrl: profileImageUrl ?? this.profileImageUrl
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+      lastFee: lastFee ?? this.lastFee
   );
 
   Map<String, dynamic> toJson() => {
@@ -121,7 +126,8 @@ class MemberListModel extends MemberListEntity {
         'workoutStreak': workoutStreak,
         'feeStatus': feeStatus,
         'amount': amount,
-        'profileImageUrl': profileImageUrl
+        'profileImageUrl': profileImageUrl,
+        'lastFee': lastFee
       }..removeWhere((key, value) => _removeEmpty(value));
 
   @override

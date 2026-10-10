@@ -152,3 +152,10 @@ class RevertLastRenewalEvent extends MembersActionsEvent {
   @override
   List<Object?> get props => [id];
 }
+
+final class SendReminderEvent extends MembersActionsEvent {
+  final String id;
+  const SendReminderEvent(this.id);
+  @override
+  List<Object?> get props => [id];
+}

@@ -1,17 +1,26 @@
 enum Env {
-  local('local'), dev('dev'), production('production');
+  local('local'),
+  dev('dev'),
+  production('production');
+
   const Env(this.key);
   final String key;
   bool get isProduction => this == Env.production;
 
   static Env fromKey(String? key) {
-    return values.firstWhere((e) => e.key == key?.toLowerCase(), orElse: () => local);
+    return values.firstWhere(
+      (e) => e.key == key?.toLowerCase(),
+      orElse: () => local,
+    );
   }
 }
 
 class EndPoints {
   static bool get isProduction => false;
-  static const String environment = String.fromEnvironment('ENV', defaultValue: 'local');
+  static const String environment = String.fromEnvironment(
+    'ENV',
+    defaultValue: 'local',
+  );
 
   static Env get env => Env.fromKey(environment);
 
@@ -24,16 +33,7 @@ class EndPoints {
         return 'https://api.clubfitness.co.in';
     }
   }
-
-  static String get baseMediaUrl {
-    switch (env) {
-      case Env.local:
-      case Env.dev:
-        return 'http://localhost:3000';
-      case Env.production:
-        return 'https://api.clubfitness.co.in';
-    }
-  }
+  
   static String appBaseUrl = '$baseUrl/app';
   static const String login = '/api/v1/auth/login';
   static const String register = '/api/v1/auth/register';
@@ -59,11 +59,14 @@ class EndPoints {
   static String memberDetails(String id) => '$members/$id';
   static const String trainers = '$members/trainers';
   static const String membershipPlans = '$members/membership-plans';
-  static String updateOrDeleteMembershipPlan(String id) => "$membershipPlans/$id";
+  static String updateOrDeleteMembershipPlan(String id) =>
+      "$membershipPlans/$id";
   static String reactivateMember(String id) => "$members/$id/reactivate";
   static String suspendMember(String id) => "$members/$id/suspend";
   static String renewMembership(String id) => "$members/$id/renew";
-  static String revertLastRenewal(String id) => "$members/$id/renew/revert-last";
+  static String revertLastRenewal(String id) =>
+      "$members/$id/renew/revert-last";
+  static String sendReminder(String id) => "$members/$id/send-reminder";
 
   //============================================================================
   // FEES

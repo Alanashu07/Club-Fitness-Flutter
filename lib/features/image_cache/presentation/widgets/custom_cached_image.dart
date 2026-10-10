@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:developer' as console;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -218,9 +218,9 @@ class _CustomCachedImageState extends State<CustomCachedImage> {
     }
 
     if (url.contains('media')) {
-      return '${EndPoints.baseMediaUrl}/$url';
+      return '${EndPoints.baseUrl}$url';
     }
 
-    return '${EndPoints.baseMediaUrl}/media/$url';
+    return '${EndPoints.baseUrl}media/$url';
   }
 }

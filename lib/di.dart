@@ -110,6 +110,7 @@ void _initMemberManagerDep() {
     ..registerFactory<RenewMembership>(() => RenewMembership(sl()))
     ..registerFactory<RevertLastRenewal>(() => RevertLastRenewal(sl()))
     ..registerFactory<SuspendMember>(() => SuspendMember(sl()))
+    ..registerFactory<SendReminder>(() => SendReminder(sl()))
     ..registerFactory<UpdateMember>(() => UpdateMember(sl()))
     ..registerFactory<UpdateMembershipPlan>(() => UpdateMembershipPlan(sl()));
 }

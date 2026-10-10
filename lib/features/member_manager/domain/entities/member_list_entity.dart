@@ -13,6 +13,7 @@ class MemberListEntity {
   final String status;
   final String joinDate;
   final String expiryDate;
+  DateTime get expiryDateTime => expiryDate.toDateTime;
   final num daysLeft;
   final String trainer;
   final String trainerId;
@@ -21,9 +22,10 @@ class MemberListEntity {
   final String feeStatus;
   final num amount;
   final String profileImageUrl;
+  final String lastFee;
 
   MemberStatus get memberStatus => MemberStatus.fromKey(status);
-  String get initials => name.twoLetters;
+  String get initials => name.twoLetters.toUpperCase();
 
   const MemberListEntity({
     this.id = '',
@@ -43,6 +45,7 @@ class MemberListEntity {
     this.feeStatus = '',
     this.amount = 0,
     this.profileImageUrl = '',
+    this.lastFee = '',
   });
 
   Color get avatarColor {

@@ -70,6 +70,7 @@ abstract interface class MemberManagerNetworkDataSource {
   });
 
   Future<String> revertLastRenewal(String id);
+  Future<String> sendReminder(String id);
 }
 
 class MemberManagerNetworkDataSourceImpl
@@ -325,6 +326,16 @@ class MemberManagerNetworkDataSourceImpl
   Future<String> revertLastRenewal(String id) async {
     DioResponse response = await _dio.dioDeleteCall(
       EndPoints.revertLastRenewal(id),
+    );
+    if (response.hasError) return response.handleError();
+    return response.response!.data['message'].toString();
+  }
+
+  @override
+  Future<String> sendReminder(String id) async {
+    DioResponse response = await _dio.dioPostCall(
+      EndPoints.sendReminder(id),
+      {},
     );
     if (response.hasError) return response.handleError();
     return response.response!.data['message'].toString();
