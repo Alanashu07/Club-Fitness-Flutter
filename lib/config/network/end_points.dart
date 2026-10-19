@@ -56,6 +56,7 @@ class EndPoints {
   // MEMBERS
   //============================================================================
   static const String members = '/api/v1/members';
+  static const String requestAccountDeletion = '$members/account/delete';
   static String memberDetails(String id) => '$members/$id';
   static const String trainers = '$members/trainers';
   static const String membershipPlans = '$members/membership-plans';

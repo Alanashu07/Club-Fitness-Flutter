@@ -27,6 +27,7 @@ class Routes {
   static const String imageViewer = '/image-viewer';
   static const String roleSelect = '/auth/role-select';
   static const String login = '/auth/login';
+  static const String deleteAccount = '/account/delete';
 
   //====================================================================================
   // HOME SCREEN
@@ -103,6 +104,7 @@ class RoutesName {
   static const String imageViewer = 'image-viewer';
   static const String roleSelect = 'role-select';
   static const String login = 'login';
+  static const String deleteAccount = 'delete-account';
 
   //====================================================================================
   // HOME SCREEN

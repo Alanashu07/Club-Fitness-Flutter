@@ -72,3 +72,10 @@ final class SignInWithEmailVerifyEvent extends AuthEvent {
   @override
   List<Object?> get props => [email, otp];
 }
+
+final class RequestDeleteAccountEvent extends AuthEvent {
+  final DeletionMode mode;
+  const RequestDeleteAccountEvent({required this.mode});
+  @override
+  List<Object?> get props => [mode];
+}

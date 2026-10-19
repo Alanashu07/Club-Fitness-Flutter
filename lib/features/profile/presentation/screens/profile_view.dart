@@ -1,5 +1,6 @@
 import 'package:club_fitness/config/navigation/routes_class.dart';
 import 'package:club_fitness/config/theme/theme.dart';
+import 'package:club_fitness/core/services/url_services.dart';
 import 'package:club_fitness/core/utils/utils.dart';
 import 'package:club_fitness/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +80,11 @@ class ProfileView extends StatelessWidget {
             Text('Support', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             _SettingsTile(
+              title: 'Delete My Account',
+              icon: Icons.delete_outlined,
+              onTap: () => context.push(Routes.deleteAccount),
+            ),
+            _SettingsTile(
               icon: Icons.help_outline,
               title: 'Help center',
               onTap: () {},
@@ -86,7 +92,7 @@ class ProfileView extends StatelessWidget {
             _SettingsTile(
               icon: Icons.privacy_tip_outlined,
               title: 'Privacy policy',
-              onTap: () {},
+              onTap: () => UrlServices.launchRegularUrl('https://api.clubfitness.co.in/privacy-policy'),
             ),
             _SettingsTile(
               icon: Icons.info_outline,

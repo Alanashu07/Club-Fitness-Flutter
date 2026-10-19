@@ -4,8 +4,10 @@ import 'package:club_fitness/config/network/api.dart';
 import 'package:club_fitness/core/exceptions/app_exception.dart';
 import 'package:club_fitness/core/models/user_model.dart';
 import 'package:club_fitness/core/services/firebase_phone_auth_services.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../../domain/entities/auth_entities.dart';
 import '../models/auth_models.dart';
 
 abstract interface class AuthNetworkDataSource {
@@ -33,6 +35,8 @@ abstract interface class AuthNetworkDataSource {
     required String email,
     required String otp,
   });
+
+  Future<AccountDeletionResponse> requestAccountDeletion(DeletionMode mode);
 }
 
 class AuthNetworkDataSourceImpl implements AuthNetworkDataSource {
@@ -323,5 +327,18 @@ class AuthNetworkDataSourceImpl implements AuthNetworkDataSource {
       );
     }
     return UserModel.fromJson(data['user']);
+  }
+
+  @override
+  Future<AccountDeletionResponse> requestAccountDeletion(
+    DeletionMode mode,
+  ) async {
+    DioResponse response = await _dio.dioDeleteCall(
+      EndPoints.requestAccountDeletion,
+      {},
+      {"mode": mode.apiValue, "confirm": true},
+      Options(validateStatus: (_) => true),
+    );
+    return AccountDeletionResponse.fromJson(response.response!.data);
   }
 }

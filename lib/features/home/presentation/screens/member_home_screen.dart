@@ -13,9 +13,16 @@ import '../bloc/home_bloc/home_bloc.dart';
 // ─── Formatting helpers ───────────────────────────────────────────────────────
 
 String _initialsOf(String name) {
-  final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+  final parts = name
+      .trim()
+      .split(RegExp(r'\s+'))
+      .where((p) => p.isNotEmpty)
+      .toList();
   if (parts.isEmpty) return '?';
-  if (parts.length == 1) return parts.first.substring(0, math.min(2, parts.first.length)).toUpperCase();
+  if (parts.length == 1)
+    return parts.first
+        .substring(0, math.min(2, parts.first.length))
+        .toUpperCase();
   return (parts.first[0] + parts.last[0]).toUpperCase();
 }
 
@@ -46,7 +53,18 @@ DateTime? _tryParseDate(String value) {
 }
 
 const _monthNames = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
 ];
 
 String _formatShortDate(String iso) {
@@ -80,10 +98,14 @@ Color _accentForIndex(int i) => _accentPalette[i % _accentPalette.length];
 
 IconData _exerciseIconFor(String name) {
   final lower = name.toLowerCase();
-  if (lower.contains('run') || lower.contains('treadmill') || lower.contains('cardio')) {
+  if (lower.contains('run') ||
+      lower.contains('treadmill') ||
+      lower.contains('cardio')) {
     return Icons.directions_run_rounded;
   }
-  if (lower.contains('fly') || lower.contains('stretch') || lower.contains('mobility')) {
+  if (lower.contains('fly') ||
+      lower.contains('stretch') ||
+      lower.contains('mobility')) {
     return Icons.sports_gymnastics_rounded;
   }
   return Icons.fitness_center_rounded;
@@ -98,7 +120,7 @@ class MemberHomeScreen extends StatelessWidget {
       create: (_) => HomeBloc(sl())..add(const GetHomeEvent("member")),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          switch(state) {
+          switch (state) {
             case HomeInitial():
             case HomeLoading():
               return const Center(child: CircularProgressIndicator.adaptive());
@@ -107,10 +129,11 @@ class MemberHomeScreen extends StatelessWidget {
             case HomeFailure():
               return FailureTextWidget(
                 state.failure,
-                onRetry: () => context.read<HomeBloc>().add(const GetHomeEvent("member")),
+                onRetry: () =>
+                    context.read<HomeBloc>().add(const GetHomeEvent("member")),
               );
           }
-        }
+        },
       ),
     );
   }
@@ -237,8 +260,8 @@ class _MemberHomeViewState extends State<MemberHomeView>
     final greeting = hour < 12
         ? 'Good morning,'
         : hour < 17
-            ? 'Good afternoon,'
-            : 'Good evening,';
+        ? 'Good afternoon,'
+        : 'Good evening,';
 
     return SliverAppBar(
       expandedHeight: 120,
@@ -374,9 +397,12 @@ class _MemberHomeViewState extends State<MemberHomeView>
     final membership = _data.membership;
     final totalDays = membership.plan.durationDays.toDouble();
     final daysLeft = membership.daysRemaining.toDouble();
-    final progress = totalDays > 0 ? (daysLeft / totalDays).clamp(0.0, 1.0) : 0.0;
+    final progress = totalDays > 0
+        ? (daysLeft / totalDays).clamp(0.0, 1.0)
+        : 0.0;
     final isActive = membership.status.toUpperCase() == 'ACTIVE';
-    final joinedLabel = ''; // not present in entity; omit or wire from profile if available later
+    final joinedLabel =
+        ''; // not present in entity; omit or wire from profile if available later
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -446,7 +472,9 @@ class _MemberHomeViewState extends State<MemberHomeView>
                   children: [
                     Icon(
                       Icons.circle,
-                      color: isActive ? const Color(0xFF4CAF50) : AppTheme.error,
+                      color: isActive
+                          ? const Color(0xFF4CAF50)
+                          : AppTheme.error,
                       size: 7,
                     ),
                     const SizedBox(width: 5),
@@ -455,7 +483,9 @@ class _MemberHomeViewState extends State<MemberHomeView>
                           ? membership.status.toUpperCase()
                           : 'UNKNOWN',
                       style: TextStyle(
-                        color: isActive ? const Color(0xFF4CAF50) : AppTheme.error,
+                        color: isActive
+                            ? const Color(0xFF4CAF50)
+                            : AppTheme.error,
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 1.5,
@@ -722,7 +752,12 @@ class _MemberHomeViewState extends State<MemberHomeView>
         'Orders Active',
         const Color(0xFF29B6F6),
       ),
-      (Icons.star_rounded, planTierName, 'Member Tier', const Color(0xFFFFD600)),
+      (
+        Icons.star_rounded,
+        planTierName,
+        'Member Tier',
+        const Color(0xFFFFD600),
+      ),
     ];
 
     return Row(
@@ -787,19 +822,41 @@ class _MemberHomeViewState extends State<MemberHomeView>
 
   // ── Shop Preview ────────────────────────────────────────────────────────────
   Widget _buildShopPreview() {
-    final products = _data.shopPreview;
-    return SizedBox(
-      height: 148,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        itemCount: products.length,
-        itemBuilder: (_, i) => _ProductCard(
-          product: products[i],
-          accent: _accentForIndex(i),
+    return Container(
+      width: 130,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppTheme.card,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.primary.withAOpacity(0.2), width: 1),
+      ),
+      child: const TextWidget(
+        "Shop will be released soon!",
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+          fontSize: 12,
+          height: 1.3,
         ),
       ),
     );
+    // final products = _data.shopPreview;
+    // return SizedBox(
+    //   height: 148,
+    //   child: ListView.builder(
+    //     scrollDirection: Axis.horizontal,
+    //     physics: const BouncingScrollPhysics(),
+    //     itemCount: products.length,
+    //     itemBuilder: (_, i) => _ProductCard(
+    //       product: products[i],
+    //       accent: _accentForIndex(i),
+    //     ),
+    //   ),
+    // );
   }
 
   // ── Upcoming Classes ────────────────────────────────────────────────────────
@@ -832,7 +889,11 @@ class _MemberHomeViewState extends State<MemberHomeView>
                     color: accent.withAOpacity(0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(Icons.music_note_rounded, color: accent, size: 22),
+                  child: Icon(
+                    Icons.music_note_rounded,
+                    color: accent,
+                    size: 22,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -905,10 +966,7 @@ class _MemberHomeViewState extends State<MemberHomeView>
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: color.withAOpacity(0.35),
-          width: 1,
-        ),
+        border: Border.all(color: color.withAOpacity(0.35), width: 1),
       ),
       child: Row(
         children: [
@@ -941,7 +999,10 @@ class _MemberHomeViewState extends State<MemberHomeView>
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11),
+                  style: const TextStyle(
+                    color: AppTheme.textSecondary,
+                    fontSize: 11,
+                  ),
                 ),
               ],
             ),
@@ -989,14 +1050,24 @@ class _MemberHomeViewState extends State<MemberHomeView>
         'Workouts',
         Routes.memberWorkout,
       ),
-      (Icons.receipt_long_rounded, Icons.receipt_long_outlined, 'Fees', Routes.renewMembership),
+      (
+        Icons.receipt_long_rounded,
+        Icons.receipt_long_outlined,
+        'Fees',
+        Routes.renewMembership,
+      ),
       (
         Icons.shopping_bag_rounded,
         Icons.shopping_bag_outlined,
         'Shop',
         Routes.shopHome,
       ),
-      (Icons.person_rounded, Icons.person_outline_rounded, 'Profile', Routes.profile),
+      (
+        Icons.person_rounded,
+        Icons.person_outline_rounded,
+        'Profile',
+        Routes.profile,
+      ),
     ];
     return Container(
       decoration: BoxDecoration(
@@ -1258,10 +1329,7 @@ class _AnnouncementTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppTheme.card,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: accent.withAOpacity(0.18),
-          width: 1,
-        ),
+        border: Border.all(color: accent.withAOpacity(0.18), width: 1),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1273,11 +1341,7 @@ class _AnnouncementTile extends StatelessWidget {
               color: accent.withAOpacity(0.14),
               borderRadius: BorderRadius.circular(11),
             ),
-            child: Icon(
-              Icons.campaign_rounded,
-              color: accent,
-              size: 19,
-            ),
+            child: Icon(Icons.campaign_rounded, color: accent, size: 19),
           ),
           const SizedBox(width: 12),
           Expanded(

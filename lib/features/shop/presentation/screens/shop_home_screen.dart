@@ -1,4 +1,8 @@
+import 'package:club_fitness/config/navigation/routes_class.dart';
+import 'package:club_fitness/config/network/api.dart';
 import 'package:club_fitness/config/theme/theme.dart';
+import 'package:club_fitness/core/utils/utils.dart';
+import 'package:club_fitness/widgets/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -317,6 +321,7 @@ class _ShopHomeScreenState extends State<ShopHomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (EndPoints.isProduction) return const ComingSoonScreen();
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: FadeTransition(

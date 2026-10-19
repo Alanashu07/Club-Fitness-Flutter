@@ -37,7 +37,7 @@
 
                 <data
                     android:host="open"
-                    android:scheme="club_fitness" />
+                    android:scheme="clubfitness" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

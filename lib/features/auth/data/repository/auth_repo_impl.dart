@@ -1,6 +1,8 @@
 import 'dart:developer' as dev_log;
 import 'package:club_fitness/core/entities/user_entity.dart';
 import 'package:club_fitness/core/models/user_model.dart';
+import 'package:club_fitness/features/auth/domain/entities/delete_enums.dart';
+import 'package:club_fitness/features/auth/domain/entities/delete_response.dart';
 import 'package:dartz/dartz.dart';
 import 'package:club_fitness/core/exceptions/failure.dart';
 import '../data_source/auth_network_data_source.dart';
@@ -196,6 +198,22 @@ class AuthRepoImpl implements AuthRepo {
       dev_log.log(
         e.toString(),
         name: 'signInWithEmailVerifyOtp in AuthRepoImpl',
+        stackTrace: s,
+        error: e,
+      );
+      return Right(Failure.fromException(e));
+    }
+  }
+
+  @override
+  Future<Either<AccountDeletionResponse, Failure>> requestAccountDeletion(DeletionMode mode) async {
+    try {
+      final result = await dataSource.requestAccountDeletion(mode);
+      return Left(result);
+    } catch (e, s) {
+      dev_log.log(
+        e.toString(),
+        name: 'requestAccountDeletion in AuthRepoImpl',
         stackTrace: s,
         error: e,
       );

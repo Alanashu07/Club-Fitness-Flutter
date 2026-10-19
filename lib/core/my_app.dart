@@ -95,7 +95,7 @@ class AppRoot extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) =>
-              AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()),
+              AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()),
         ),
         BlocProvider(
           create: (context) =>

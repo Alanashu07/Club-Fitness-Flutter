@@ -371,6 +371,7 @@ class DioConfig {
     String url, [
     formData,
     Map<String, dynamic>? queryParams,
+    Options? options
   ]) async {
     Response response;
     try {
@@ -378,6 +379,7 @@ class DioConfig {
         url,
         data: formData,
         queryParameters: queryParams,
+        options: options,
       );
     } on DioException catch (dioError) {
       return DioResponse.hasError(dioError);

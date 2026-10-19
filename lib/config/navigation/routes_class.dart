@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:club_fitness/features/export/app_screens.dart';
+import 'package:club_fitness/widgets/common_widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -24,6 +25,8 @@ class RoutesClass {
     debugLogDiagnostics: kDebugMode,
     redirect: redirect,
     routes: routes,
+    errorBuilder: (context, state) =>
+        NotFoundScreen(error: state.error, homePath: Routes.initial),
     // errorBuilder: (context, state) => const PageNotFoundScreen(),
     // errorPageBuilder: (context, state) =>
     //     transitionPage(const PageNotFoundScreen()),

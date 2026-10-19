@@ -1,10 +1,11 @@
 import 'package:club_fitness/config/local/app_data.dart';
 import 'package:club_fitness/core/entities/user_entity.dart';
 import 'package:club_fitness/core/exceptions/failure.dart';
-import 'package:club_fitness/features/auth/domain/entities/login_user_entity.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../domain/entities/auth_entities.dart';
 import '../../domain/usecase/auth_usecases.dart';
 
 part 'auth_event.dart';
@@ -19,6 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignInWithEmailRequestOtp _signInWithEmailRequestOtp;
   final SignInWithEmailVerifyOtp _signInWithEmailVerifyOtp;
   final Login _login;
+  final RequestAccountDeletion _requestAccountDeletion;
   AuthBloc(
     SignInWithGoogle signInWithGoogle,
     SignInWithPhoneRequestOtp signInWithPhoneRequestOtp,
@@ -27,7 +29,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Logout logout,
     SignInWithEmailRequestOtp signInWithEmailRequestOtp,
     SignInWithEmailVerifyOtp signInWithEmailVerifyOtp,
-    Login _login,
+    Login login,
+    this._requestAccountDeletion,
   ) : _signInWithGoogle = signInWithGoogle,
       _signInWithPhoneRequestOtp = signInWithPhoneRequestOtp,
       _signInWithPhoneVerifyOtp = signInWithPhoneVerifyOtp,
@@ -35,7 +38,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       _logout = logout,
       _signInWithEmailRequestOtp = signInWithEmailRequestOtp,
       _signInWithEmailVerifyOtp = signInWithEmailVerifyOtp,
-      _login = _login,
+      _login = login,
       super(const AuthInitial(UserEntity())) {
     on<AuthEvent>((event, emit) {});
     on<SignInWithGoogleEvent>(_onSignInWithGoogle);
@@ -46,6 +49,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignInWithEmailRequestEvent>(_onSignInWithEmailRequest);
     on<SignInWithEmailVerifyEvent>(_onSignInWithEmailVerify);
     on<SignInWithEmailPasswordEvent>(_onLoginWithPassword);
+    on<RequestDeleteAccountEvent>(_onRequestAccountDeletion);
   }
 
   Future<void> _onGetMyProfile(
@@ -150,4 +154,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (r) => emit(AuthFailure(state.user, r)),
     );
   }
+
+  Future<void> _onRequestAccountDeletion(
+    RequestDeleteAccountEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(DeleteAccountRequested(state.user));
+    final result = await _requestAccountDeletion(event.mode);
+    result.fold(
+      (l) => emit(DeleteAccountSucceeded(state.user, l)),
+      (r) => emit(DeleteAccountFailed(state.user, r)),
+    );
+  }
+}
+
+extension AuthExtension on BuildContext {
+  void getProfile() => read<AuthBloc>().add(const GetMyProfileEvent());
+  void login(String email, String password) => read<AuthBloc>().add(
+    SignInWithEmailPasswordEvent(email: email, password: password),
+  );
+  void logout() => read<AuthBloc>().add(const LogoutEvent());
 }

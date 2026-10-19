@@ -3,6 +3,7 @@ export 'login.dart';
 export 'logout.dart';
 export 'logout_all.dart';
 export 'register.dart';
+export 'request_account_deletion.dart';
 export 'sign_in_with_email_request_otp.dart';
 export 'sign_in_with_email_verify_otp.dart';
 export 'sign_in_with_google.dart';

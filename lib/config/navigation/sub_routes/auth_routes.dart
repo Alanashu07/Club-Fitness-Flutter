@@ -7,5 +7,10 @@ class AuthRoutes {
       name: RoutesName.login,
       builder: (context, state) => const LoginScreen(),
     ),
+    GoRoute(
+      path: Routes.deleteAccount,
+      name: RoutesName.deleteAccount,
+      builder: (context, state) => const AccountDeletionScreen(),
+    ),
   ];
 }

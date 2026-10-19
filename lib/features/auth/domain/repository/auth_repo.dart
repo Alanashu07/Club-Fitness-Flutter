@@ -29,4 +29,5 @@ abstract interface class AuthRepo {
     required String email,
     required String otp,
   });
+  Future<Either<AccountDeletionResponse, Failure>> requestAccountDeletion(DeletionMode mode);
 }

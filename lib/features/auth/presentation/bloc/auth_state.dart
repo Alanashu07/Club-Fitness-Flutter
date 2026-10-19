@@ -37,3 +37,22 @@ final class AuthFailure extends AuthState {
 final class AuthLogoutState extends AuthState {
   const AuthLogoutState(super.user);
 }
+
+final class DeleteAccountRequested extends AuthState {
+  const DeleteAccountRequested(super.user);
+}
+
+final class DeleteAccountSucceeded extends AuthState {
+  final AccountDeletionResponse response;
+  const DeleteAccountSucceeded(super.user, this.response);
+
+  @override
+  List<Object> get props => [...super.props, response];
+}
+
+final class DeleteAccountFailed extends AuthState {
+  final Failure failure;
+  const DeleteAccountFailed(super.user, this.failure);
+  @override
+  List<Object> get props => [...super.props, failure];
+}

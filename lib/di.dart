@@ -62,6 +62,7 @@ void _initAuthDep() {
     ..registerFactory<Logout>(() => Logout(sl()))
     ..registerFactory<LogoutAll>(() => LogoutAll(sl()))
     ..registerFactory<Register>(() => Register(sl()))
+    ..registerFactory<RequestAccountDeletion>(() => RequestAccountDeletion(sl()))
     ..registerFactory<SignInWithEmailRequestOtp>(
       () => SignInWithEmailRequestOtp(sl()),
     )
