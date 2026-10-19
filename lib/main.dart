@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:app_links/app_links.dart';
 import 'package:club_fitness/config/local/app_data.dart';
+import 'package:club_fitness/config/navigation/routes_class.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,24 +33,24 @@ Future<void> main() async {
     databaseFactory = databaseFactoryFfi;
   }
   initDep();
-  // _initDeepLinks();
+  _initDeepLinks();
   runApp(const MyApp());
 }
 
-// Future<void> _initDeepLinks() async {
-//   AppLinks appLinks = AppLinks();
+Future<void> _initDeepLinks() async {
+  AppLinks appLinks = AppLinks();
 
-//   final Uri? initialUri = await appLinks.getInitialLink();
-//   _handleDeepLink(initialUri);
+  final Uri? initialUri = await appLinks.getInitialLink();
+  _handleDeepLink(initialUri);
 
-//   appLinks.uriLinkStream.listen(_handleDeepLink);
-// }
+  appLinks.uriLinkStream.listen(_handleDeepLink);
+}
 
-// void _handleDeepLink(Uri? uri) {
-//   if (uri == null) return;
-//   final router = RoutesClass.router;
-//   return router.go(uri.path);
-// }
+void _handleDeepLink(Uri? uri) {
+  if (uri == null) return;
+  final router = RoutesClass.router;
+  return router.go(uri.path);
+}
 
 // Future<void> _setupFirebaseListener() async {
 //   RemoteMessage? initialMessage =
